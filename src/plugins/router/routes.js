@@ -29,24 +29,28 @@ export const routes = [
         component: () => import('@/pages/settings-system.vue'),
       },
       {
-        path: 'typography',
-        component: () => import('@/pages/typography.vue'),
+        path: 'tools/update',
+        component: () => import('@/pages/tools-update.vue'),
       },
       {
-        path: 'icons',
-        component: () => import('@/pages/icons.vue'),
+        path: 'tools/backup',
+        component: () => import('@/pages/tools-backup.vue'),
       },
       {
-        path: 'cards',
-        component: () => import('@/pages/cards.vue'),
+        path: 'tools/announce',
+        component: () => import('@/pages/tools-announce.vue'),
       },
       {
-        path: 'tables',
-        component: () => import('@/pages/tables.vue'),
+        path: 'tools/install',
+        component: () => import('@/pages/tools-install.vue'),
       },
       {
-        path: 'form-layouts',
-        component: () => import('@/pages/form-layouts.vue'),
+        path: 'tools/statistics',
+        component: () => import('@/pages/tools-statistics.vue'),
+      },
+      {
+        path: 'tools/metrics',
+        component: () => import('@/pages/tools-metrics.vue'),
       },
     ],
   },

@@ -7,13 +7,13 @@
         to: '/dashboard',
       }"
   />
+  <!-- 👉 settings -->
   <VerticalNavGroup
       :item="{
       title: '设置',
       icon: 'ri-home-smile-line',
     }"
   >
-
     <VerticalNavLink
         :item="{
         title: '房间',
@@ -50,49 +50,53 @@
       }"
     />
   </VerticalNavGroup>
-
-  <!-- 👉 Front Pages -->
+  <!-- 👉 tools -->
   <VerticalNavGroup
       :item="{
-      title: 'Front Pages',
-      icon: 'ri-file-copy-line',
-      badgeContent: 'Pro',
-      badgeClass: 'bg-light-primary text-primary',
+      title: '工具',
+      icon: 'ri-home-smile-line',
     }"
   >
     <VerticalNavLink
         :item="{
-        title: 'Landing',
-        href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/landing-page',
-        target: '_blank',
+        title: '定时更新',
+        icon: 'ri-home-smile-line',
+        to: '/tools/update',
       }"
     />
     <VerticalNavLink
         :item="{
-        title: 'Pricing',
-        href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/pricing',
-        target: '_blank',
+        title: '定时备份',
+        icon: 'ri-home-smile-line',
+        to: '/tools/backup',
       }"
     />
     <VerticalNavLink
         :item="{
-        title: 'Payment',
-        href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/payment',
-        target: '_blank',
+        title: '定时通知',
+        icon: 'ri-home-smile-line',
+        to: '/tools/announce',
       }"
     />
     <VerticalNavLink
         :item="{
-        title: 'Checkout',
-        href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/checkout',
-        target: '_blank',
+        title: '安装游戏',
+        icon: 'ri-home-smile-line',
+        to: '/tools/install',
       }"
     />
     <VerticalNavLink
         :item="{
-        title: 'Help Center',
-        href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/help-center',
-        target: '_blank',
+        title: '玩家统计',
+        icon: 'ri-home-smile-line',
+        to: '/tools/statistics',
+      }"
+    />
+    <VerticalNavLink
+        :item="{
+        title: '系统监控',
+        icon: 'ri-home-smile-line',
+        to: '/tools/metrics',
       }"
     />
   </VerticalNavGroup>
