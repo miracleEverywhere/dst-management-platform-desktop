@@ -1,14 +1,3 @@
-<script setup>
-import NavItems from '@/layouts/components/NavItems.vue'
-import logo from '@images/logo.svg?raw'
-import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
-
-// Components
-import Footer from '@/layouts/components/Footer.vue'
-import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
-import UserProfile from '@/layouts/components/UserProfile.vue'
-</script>
-
 <template>
   <VerticalNavLayout>
     <!-- 👉 navbar -->
@@ -16,16 +5,16 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
       <div class="d-flex h-100 align-center">
         <!-- 👉 Vertical nav toggle in overlay mode -->
         <IconBtn
-          class="ms-n3 d-lg-none"
-          @click="toggleVerticalOverlayNavActive(true)"
+            class="ms-n3 d-lg-none"
+            @click="toggleVerticalOverlayNavActive(true)"
         >
           <VIcon icon="ri-menu-line" />
         </IconBtn>
 
         <!-- 👉 Search -->
         <div
-          class="d-flex align-center cursor-pointer"
-          style="user-select: none;"
+            class="d-flex align-center cursor-pointer"
+            style="user-select: none;"
         >
           <!-- 👉 Search Trigger button -->
           <IconBtn>
@@ -41,9 +30,9 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
         <VSpacer />
 
         <IconBtn
-          href="https://github.com/themeselection/materio-vuetify-vuejs-admin-template-free"
-          target="_blank"
-          rel="noopener noreferrer"
+            href="https://github.com/themeselection/materio-vuetify-vuejs-admin-template-free"
+            target="_blank"
+            rel="noopener noreferrer"
         >
           <VIcon icon="ri-github-fill" />
         </IconBtn>
@@ -60,24 +49,24 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
 
     <template #vertical-nav-header="{ toggleIsOverlayNavActive }">
       <RouterLink
-        to="/"
-        class="app-logo app-title-wrapper"
+          to="/"
+          class="app-logo app-title-wrapper"
       >
         <!-- eslint-disable vue/no-v-html -->
         <div
-          class="d-flex"
-          v-html="logo"
+            class="d-flex"
+            v-html="logo"
         />
         <!-- eslint-enable -->
 
         <h1 class="font-weight-medium leading-normal text-xl text-uppercase">
-          Materio
+          {{title}}
         </h1>
       </RouterLink>
 
       <IconBtn
-        class="d-block d-lg-none"
-        @click="toggleIsOverlayNavActive(false)"
+          class="d-block d-lg-none"
+          @click="toggleIsOverlayNavActive(false)"
       >
         <VIcon icon="ri-close-line" />
       </IconBtn>
@@ -91,11 +80,24 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
     <slot />
 
     <!-- 👉 Footer -->
-    <template #footer>
-      <Footer />
-    </template>
+<!--    <template #footer>-->
+<!--      <Footer />-->
+<!--    </template>-->
   </VerticalNavLayout>
 </template>
+
+<script setup>
+import NavItems from '@/layouts/components/NavItems.vue'
+import logo from '@images/logo.svg?raw'
+import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
+
+// Components
+// import Footer from '@/layouts/components/Footer.vue'
+import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
+import UserProfile from '@/layouts/components/UserProfile.vue'
+
+const title = import.meta.env.VITE_TITLE
+</script>
 
 <style lang="scss" scoped>
 .meta-key {
