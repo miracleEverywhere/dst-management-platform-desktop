@@ -9,47 +9,44 @@
   />
   <VerticalNavGroup
       :item="{
-      title: 'Dashboards',
-      badgeContent: '5',
-      badgeClass: 'bg-error',
+      title: '设置',
       icon: 'ri-home-smile-line',
     }"
   >
 
     <VerticalNavLink
         :item="{
-        title: 'CRM',
-        href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/dashboards/crm',
-        target: '_blank',
-        badgeContent: 'Pro',
-        badgeClass: 'bg-light-primary text-primary',
+        title: '房间',
+        icon: 'ri-home-smile-line',
+        to: '/settings/room',
       }"
     />
     <VerticalNavLink
         :item="{
-        title: 'ECommerce',
-        href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/dashboards/ecommerce',
-        target: '_blank',
-        badgeContent: 'Pro',
-        badgeClass: 'bg-light-primary text-primary',
+        title: '玩家',
+        icon: 'ri-home-smile-line',
+        to: '/settings/player',
       }"
     />
     <VerticalNavLink
         :item="{
-        title: 'Academy',
-        href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/dashboards/academy',
-        target: '_blank',
-        badgeContent: 'Pro',
-        badgeClass: 'bg-light-primary text-primary',
+        title: '模组',
+        icon: 'ri-home-smile-line',
+        to: '/settings/mod',
       }"
     />
     <VerticalNavLink
         :item="{
-        title: 'Logistics',
-        href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/dashboards/logistics',
-        target: '_blank',
-        badgeContent: 'Pro',
-        badgeClass: 'bg-light-primary text-primary',
+        title: '导入',
+        icon: 'ri-home-smile-line',
+        to: '/settings/import',
+      }"
+    />
+    <VerticalNavLink
+        :item="{
+        title: '系统',
+        icon: 'ri-home-smile-line',
+        to: '/settings/system',
       }"
     />
   </VerticalNavGroup>
