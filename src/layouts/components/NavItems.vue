@@ -1,27 +1,23 @@
-<script setup>
-import VerticalNavSectionTitle from '@/@layouts/components/VerticalNavSectionTitle.vue'
-import VerticalNavGroup from '@layouts/components/VerticalNavGroup.vue'
-import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
-</script>
-
 <template>
   <!-- 👉 Dashboards -->
+  <VerticalNavLink
+      :item="{
+        title: '首页',
+        icon: 'ri-home-smile-line',
+        to: '/dashboard',
+      }"
+  />
   <VerticalNavGroup
-    :item="{
+      :item="{
       title: 'Dashboards',
       badgeContent: '5',
       badgeClass: 'bg-error',
       icon: 'ri-home-smile-line',
     }"
   >
+
     <VerticalNavLink
-      :item="{
-        title: 'Analytics',
-        to: '/dashboard',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
+        :item="{
         title: 'CRM',
         href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/dashboards/crm',
         target: '_blank',
@@ -30,7 +26,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       }"
     />
     <VerticalNavLink
-      :item="{
+        :item="{
         title: 'ECommerce',
         href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/dashboards/ecommerce',
         target: '_blank',
@@ -39,7 +35,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       }"
     />
     <VerticalNavLink
-      :item="{
+        :item="{
         title: 'Academy',
         href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/dashboards/academy',
         target: '_blank',
@@ -48,7 +44,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       }"
     />
     <VerticalNavLink
-      :item="{
+        :item="{
         title: 'Logistics',
         href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/dashboards/logistics',
         target: '_blank',
@@ -60,7 +56,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
   <!-- 👉 Front Pages -->
   <VerticalNavGroup
-    :item="{
+      :item="{
       title: 'Front Pages',
       icon: 'ri-file-copy-line',
       badgeContent: 'Pro',
@@ -68,35 +64,35 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   >
     <VerticalNavLink
-      :item="{
+        :item="{
         title: 'Landing',
         href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/landing-page',
         target: '_blank',
       }"
     />
     <VerticalNavLink
-      :item="{
+        :item="{
         title: 'Pricing',
         href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/pricing',
         target: '_blank',
       }"
     />
     <VerticalNavLink
-      :item="{
+        :item="{
         title: 'Payment',
         href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/payment',
         target: '_blank',
       }"
     />
     <VerticalNavLink
-      :item="{
+        :item="{
         title: 'Checkout',
         href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/checkout',
         target: '_blank',
       }"
     />
     <VerticalNavLink
-      :item="{
+        :item="{
         title: 'Help Center',
         href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/front-pages/help-center',
         target: '_blank',
@@ -106,12 +102,12 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
   <!-- 👉 Apps & Pages -->
   <VerticalNavSectionTitle
-    :item="{
+      :item="{
       heading: 'Apps & Pages',
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Email',
       icon: 'ri-mail-line',
       href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/apps/email',
@@ -121,7 +117,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Chat',
       icon: 'ri-wechat-line',
       href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/apps/chat',
@@ -131,7 +127,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Calendar',
       icon: 'ri-calendar-line',
       href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/apps/calendar',
@@ -141,7 +137,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Kanban',
       icon: 'ri-drag-drop-line',
       href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/apps/kanban',
@@ -152,7 +148,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
   />
 
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Account Settings',
       icon: 'ri-user-settings-line',
       to: '/account-settings',
@@ -160,21 +156,21 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
   />
 
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Login',
       icon: 'ri-login-box-line',
       to: '/login',
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Register',
       icon: 'ri-user-add-line',
       to: '/register',
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Error',
       icon: 'ri-information-line',
       to: '/no-existence',
@@ -183,26 +179,26 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
   <!-- 👉 User Interface -->
   <VerticalNavSectionTitle
-    :item="{
+      :item="{
       heading: 'User Interface',
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Typography',
       icon: 'ri-text',
       to: '/typography',
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Icons',
       icon: 'ri-remixicon-line',
       to: '/icons',
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Cards',
       icon: 'ri-bar-chart-box-line',
       to: '/cards',
@@ -211,19 +207,19 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
   <!-- 👉 Forms & Tables -->
   <VerticalNavSectionTitle
-    :item="{
+      :item="{
       heading: 'Forms & Tables',
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Form Layouts',
       icon: 'ri-layout-4-line',
       to: '/form-layouts',
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Form Validation',
       icon: 'ri-checkbox-multiple-line',
       href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/forms/form-validation',
@@ -233,7 +229,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Form Wizard',
       icon: 'ri-git-commit-line',
       href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/forms/form-wizard-numbered',
@@ -243,7 +239,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Tables',
       icon: 'ri-table-alt-line',
       to: '/tables',
@@ -252,12 +248,12 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
   <!-- 👉 Others -->
   <VerticalNavSectionTitle
-    :item="{
+      :item="{
       heading: 'Others',
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Access Control',
       icon: 'ri-shield-line',
       href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/demo-1/access-control',
@@ -267,7 +263,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Documentation',
       icon: 'ri-article-line',
       href: 'https://demos.themeselection.com/materio-vuetify-vuejs-admin-template/documentation/',
@@ -275,7 +271,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-    :item="{
+      :item="{
       title: 'Raise Support',
       href: 'https://github.com/themeselection/materio-vuetify-vuejs-admin-template-free/issues',
       icon: 'ri-lifebuoy-line',
@@ -283,3 +279,9 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
 </template>
+
+<script setup>
+import VerticalNavSectionTitle from '@/@layouts/components/VerticalNavSectionTitle.vue'
+import VerticalNavGroup from '@layouts/components/VerticalNavGroup.vue'
+import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
+</script>

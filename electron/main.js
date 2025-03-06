@@ -30,11 +30,11 @@ const createWindow = (main) => {
         },
     })
 
-    if(process.env.process.env.VITE_DEV_SERVER_URL) {
+    if(process.env.VITE_DEV_SERVER_URL) {
         if (main) {
-            win.loadURL(`${process.env.VITE_DEV_SERVER_URL}/dashboard`)
+            win.loadURL(`${process.env.VITE_DEV_SERVER_URL}dashboard`)
         } else {
-            win.loadURL(`${process.env.VITE_DEV_SERVER_URL}`)
+            win.loadURL(`${process.env.VITE_DEV_SERVER_URL}config`)
         }
 
         // 开启调试台
@@ -61,7 +61,7 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
-ipcMain.on('open-main-window', () => {
+ipcMain.on('open-dashboard-window', () => {
     if (win) {
         win.close()
     }

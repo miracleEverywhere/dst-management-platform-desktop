@@ -43,6 +43,10 @@ export const routes = [
         component: () => import('@/pages/login.vue'),
       },
       {
+        path: 'config',
+        component: () => import('@/pages/config.vue'),
+      },
+      {
         path: 'register',
         component: () => import('@/pages/register.vue'),
       },
