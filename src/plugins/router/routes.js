@@ -52,6 +52,34 @@ export const routes = [
         path: 'tools/metrics',
         component: () => import('@/pages/tools-metrics.vue'),
       },
+      {
+        path: 'logs/ground',
+        component: () => import('@/pages/logs-ground.vue'),
+      },
+      {
+        path: 'logs/cave',
+        component: () => import('@/pages/logs-cave.vue'),
+      },
+      {
+        path: 'logs/chat',
+        component: () => import('@/pages/logs-chat.vue'),
+      },
+      {
+        path: 'logs/dmp',
+        component: () => import('@/pages/logs-dmp.vue'),
+      },
+      {
+        path: 'logs/runtime',
+        component: () => import('@/pages/logs-runtime.vue'),
+      },
+      {
+        path: 'logs/clean',
+        component: () => import('@/pages/logs-clean.vue'),
+      },
+      {
+        path: 'help',
+        component: () => import('@/pages/help.vue'),
+      },
     ],
   },
   {
