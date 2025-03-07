@@ -2,7 +2,6 @@ const { app, ipcMain, BrowserWindow } = require('electron')
 const { join } = require('path')
 const fs = require('fs')
 const Store = require('electron-store')
-// import Store from 'electron-store'
 
 
 const store = new Store()
@@ -18,8 +17,8 @@ const createWindow = (main) => {
         width = 1600
         height = 900
     } else {
-        width = 800
-        height = 600
+        width = 1090
+        height = 768
     }
     win = new BrowserWindow({
         width: width,
