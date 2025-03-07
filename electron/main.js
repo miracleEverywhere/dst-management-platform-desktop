@@ -1,18 +1,19 @@
 const { app, ipcMain, BrowserWindow } = require('electron')
 const { join } = require('path')
 const fs = require('fs')
+const Store = require('electron-store')
+// import Store from 'electron-store'
 
 
+const store = new Store()
 let win
 
+
 // 屏蔽安全警告
-// ectron Security Warning (Insecure Content-Security-Policy)
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
-// 创建浏览器窗口时，调用这个函数。
 const createWindow = (main) => {
-    let width
-    let height
+    let width, height
     if (main) {
         width = 1600
         height = 900
@@ -24,32 +25,20 @@ const createWindow = (main) => {
         width: width,
         height: height,
         webPreferences: {
-            contextIsolation: true, // 启用上下文隔离
-            nodeIntegration: false, // 禁用 Node.js 集成
-            preload: join(__dirname, './preload.js'), // 指定 preload.js 的路径
+            contextIsolation: true,
+            nodeIntegration: false,
+            preload: join(__dirname, 'preload.js'),
         },
     })
 
-    if(process.env.VITE_DEV_SERVER_URL) {
-        if (main) {
-            win.loadURL(`${process.env.VITE_DEV_SERVER_URL}dashboard`)
-        } else {
-            win.loadURL(`${process.env.VITE_DEV_SERVER_URL}config`)
-        }
-
-        // 开启调试台
-        win.webContents.openDevTools({mode:'detach'})
-    }else {
-        if (main) {
-            win.loadFile(join(__dirname, '../dist/index.html'), { hash: 'main' })
-        } else {
-            win.loadFile(join(__dirname, '../dist/index.html'))
-        }
-
+    if (process.env.VITE_DEV_SERVER_URL) {
+        win.loadURL(`${process.env.VITE_DEV_SERVER_URL}${main ? 'dashboard' : 'config'}`)
+        win.webContents.openDevTools({ mode: 'detach' })
+    } else {
+        win.loadFile(join(__dirname, '../dist/index.html'), { hash: main ? 'main' : '' })
     }
 }
 
-// Electron 会在初始化后并准备
 app.whenReady().then(() => {
     createWindow(false)
     app.on('activate', () => {
@@ -62,27 +51,32 @@ app.on('window-all-closed', () => {
 })
 
 ipcMain.on('open-dashboard-window', () => {
-    if (win) {
-        win.close()
-    }
+    if (win) win.close()
     createWindow(true)
-});
+})
 
 ipcMain.on('open-config-window', () => {
-    if (win) {
-        win.close()
-    }
+    if (win) win.close()
     createWindow(false)
-});
+})
 
 ipcMain.handle('read-file', async (event, filePath) => {
     return new Promise((resolve, reject) => {
         fs.readFile(filePath, 'utf-8', (err, data) => {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(data)
-            }
-        });
-    });
-});
+            if (err) reject(err)
+            else resolve(data)
+        })
+    })
+})
+
+ipcMain.on('setStore', (_, key, value) => {
+    store.set(key, value)
+})
+
+ipcMain.on('getStore', (event, key) => {
+    event.returnValue = store.get(key) || ''
+})
+
+ipcMain.on('deleteStore', (event, key) => {
+    event.returnValue = store.delete(key) || ''
+})

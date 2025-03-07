@@ -3,8 +3,9 @@
 </template>
 
 <script setup>
+import ElectronApi from "@/utils/electronApi";
 const gotoDashboard = () => {
-  window.electronAPI.openDashboardWindow()
+  ElectronApi.window.dashboard()
 }
 </script>
 
