@@ -9,7 +9,7 @@
           {{props.configItem.remark}}
         </v-card-subtitle>
         <template v-slot:append>
-          <v-menu v-model="menu" location="bottom end" open-on-hover>
+          <v-menu v-model="menu" location="bottom end">
             <template v-slot:activator="{ props }">
               <v-btn icon color="primary" v-bind="props">
                 <v-icon icon="ri-more-2-fill"></v-icon>
