@@ -21,3 +21,7 @@ export const initTheme = () => {
 export const uuid4 = () => {
     return v4()
 }
+
+export const sleep = function (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

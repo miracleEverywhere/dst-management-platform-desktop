@@ -78,8 +78,6 @@ const initConfigs = () => {
   } else {
     configs.value = dbConfigs
   }
-
-  console.log(configs.value)
 }
 
 
