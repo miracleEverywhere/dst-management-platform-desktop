@@ -24,7 +24,7 @@ const globalStore = defineStore("global", {
         };
     },
     actions: {
-        setInfo(info) {
+        setConfigInfo(info) {
             this.name = info.name
             this.ip = info.ip
             this.port = info.port

@@ -143,7 +143,7 @@ const roomInfo = ref({
 })
 
 const handleGotoDashboard = () => {
-  globalStore.setInfo(props.configItem)
+  globalStore.setConfigInfo(props.configItem)
   ElectronApi.window.dashboard()
 }
 
