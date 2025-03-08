@@ -38,6 +38,7 @@ import VerticalNavLayout from "@layouts/components/VerticalNavLayout.vue";
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
 import logo from '@images/logo.svg?raw'
 
+
 const themes = [
   {
     name: 'light',
@@ -49,7 +50,6 @@ const themes = [
   },
 ]
 const title = import.meta.env.VITE_TITLE
-
 
 const configs = ref([
   {
