@@ -20,6 +20,7 @@ const globalStore = defineStore("global", {
             token: '',
             type: '',
             remark: '',
+            theme: '',
         };
     },
     actions: {
@@ -31,7 +32,7 @@ const globalStore = defineStore("global", {
             this.token = info.token
             this.type = info.type
             this.remark = info.remark
-        }
+        },
     },
     // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值
     getters: {}

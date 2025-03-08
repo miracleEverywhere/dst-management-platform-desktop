@@ -1,3 +1,7 @@
+<template>
+  <ThemeSwitcher :themes="themes" />
+</template>
+
 <script setup>
 const themes = [
   {
@@ -10,7 +14,3 @@ const themes = [
   },
 ]
 </script>
-
-<template>
-  <ThemeSwitcher :themes="themes" />
-</template>

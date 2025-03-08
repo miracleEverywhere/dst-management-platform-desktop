@@ -9,6 +9,13 @@ import AnalyticsTransactions from '@/views/dashboard/AnalyticsTransactions.vue'
 import AnalyticsUserTable from '@/views/dashboard/AnalyticsUserTable.vue'
 import AnalyticsWeeklyOverview from '@/views/dashboard/AnalyticsWeeklyOverview.vue'
 import CardStatisticsVertical from '@core/components/cards/CardStatisticsVertical.vue'
+import {onMounted} from "vue";
+import {initTheme} from "@/utils/tools";
+
+
+onMounted(() => {
+  initTheme()
+})
 
 const totalProfit = {
   title: 'Total Profit',

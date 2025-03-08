@@ -1,5 +1,23 @@
+<template>
+  <IconBtn @click="changeTheme">
+    <VIcon :icon="props.themes[currentThemeIndex].icon" />
+    <VTooltip
+        activator="parent"
+        open-delay="1000"
+        scroll-strategy="close"
+    >
+      <span class="text-capitalize">{{ currentThemeName }}</span>
+    </VTooltip>
+  </IconBtn>
+</template>
+
 <script setup>
 import { useTheme } from 'vuetify'
+import useGlobalStore from "@/plugins/pinia/global";
+import ElectronApi from "@/utils/electronApi";
+
+
+const globalStore = useGlobalStore()
 
 const props = defineProps({
   themes: {
@@ -21,6 +39,7 @@ const {
 
 const changeTheme = () => {
   globalTheme.name.value = getNextThemeName()
+  ElectronApi.store.set('theme', globalTheme.name.value)
 }
 
 // Update icon if theme is changed from other sources
@@ -28,16 +47,3 @@ watch(() => globalTheme.name.value, val => {
   currentThemeName.value = val
 })
 </script>
-
-<template>
-  <IconBtn @click="changeTheme">
-    <VIcon :icon="props.themes[currentThemeIndex].icon" />
-    <VTooltip
-      activator="parent"
-      open-delay="1000"
-      scroll-strategy="close"
-    >
-      <span class="text-capitalize">{{ currentThemeName }}</span>
-    </VTooltip>
-  </IconBtn>
-</template>
