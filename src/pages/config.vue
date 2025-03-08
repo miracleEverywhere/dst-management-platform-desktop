@@ -29,8 +29,6 @@
       </v-row>
     </div>
   </VerticalNavLayout>
-  <v-btn @click="a">as</v-btn>
-
 </template>
 
 <script setup>
@@ -42,15 +40,19 @@ import {useTheme} from "vuetify";
 import {onMounted} from "vue";
 import useGlobalStore from "@/plugins/pinia/global";
 import {initTheme} from "@/utils/tools";
+import ElectronApi from "@/utils/electronApi";
+import {DB_KEY} from "@/config";
 
 
 onMounted(() => {
   initTheme()
+  initConfigs()
+  // ElectronApi.store.clear()
 })
 
 
-
 const globalStore = useGlobalStore()
+const configs = ref([])
 
 const {
   name: themeName,
@@ -69,44 +71,17 @@ const themes = [
 ]
 const title = import.meta.env.VITE_TITLE
 
-const configs = ref([
-  {
-    id: '',
-    name: '三点几啦，饮咖先啦(来种田喝咖啡',
-    type: 'both',
-    ip: '8.137.107.46',
-    port: 80,
-    token: 'asdasd',
-    remark: '阿里云',
-  },
-  {
-    id: '',
-    name: '建家档狂喜 (Man!!!! 怎么会有反鲜',
-    type: 'master',
-    ip: '162.14.116.81',
-    port: 80,
-    token: 'asdasdasfsdfsd',
-    remark: '腾讯云',
-  },
-  {
-    id: '',
-    name: '建家档狂喜 (Man!!!! 怎么会有反鲜',
-    type: 'cave',
-    ip: '110.41.69.7',
-    port: 80,
-    token: 'asdasdasfsdfsd',
-    remark: '腾讯云',
-  },
-  {
-    id: '',
-    name: '长期建家 半纯净 萌新大佬皆宜 1档',
-    type: 'both',
-    ip: '47.109.32.134',
-    port: 80,
-    token: 'asdasd',
-    remark: '七牛云',
-  },
-])
+const initConfigs = () => {
+  const dbConfigs = ElectronApi.store.get(DB_KEY.configs) || []
+  if (dbConfigs.length === 0) {
+    ElectronApi.store.set(DB_KEY.configs, [])
+  } else {
+    configs.value = dbConfigs
+  }
+
+  console.log(configs.value)
+}
+
 
 
 </script>

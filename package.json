@@ -22,6 +22,7 @@
     "pinia-plugin-persistedstate": "^4.2.0",
     "prismjs": "^1.29.0",
     "roboto-fontface": "^0.10.0",
+    "uuid": "^11.1.0",
     "vue": "^3.5.13",
     "vue-flatpickr-component": "11.0.5",
     "vue-prism-component": "^2.0.0",

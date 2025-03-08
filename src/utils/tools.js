@@ -1,5 +1,7 @@
 import ElectronApi from "@/utils/electronApi";
 import {useTheme} from "vuetify";
+import { v4 } from 'uuid';
+import {DB_KEY} from "@/config";
 
 export const initTheme = () => {
     const {
@@ -7,11 +9,15 @@ export const initTheme = () => {
         global: globalTheme,
     } = useTheme()
 
-    let theme = ElectronApi.store.get('theme')
+    let theme = ElectronApi.store.get(DB_KEY.theme)
 
     if (theme) {
         globalTheme.name.value = theme
     } else {
-        ElectronApi.store.set('theme', 'light')
+        ElectronApi.store.set(DB_KEY.theme, 'light')
     }
+}
+
+export const uuid4 = () => {
+    return v4()
 }

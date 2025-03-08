@@ -10,6 +10,14 @@ export default class ElectronApi {
         },
         delete(key) {
             window.electronAPI.deleteStoreValue(key)
+        },
+        append(key, value) {
+            let dbValue = window.electronAPI.getStoreValue(key)
+            dbValue.push(value)
+            this.set(key, dbValue)
+        },
+        clear() {
+            window.electronAPI.clearStoreValue()
         }
     }
     static window = {

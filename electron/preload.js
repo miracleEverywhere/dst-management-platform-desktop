@@ -13,4 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getStoreValue: (key) => {
         return ipcRenderer.sendSync('getStore', key)
     },
+    clearStoreValue: () => {
+        return ipcRenderer.sendSync('clearStore')
+    }
 });

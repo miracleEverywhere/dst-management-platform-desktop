@@ -1,27 +1,26 @@
 import axios from 'axios';
 import useGlobalStore from '@/plugins/pinia/global'
-import { showSnackbar } from './snackbar';
+import { showSnackbar } from '@/utils/snackbar';
 
 
 const globalStore = useGlobalStore()
 
 // 创建一个 axios 实例
 const instance = axios.create({
-    baseURL: globalStore.url, // 你的 API 基础地址
+    baseURL: "", // 你的 API 基础地址
     timeout: 60000, // 请求超时时间
 });
 
 // 请求拦截器：在请求发送之前添加 token
 instance.interceptors.request.use(
     (config) => {
-        // 从 localStorage 或 sessionStorage 中获取 token
+        config.baseURL = globalStore.url
         const token = globalStore.token;
         config.headers["X-I18n-Lang"] = 'zh'
         // 如果 token 存在，将其添加到请求头中
         if (token) {
             config.headers.Authorization = token;
         }
-
         return config;
     },
     (error) => {
@@ -49,10 +48,10 @@ instance.interceptors.response.use(
         // 响应错误处理
         error.data = {};
         if (error.data.message) {
-            snackbar.error(error.status + " " + error.data.message);
+            showSnackbar(error.status + " " + error.data.message, 'error');
         } else {
             error.data.message = "连接到服务器失败";
-            snackbar.error(error.status + " " + error.data.message);
+            showSnackbar(error.status + " " + error.data.message, 'error');
         }
         return Promise.reject(error); // 将错误返回给 try{} catch(){} 中进行捕获，就算不进行捕获，上方 res.data.status != 200也会抛出提示。
     }

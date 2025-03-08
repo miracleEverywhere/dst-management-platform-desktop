@@ -80,3 +80,7 @@ ipcMain.on('getStore', (event, key) => {
 ipcMain.on('deleteStore', (event, key) => {
     event.returnValue = store.delete(key) || ''
 })
+
+ipcMain.on('clearStore', (event) => {
+    event.returnValue = store.clear() || ''
+})

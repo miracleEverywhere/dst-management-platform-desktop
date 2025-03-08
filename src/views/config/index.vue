@@ -15,19 +15,19 @@
                 <v-icon icon="ri-more-2-fill"></v-icon>
               </v-btn>
             </template>
-            <v-list>
+            <v-list density="comfortable">
               <v-list-item
                   v-for="(item, index) in menuItems"
                   :key="index"
-                  @click="handleMenuClick(item)"
+                  :base-color="item.color"
+                  :prepend-icon="item.icon"
+                  :title="item.title"
+                  @click="handleMenuClick(index)"
               >
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
-
         </template>
-
       </v-card-item>
       <v-card-text>
         <v-row>
@@ -72,36 +72,40 @@
       <v-card-text>
         <v-card variant="tonal">
           <div class="cc" style="min-height: 169px;">
-            <v-dialog v-model="dialog" persistent max-width="600" @after-enter="initDialog">
+            <v-dialog v-model="dialog" max-width="600" persistent @after-enter="initDialog">
               <template v-slot:activator="{ props: activatorProps }">
                 <v-icon icon="ri-add-line" size="50" v-bind="activatorProps"></v-icon>
               </template>
 
               <v-card prepend-icon="mdi-account">
                 <v-card-text>
-                  <v-form fast-fail @submit.prevent>
+                  <v-form ref="addFormRef" fast-fail @submit.prevent="handleSubmit">
                     <v-container max-width="500">
                       <v-row>
                         <v-col cols="12" sm="9">
                           <v-text-field v-model="addForm.ip" :rules="addFormRules.ip"
-                                        label="IP" required></v-text-field>
+                                        label="IP" required clearable></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                           <v-text-field v-model.number="addForm.port" :rules="addFormRules.port"
-                                        label="端口" required></v-text-field>
+                                        label="端口" required clearable></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="12">
                           <v-text-field v-model="addForm.token" :rules="addFormRules.token"
-                                        label="令牌" required type="password"></v-text-field>
+                                        label="令牌" required type="password" clearable></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="12" class="mt-4">
-                          <v-btn class="mt-2" type="submit" block @click="handleSubmit">提交</v-btn>
+                        <v-col cols="12" sm="12">
+                          <v-text-field v-model="addForm.remark" label="备注" clearable></v-text-field>
+                        </v-col>
+                        <v-col class="mt-4" cols="12" sm="12">
+                          <v-btn block class="mt-2" type="submit">提交</v-btn>
                         </v-col>
                         <v-col cols="12" sm="12" style="margin-top: -20px">
-                          <v-btn class="mt-2" block color="white" @click="dialog=false">取消</v-btn>
+                          <v-btn block class="mt-2" color="white"
+                                 @click="dialog=false" :loading="loading"
+                          >取消</v-btn>
                         </v-col>
                       </v-row>
-
                     </v-container>
                   </v-form>
 
@@ -119,6 +123,9 @@
 import ElectronApi from "@/utils/electronApi"
 import useGlobalStore from '@/plugins/pinia/global'
 import configApi from '@/api/config'
+import {uuid4} from "@/utils/tools";
+import {DB_KEY} from "@/config";
+import {showSnackbar} from '@/utils/snackbar';
 
 
 const globalStore = useGlobalStore()
@@ -136,6 +143,8 @@ const props = defineProps({
   }
 })
 
+const loading = ref(false)
+
 const roomInfo = ref({
   name: undefined,
   cpu: undefined,
@@ -149,22 +158,35 @@ const handleGotoDashboard = () => {
 
 const menu = ref(false)
 const menuItems = ref([
-  {title: 'Option 1'},
-  {title: 'Option 2'},
-  {title: 'Option 3'},
+  {
+    title: '刷 新',
+    color: 'info',
+    icon: 'ri-refresh-line',
+  },
+  {
+    title: '编 辑',
+    color: 'primary',
+    icon: 'ri-edit-2-line',
+  },
+  {
+    title: '删 除',
+    color: 'error',
+    icon: 'ri-delete-bin-line',
+  },
 ])
 
-const handleMenuClick = (item) => {
-  console.log('Clicked:', item.title);
-  // menu.value = false; // 关闭菜单
+const handleMenuClick = (index) => {
+  console.log('Clicked:', index);
 }
 
 const dialog = ref(false)
 
+const addFormRef = ref()
 const addForm = ref({
   ip: undefined,
   port: undefined,
   token: undefined,
+  remark: undefined,
 })
 const addFormRules = {
   ip: [
@@ -189,8 +211,9 @@ const addFormRules = {
         } else {
           return '端口范围：1-65535'
         }
+      } else {
+        return '请输入端口'
       }
-      return '请输入端口'
     },
   ],
   token: [
@@ -209,10 +232,57 @@ const initDialog = () => {
   }
 }
 
-const handleSubmit = () => {
+const handleSubmit = async (event) => {
+  loading.value = true
+  const results = await event
+  if (!results.valid) {
+    loading.value = false
+    return
+  }
   globalStore.url = `http://${addForm.value.ip}:${addForm.value.port}/v1`
   globalStore.token = addForm.value.token
-  configApi.baseInfo.get()
+  const newConfig = {
+    id: uuid4(),
+    name: undefined,
+    type: undefined, // 1 master; 2 cave; 3 both;
+    ip: addForm.value.ip,
+    port: addForm.value.port,
+    token: addForm.value.token,
+    remark: addForm.value.remark
+  }
+  configApi.baseInfo.get().then(baseInfoResponse => {
+    if (baseInfoResponse.data.base.name) {
+      newConfig.name = baseInfoResponse.data.base.name
+      configApi.multiHost.get().then(multiHostResponse => {
+        if (multiHostResponse.data) {
+          if (baseInfoResponse.data.ground) {
+            newConfig.type = 'master'
+          } else if (baseInfoResponse.data.cave) {
+            newConfig.type = 'cave'
+          } else {
+            newConfig.type = 'none'
+          }
+        } else {
+          newConfig.type = 'both'
+        }
+
+        ElectronApi.store.append(DB_KEY.configs, newConfig)
+        showSnackbar('新建成功', 'success')
+        dialog.value = false
+        location.reload()
+      })
+    } else {
+      newConfig.name = "未发现存档"
+      newConfig.type = 'none'
+      ElectronApi.store.append(DB_KEY.configs, newConfig)
+      showSnackbar('新建成功', 'success')
+      dialog.value = false
+      location.reload()
+    }
+  }).finally(() => {
+    loading.value = false
+  })
+
 }
 
 </script>

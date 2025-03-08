@@ -1,6 +1,6 @@
 // 定义全局主题配置小仓库[选择式Api写法]
-import { defineStore } from "pinia";
-import { PINIA_PREFIX } from "@/config/index.js"
+import {defineStore} from "pinia";
+import {PINIA_PREFIX} from "@/config/index.js"
 
 // defineStore方法执行会返回一个函数，函数的作用就是让组件可以获取到仓库数据
 const globalStore = defineStore("global", {
