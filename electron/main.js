@@ -23,6 +23,7 @@ const createWindow = (main) => {
     win = new BrowserWindow({
         width: width,
         height: height,
+        resizable: main,
         webPreferences: {
             webSecurity: false,
             contextIsolation: true,

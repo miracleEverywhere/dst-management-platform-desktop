@@ -13,17 +13,12 @@
 
         <!-- 👉 Search -->
         <div
-            class="d-flex align-center cursor-pointer"
+            class="d-flex align-center"
             style="user-select: none;"
         >
-          <!-- 👉 Search Trigger button -->
-          <IconBtn>
-            <VIcon icon="ri-search-line" />
-          </IconBtn>
-
           <span class="d-none d-md-flex align-center text-disabled">
-            <span class="me-3">Search</span>
-            <span class="meta-key">&#8984;K</span>
+            <v-icon icon="ri-bookmark-3-line"></v-icon>
+            <span class="me-3 ml-1">{{globalStore.name}}</span>
           </span>
         </div>
 
@@ -37,13 +32,17 @@
           <VIcon icon="ri-github-fill" />
         </IconBtn>
 
-        <IconBtn>
-          <VIcon icon="ri-notification-line" />
-        </IconBtn>
+<!--        <IconBtn>-->
+<!--          <VIcon icon="ri-notification-line" />-->
+<!--        </IconBtn>-->
 
         <NavbarThemeSwitcher class="me-2" />
 
-        <UserProfile />
+        <IconBtn>
+          <VIcon icon="ri-shut-down-line" @click="handleOut" />
+        </IconBtn>
+
+<!--        <UserProfile />-->
       </div>
     </template>
 
@@ -94,9 +93,18 @@ import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
 // Components
 // import Footer from '@/layouts/components/Footer.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
-import UserProfile from '@/layouts/components/UserProfile.vue'
+// import UserProfile from '@/layouts/components/UserProfile.vue'
+import useGlobalStore from "@/plugins/pinia/global";
+import ElectronApi from "@/utils/electronApi";
+
+const globalStore = useGlobalStore()
 
 const title = import.meta.env.VITE_TITLE
+
+const handleOut = () => {
+  globalStore.clearStore()
+  ElectronApi.window.config()
+}
 </script>
 
 <style lang="scss" scoped>

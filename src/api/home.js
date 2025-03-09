@@ -1,6 +1,5 @@
 import http from "@/utils/axios.js";
 
-
 export default {
     roomInfo: {
         url: `/home/room_info`,

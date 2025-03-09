@@ -1,6 +1,5 @@
 <template>
   <VerticalNavLayout>
-
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
         <div class="d-flex" v-html="logo"/>

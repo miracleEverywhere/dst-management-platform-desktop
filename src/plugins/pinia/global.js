@@ -33,6 +33,15 @@ const globalStore = defineStore("global", {
             this.type = info.type
             this.remark = info.remark
         },
+        clearStore() {
+            this.name = ''
+            this.ip = ''
+            this.port = undefined
+            this.url = ''
+            this.token = ''
+            this.type = ''
+            this.remark = ''
+        }
     },
     // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值
     getters: {}

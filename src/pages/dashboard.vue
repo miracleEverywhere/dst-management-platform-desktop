@@ -1,122 +1,175 @@
+<template>
+  <v-row>
+    <v-col cols="12" sm="6">
+      <v-card>
+        <v-card-title>
+          房间信息
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" sm="8">
+              <div class="d-flex align-center">
+                <span>房间名</span>
+                <v-btn v-copy="globalStore.name" variant="text" append-icon="ri-file-copy-2-line">{{globalStore.name}}</v-btn>
+              </div>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <div class="d-flex align-center">
+                <span>直连代码</span>
+                <v-btn v-copy="connectionCode" variant="text" :loading="connectionCodeLoading"
+                       append-icon="ri-file-copy-2-line">点击复制</v-btn>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-col>
+    <v-col  cols="12" sm="6">
+      <v-card>
+        <v-card-title>
+          系统信息
+        </v-card-title>
+        <v-card-text>
+          <div class="mt-2">
+            <div class="d-flex align-center justify-center">
+              <v-icon icon="ri-cpu-line"></v-icon>
+              <span class="ml-2">{{sysInfo.cpu.toFixed(1)}}%</span>
+            </div>
+            <v-sparkline
+                height="60"
+                :auto-line-width="false"
+                :fill="false"
+                :gradient="gradients[5]"
+                gradient-direction="top"
+                line-width="2"
+                :model-value="cpuList"
+                padding="8"
+                smooth
+                stroke-linecap="round"
+                type="trend"
+                auto-draw
+            ></v-sparkline>
+          </div>
+          <v-divider/>
+          <div class="mt-2">
+            <div class="d-flex align-center justify-center">
+              <v-icon icon="ri-ram-line"></v-icon>
+              <span class="ml-2">{{sysInfo.memory.toFixed(1)}}%</span>
+            </div>
+
+            <v-sparkline
+                height="60"
+                :auto-line-width="false"
+                :fill="false"
+                :gradient="gradients[5]"
+                gradient-direction="top"
+                line-width="2"
+                :model-value="memoryList"
+                padding="8"
+                smooth
+                stroke-linecap="round"
+                type="trend"
+                auto-draw
+            ></v-sparkline>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
+</template>
+
 <script setup>
-import AnalyticsAward from '@/views/dashboard/AnalyticsAward.vue'
-import AnalyticsBarCharts from '@/views/dashboard/AnalyticsBarCharts.vue'
-import AnalyticsDepositWithdraw from '@/views/dashboard/AnalyticsDepositWithdraw.vue'
-import AnalyticsSalesByCountries from '@/views/dashboard/AnalyticsSalesByCountries.vue'
-import AnalyticsTotalEarning from '@/views/dashboard/AnalyticsTotalEarning.vue'
-import AnalyticsTotalProfitLineCharts from '@/views/dashboard/AnalyticsTotalProfitLineCharts.vue'
-import AnalyticsTransactions from '@/views/dashboard/AnalyticsTransactions.vue'
-import AnalyticsUserTable from '@/views/dashboard/AnalyticsUserTable.vue'
-import AnalyticsWeeklyOverview from '@/views/dashboard/AnalyticsWeeklyOverview.vue'
-import CardStatisticsVertical from '@core/components/cards/CardStatisticsVertical.vue'
-import {onMounted} from "vue";
+import {onMounted, onBeforeUnmount} from "vue";
 import {initTheme} from "@/utils/tools";
+import useGlobalStore from "@/plugins/pinia/global";
+import externalApi from "@/api/externalApi";
+import homeApi from "@/api/home";
 
 
 onMounted(() => {
   initTheme()
+  getConnectionCode()
+  startRequests()
 })
 
-const totalProfit = {
-  title: 'Total Profit',
-  color: 'secondary',
-  icon: 'ri-pie-chart-2-line',
-  stats: '$25.6k',
-  change: 42,
-  subtitle: 'Weekly Project',
+const globalStore = useGlobalStore()
+
+const connectionCode = ref('')
+const connectionCodeLoading = ref(false)
+const getConnectionCode = () => {
+  connectionCodeLoading.value = true
+  externalApi.connectionCode.get().then(response => {
+    connectionCode.value = response.data
+  }).finally(() => {
+    connectionCodeLoading.value = false
+  })
 }
 
-const newProject = {
-  title: 'New Project',
-  color: 'primary',
-  icon: 'ri-file-word-2-line',
-  stats: '862',
-  change: -18,
-  subtitle: 'Yearly Project',
+const sysInfo = ref({
+  cpu: 0,
+  memory: 0,
+  master: 0,
+  caves: 0,
+})
+
+const cpuList = ref([])
+const memoryList = ref([])
+
+const getSysInfo = () => {
+  homeApi.sysInfo.get().then(response => {
+    sysInfo.value = response.data
+    if (cpuList.value.length > 60) {
+      cpuList.value.shift()
+      cpuList.value.push(sysInfo.value.cpu.toFixed(1))
+      memoryList.value.shift()
+      memoryList.value.push(sysInfo.value.memory.toFixed(1))
+    } else {
+      cpuList.value.push(sysInfo.value.cpu.toFixed(1))
+      memoryList.value.push(sysInfo.value.memory.toFixed(1))
+    }
+
+  })
 }
+
+let intervalId = null
+const startRequests = () => {
+  intervalId = setInterval(() => {
+    // if (!masterLoading.value && !cavesLoading.value) {
+    //   getSysInfo()
+    // }
+    getSysInfo()
+  }, 2000)
+}
+const cancelRequests = () => {
+  if (intervalId) {
+    clearInterval(intervalId)
+    intervalId = null
+  }
+}
+
+const gradients = [
+  ['#222'],
+  ['#42b3f4'],
+  ['red', 'orange', 'yellow'],
+  ['purple', 'violet'],
+  ['#00c6ff', '#F0F', '#FF0'],
+  ['#f72047', '#ffd200', '#1feaea'],
+]
+
+// width: 2,
+// radius: 10,
+// padding: 8,
+// lineCap: 'round',
+// gradient: gradients[5],
+// value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0],
+// gradientDirection: 'top',
+// gradients,
+// fill: false,
+// type: 'trend',
+// autoLineWidth: false,
+
+onBeforeUnmount(() => {
+  cancelRequests();
+  window.removeEventListener('beforeunload', cancelRequests);
+})
 </script>
-
-<template>
-  <VRow class="match-height">
-    <VCol
-      cols="12"
-      md="4"
-    >
-      <AnalyticsAward />
-    </VCol>
-
-    <VCol
-      cols="12"
-      md="8"
-    >
-      <AnalyticsTransactions />
-    </VCol>
-
-    <VCol
-      cols="12"
-      md="4"
-    >
-      <AnalyticsWeeklyOverview />
-    </VCol>
-
-    <VCol
-      cols="12"
-      md="4"
-    >
-      <AnalyticsTotalEarning />
-    </VCol>
-
-    <VCol
-      cols="12"
-      md="4"
-    >
-      <VRow class="match-height">
-        <VCol
-          cols="12"
-          sm="6"
-        >
-          <AnalyticsTotalProfitLineCharts />
-        </VCol>
-
-        <VCol
-          cols="12"
-          sm="6"
-        >
-          <CardStatisticsVertical v-bind="totalProfit" />
-        </VCol>
-
-        <VCol
-          cols="12"
-          sm="6"
-        >
-          <CardStatisticsVertical v-bind="newProject" />
-        </VCol>
-
-        <VCol
-          cols="12"
-          sm="6"
-        >
-          <AnalyticsBarCharts />
-        </VCol>
-      </VRow>
-    </VCol>
-
-    <VCol
-      cols="12"
-      md="4"
-    >
-      <AnalyticsSalesByCountries />
-    </VCol>
-
-    <VCol
-      cols="12"
-      md="8"
-    >
-      <AnalyticsDepositWithdraw />
-    </VCol>
-
-    <VCol cols="12">
-      <AnalyticsUserTable />
-    </VCol>
-  </VRow>
-</template>
