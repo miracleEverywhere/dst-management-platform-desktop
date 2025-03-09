@@ -139,7 +139,7 @@
                           <v-btn block class="mt-2" type="submit">提交</v-btn>
                         </v-col>
                         <v-col cols="12" sm="12" style="margin-top: -20px">
-                          <v-btn block class="mt-2" color="white" :loading="loading">取消</v-btn>
+                          <v-btn block class="mt-2" color="white" :loading="loading" @click="dialog=false">取消</v-btn>
                         </v-col>
                       </v-row>
                     </v-container>

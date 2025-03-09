@@ -6,8 +6,16 @@ const Store = require('electron-store')
 
 const store = new Store()
 let win
+let iconPath
+if (process.platform === 'win32') {
+    iconPath = join(__dirname, '../public/favicon.ico'); // Windows
+} else if (process.platform === 'darwin') {
+    iconPath = join(__dirname, '../public/icon.icns'); // macOS
+} else {
+    iconPath = join(__dirname, '../public/icon.png'); // Linux
+}
 
-
+console.log(iconPath)
 // 屏蔽安全警告
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
@@ -24,6 +32,8 @@ const createWindow = (main) => {
         width: width,
         height: height,
         resizable: main,
+        icon: iconPath,
+        autoHideMenuBar: true,
         webPreferences: {
             webSecurity: false,
             contextIsolation: true,
