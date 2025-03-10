@@ -1,10 +1,10 @@
 <template>
-  <VApp>
+  <v-app>
     <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :location="location" variant="flat">
       {{ text }}
     </v-snackbar>
-    <RouterView />
-  </VApp>
+    <router-view/>
+  </v-app>
 </template>
 
 <script setup>

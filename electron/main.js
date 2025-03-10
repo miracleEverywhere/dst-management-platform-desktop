@@ -15,7 +15,6 @@ if (process.platform === 'win32') {
     iconPath = join(__dirname, '../public/icon.png'); // Linux
 }
 
-console.log(iconPath)
 // 屏蔽安全警告
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
@@ -34,6 +33,7 @@ const createWindow = (main) => {
         resizable: main,
         icon: iconPath,
         autoHideMenuBar: true,
+        title: '饥荒管理平台',
         webPreferences: {
             webSecurity: false,
             contextIsolation: true,
@@ -43,10 +43,12 @@ const createWindow = (main) => {
     })
 
     if (process.env.VITE_DEV_SERVER_URL) {
-        win.loadURL(`${process.env.VITE_DEV_SERVER_URL}${main ? 'dashboard' : 'config'}`)
+        console.log(process.env.VITE_DEV_SERVER_URL)
+        win.loadURL(`${process.env.VITE_DEV_SERVER_URL}${main ? '#/dashboard' : '#/config'}`)
         win.webContents.openDevTools({ mode: 'detach' })
     } else {
-        win.loadFile(join(__dirname, '../dist/index.html'), { hash: main ? 'main' : '' })
+        win.loadFile(join(__dirname, '../dist/index.html'), {hash: main ? '#/dashboard' : '#/config'})
+        win.webContents.openDevTools({ mode: 'detach' })
     }
 }
 

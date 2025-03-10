@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "build:icons": "tsx src/plugins/iconify/build-icons.js"
+    "build:icons": "tsx src/plugins/iconify/build-icons.js",
+    "electron:build": "vite build && electron-builder"
   },
   "dependencies": {
     "@floating-ui/dom": "1.6.8",
@@ -70,5 +71,41 @@
     "postcss": "^8",
     "stylelint-order": "6.0.3",
     "@types/video.js": "^7"
+  },
+  "build": {
+    "productName": "饥荒管理平台",
+    "appId": "Miracle",
+    "copyright": "Miracle © 2025",
+    "compression": "maximum",
+    "asar": true,
+    "directories": {
+      "output": "release/"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "deleteAppDataOnUninstall": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ElectronDeskTopTool"
+    },
+    "win": {
+      "icon": "./public/logo.png",
+      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "./public/logo.icns",
+      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}"
+    },
+    "linux": {
+      "icon": "./public/logo.png",
+      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}"
+    }
   }
 }
