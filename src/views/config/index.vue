@@ -159,7 +159,7 @@
 import ElectronApi from "@/utils/electronApi"
 import useGlobalStore from '@/plugins/pinia/global'
 import configApi from '@/api/config'
-import {sleep, uuid4} from "@/utils/tools";
+import {sleep, uuid4, validateIpv4} from "@/utils/tools";
 import {DB_KEY} from "@/config";
 import {showSnackbar} from '@/utils/snackbar';
 import homeApi from "@/api/home"
@@ -245,7 +245,9 @@ const addForm = ref({
 const addFormRules = {
   ip: [
     value => {
-      if (value) return true
+      if (value) {
+        return validateIpv4(value)
+      }
       return '请输入IP'
     },
   ],

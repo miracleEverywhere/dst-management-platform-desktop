@@ -6,14 +6,14 @@
           房间信息
         </v-card-title>
         <v-card-text>
-          <v-row>
-            <v-col cols="12" sm="8">
+          <v-row dense>
+            <v-col cols="12" sm="7">
               <div class="d-flex align-center">
                 <span>房间名</span>
-                <v-btn v-copy="globalStore.name" variant="text" append-icon="ri-file-copy-2-line">{{globalStore.name}}</v-btn>
+                <v-btn v-copy="globalStore.name" variant="text" append-icon="ri-file-copy-2-line">{{truncateString(globalStore.name)}}</v-btn>
               </div>
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col cols="12" sm="5">
               <div class="d-flex align-center">
                 <span>直连代码</span>
                 <v-btn v-copy="connectionCode" variant="text" :loading="connectionCodeLoading"
@@ -80,7 +80,7 @@
 
 <script setup>
 import {onMounted, onBeforeUnmount} from "vue";
-import {initTheme} from "@/utils/tools";
+import {initTheme, truncateString} from "@/utils/tools";
 import useGlobalStore from "@/plugins/pinia/global";
 import externalApi from "@/api/externalApi";
 import homeApi from "@/api/home";
