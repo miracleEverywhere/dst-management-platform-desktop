@@ -5,7 +5,7 @@ const Store = require('electron-store')
 
 
 const store = new Store()
-let win, winConfig, winDashboard, closedWin
+let win, winConfig, winDashboard, needShownWin
 let tray
 
 // 屏蔽安全警告
@@ -91,7 +91,6 @@ const createWinConfig = () => {
             // 如果不是通过退出菜单项触发的关闭事件，阻止关闭并隐藏窗口
             event.preventDefault();
             winConfig.hide();
-            closedWin = winConfig
         }
     });
 
@@ -101,6 +100,7 @@ const createWinConfig = () => {
 
     winConfig.once('ready-to-show', () => {
         winConfig.show()
+        needShownWin = winConfig
     })
 }
 
@@ -138,7 +138,6 @@ const createWinDashboard = () => {
             // 如果不是通过退出菜单项触发的关闭事件，阻止关闭并隐藏窗口
             event.preventDefault();
             winDashboard.hide();
-            closedWin = winDashboard
         }
     });
 
@@ -158,11 +157,6 @@ const createTray = () => {
 
     const contextMenu = Menu.buildFromTemplate([
         {
-            label: '打开', click: () => {
-                if (win) win.show()
-            }
-        },
-        {
             label: '退出', click: () => {
                 app.isQuiting = true
                 app.quit()
@@ -174,7 +168,7 @@ const createTray = () => {
     tray.setContextMenu(contextMenu);
 
     tray.on('click', () => {
-        closedWin.show()
+        if (needShownWin) needShownWin.show()
     })
 }
 
@@ -186,19 +180,17 @@ app.whenReady().then(() => {
     createWinDashboard()
 })
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
-})
-
 app.on('before-quit', () => {
     app.isQuiting = true; // 设置标志位
 });
 
+// MacOS专属
 app.on('activate', () => {
-    closedWin.show()
+    if (needShownWin) needShownWin.show()
 });
 
 ipcMain.on('open-dashboard-window', () => {
+    needShownWin = winDashboard
     winConfig.hide()
     winDashboard.reload()
     winDashboard.webContents.on('did-finish-load', () => {
@@ -208,6 +200,7 @@ ipcMain.on('open-dashboard-window', () => {
 })
 
 ipcMain.on('open-config-window', () => {
+    needShownWin = winConfig
     winDashboard.hide()
     winConfig.reload()
     winConfig.webContents.on('did-finish-load', () => {
