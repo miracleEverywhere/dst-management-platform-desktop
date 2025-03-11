@@ -39,9 +39,8 @@ instance.interceptors.response.use(
             // console.log("200状态", status);
             return response.data;
         } else {
-            console.log(response.data)
-            showSnackbar(response.data.message + "" || "服务器偷偷跑到火星去玩了", 'error')
-            return Promise.reject(response.data.message + "" || "服务器偷偷跑到火星去玩了"); // 可以将异常信息延续到页面中处理，使用try{}catch(error){};
+            showSnackbar(response.data.message || "服务器偷偷跑到火星去玩了", 'error')
+            return Promise.reject(response.data.message || "服务器偷偷跑到火星去玩了"); // 可以将异常信息延续到页面中处理，使用try{}catch(error){};
         }
     },
     (error) => {

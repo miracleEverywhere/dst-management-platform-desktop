@@ -114,6 +114,7 @@ const sysInfo = ref({
 
 const cpuList = ref([])
 const memoryList = ref([])
+const needContinue = ref(true)
 
 const getSysInfo = () => {
   homeApi.sysInfo.get().then(response => {
@@ -127,17 +128,17 @@ const getSysInfo = () => {
       cpuList.value.push(sysInfo.value.cpu.toFixed(1))
       memoryList.value.push(sysInfo.value.memory.toFixed(1))
     }
-
+  }).catch(() => {
+    needContinue.value = false
   })
 }
 
 let intervalId = null
 const startRequests = () => {
   intervalId = setInterval(() => {
-    // if (!masterLoading.value && !cavesLoading.value) {
-    //   getSysInfo()
-    // }
-    getSysInfo()
+    if (needContinue.value) {
+      getSysInfo()
+    }
   }, 2000)
 }
 const cancelRequests = () => {
@@ -155,18 +156,6 @@ const gradients = [
   ['#00c6ff', '#F0F', '#FF0'],
   ['#f72047', '#ffd200', '#1feaea'],
 ]
-
-// width: 2,
-// radius: 10,
-// padding: 8,
-// lineCap: 'round',
-// gradient: gradients[5],
-// value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0],
-// gradientDirection: 'top',
-// gradients,
-// fill: false,
-// type: 'trend',
-// autoLineWidth: false,
 
 onBeforeUnmount(() => {
   cancelRequests();

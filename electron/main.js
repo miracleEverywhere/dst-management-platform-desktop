@@ -5,27 +5,67 @@ const Store = require('electron-store')
 
 
 const store = new Store()
-let win, tray
+let win, winConfig, winDashboard, closedWin
+let tray
 
 // 屏蔽安全警告
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
-
-const createWindow = (main) => {
-    let width, height
-    if (main) {
-        width = 1600
-        height = 900
-    } else {
-        width = 1090
-        height = 800
+const template = [
+    {
+        label: '文件',
+        submenu: [
+            {
+                label: "关闭",
+                accelerator: 'CmdOrCtrl+Q',
+                click: () => {
+                    app.isQuiting = true
+                    app.quit()
+                }
+            },
+        ]
+    },
+    {
+        label: '视图',
+        submenu: [
+            {role: 'reload', label: "重新载入"},
+            {type: 'separator'},
+            { role: 'minimize', label: '最小化' },
+        ]
+    },
+    {
+        label: '帮助',
+        submenu: [
+            {
+                label: '了解更多',
+                click: async () => {
+                    await shell.openExternal('https://electronjs.org')
+                }
+            },
+            {
+                label: '关于',
+                click: () => {
+                    dialog.showMessageBox({
+                        type: 'info',
+                        title: '饥荒管理平台',
+                        message: '饥荒管理平台',
+                        detail: `版本: ${app.getVersion()}\n作者: Miracle\n开源协议: MIT`,
+                        buttons: ['确定'],
+                    });
+                },
+            },
+        ]
     }
-    win = new BrowserWindow({
-        width: width,
-        height: height,
-        resizable: main,
+];
+
+const createWinConfig = () => {
+    winConfig = new BrowserWindow({
+        width: 1090,
+        height: 800,
+        resizable: false,
         // icon: iconPath,
         autoHideMenuBar: true,
         title: '饥荒管理平台',
+        show: false,
         webPreferences: {
             webSecurity: false,
             contextIsolation: true,
@@ -35,76 +75,81 @@ const createWindow = (main) => {
     })
 
     if (process.env.VITE_DEV_SERVER_URL) {
-        console.log(process.env.VITE_DEV_SERVER_URL)
-        win.loadURL(`${process.env.VITE_DEV_SERVER_URL}${main ? '#/dashboard' : '#/config'}`)
-        // win.webContents.openDevTools({mode: 'detach'})
+        winConfig.loadURL(`${process.env.VITE_DEV_SERVER_URL}#/config`)
+        // winConfig.webContents.openDevTools({mode: 'detach'})
     } else {
-        win.loadFile(join(__dirname, '../dist/index.html'), {hash: main ? '#/dashboard' : '#/config'})
+        winConfig.loadFile(join(__dirname, '../dist/index.html'), {hash: '#/config'})
     }
 
-    const template = [
-        {
-            label: '文件',
-            submenu: [
-                {
-                    label: "关闭", click: () => {
-                        app.isQuiting = true
-                        app.quit()
-                    }
-                },
-            ]
-        },
-        {
-            label: '视图',
-            submenu: [
-                {role: 'reload', label: "重新载入"},
-                {type: 'separator'},
-                { role: 'minimize', label: '最小化' },
-            ]
-        },
-        {
-            label: '帮助',
-            submenu: [
-                {
-                    label: '了解更多',
-                    click: async () => {
-                        await shell.openExternal('https://electronjs.org')
-                    }
-                },
-                {
-                    label: '关于',
-                    click: () => {
-                        dialog.showMessageBox({
-                            type: 'info',
-                            title: '饥荒管理平台',
-                            message: '饥荒管理平台',
-                            detail: `版本: ${app.getVersion()}\n作者: Miracle\n开源协议: MIT`,
-                            buttons: ['确定'],
-                        });
-                    },
-                },
-            ]
-        }
-    ];
+    if (process.platform === 'darwin') {
+        const menuConfig = Menu.buildFromTemplate(template);
+        Menu.setApplicationMenu(menuConfig);
+    }
 
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
-
-    win.on('close', (event) => {
+    winConfig.on('close', (event) => {
         if (!app.isQuiting) {
             // 如果不是通过退出菜单项触发的关闭事件，阻止关闭并隐藏窗口
             event.preventDefault();
-            win.hide();
+            winConfig.hide();
+            closedWin = winConfig
         }
     });
 
-    win.on('closed', () => {
-        win = null;
+    winConfig.on('closed', () => {
+        winConfig = null;
+    });
+
+    winConfig.once('ready-to-show', () => {
+        winConfig.show()
+    })
+}
+
+const createWinDashboard = () => {
+    winDashboard = new BrowserWindow({
+        width: 1600,
+        height: 900,
+        resizable: true,
+        // icon: iconPath,
+        autoHideMenuBar: true,
+        title: '饥荒管理平台',
+        show: false,
+        webPreferences: {
+            webSecurity: false,
+            contextIsolation: true,
+            nodeIntegration: false,
+            preload: join(__dirname, 'preload.js'),
+        },
+    })
+
+    if (process.env.VITE_DEV_SERVER_URL) {
+        winDashboard.loadURL(`${process.env.VITE_DEV_SERVER_URL}#/dashboard`)
+        winDashboard.webContents.openDevTools({mode: 'detach'})
+    } else {
+        winDashboard.loadFile(join(__dirname, '../dist/index.html'), {hash: '#/dashboard'})
+    }
+
+    if (process.platform === 'darwin') {
+        const menuDashboard = Menu.buildFromTemplate(template);
+        Menu.setApplicationMenu(menuDashboard);
+    }
+
+    winDashboard.on('close', (event) => {
+        if (!app.isQuiting) {
+            // 如果不是通过退出菜单项触发的关闭事件，阻止关闭并隐藏窗口
+            event.preventDefault();
+            winDashboard.hide();
+            closedWin = winDashboard
+        }
+    });
+
+    winDashboard.on('closed', () => {
+        winDashboard = null;
     });
 }
 
+
 const createTray = () => {
-    let iconPath = '../public/icon.ico'
+    let iconPath = '../public/favicon.ico'
     if (process.platform === 'darwin') {
         iconPath = '../public/iconTray@2x.png'
     }
@@ -128,13 +173,17 @@ const createTray = () => {
     tray.setToolTip('饥荒管理平台');
     tray.setContextMenu(contextMenu);
 
+    tray.on('click', () => {
+        closedWin.show()
+    })
 }
 
 app.setName('饥荒管理平台')
 
 app.whenReady().then(() => {
     createTray()
-    createWindow(false)
+    createWinConfig()
+    createWinDashboard()
 })
 
 app.on('window-all-closed', () => {
@@ -146,18 +195,25 @@ app.on('before-quit', () => {
 });
 
 app.on('activate', () => {
-    if (win) win.show()
+    closedWin.show()
 });
 
 ipcMain.on('open-dashboard-window', () => {
-    if (win) win.close()
-    createTray()
-    createWindow(true)
+    winConfig.hide()
+    winDashboard.reload()
+    winDashboard.webContents.on('did-finish-load', () => {
+        winDashboard.show()
+        winDashboard.focus()
+    });
 })
 
 ipcMain.on('open-config-window', () => {
-    if (win) win.close()
-    createWindow(false)
+    winDashboard.hide()
+    winConfig.reload()
+    winConfig.webContents.on('did-finish-load', () => {
+        winConfig.show()
+        winConfig.focus()
+    });
 })
 
 ipcMain.handle('read-file', async (event, filePath) => {

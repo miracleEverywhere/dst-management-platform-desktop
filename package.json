@@ -91,7 +91,7 @@
       "shortcutName": "饥荒管理平台"
     },
     "win": {
-      "icon": "./public/icon.png",
+      "icon": "./public/favicon.ico",
       "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
       "target": [
         {
