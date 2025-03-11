@@ -1,5 +1,5 @@
-const { app, ipcMain, BrowserWindow, Menu, Tray } = require('electron')
-const { join } = require('path')
+const {app, ipcMain, BrowserWindow, Menu, Tray} = require('electron')
+const {join} = require('path')
 const fs = require('fs')
 const Store = require('electron-store')
 
@@ -37,7 +37,7 @@ const createWindow = (main) => {
     if (process.env.VITE_DEV_SERVER_URL) {
         console.log(process.env.VITE_DEV_SERVER_URL)
         win.loadURL(`${process.env.VITE_DEV_SERVER_URL}${main ? '#/dashboard' : '#/config'}`)
-        win.webContents.openDevTools({ mode: 'detach' })
+        // win.webContents.openDevTools({mode: 'detach'})
     } else {
         win.loadFile(join(__dirname, '../dist/index.html'), {hash: main ? '#/dashboard' : '#/config'})
     }
@@ -46,20 +46,37 @@ const createWindow = (main) => {
         {
             label: '文件',
             submenu: [
-                { role: 'quit', label: "关闭"},
+                {
+                    label: "关闭", click: () => {
+                        app.isQuiting = true
+                        app.quit()
+                    }
+                },
             ]
         },
         {
             label: '视图',
             submenu: [
-                { role: 'reload', label: "重新载入" },
-                { type: 'separator' },
+                {role: 'reload', label: "重新载入"},
+                {type: 'separator'},
             ]
         }
     ];
 
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
+
+    win.on('close', (event) => {
+        if (!app.isQuiting) {
+            // 如果不是通过退出菜单项触发的关闭事件，阻止关闭并隐藏窗口
+            event.preventDefault();
+            win.hide();
+        }
+    });
+
+    win.on('closed', () => {
+        win = null;
+    });
 }
 
 const createTray = () => {
@@ -71,13 +88,25 @@ const createTray = () => {
     tray = new Tray(join(__dirname, iconPath));
 
     const contextMenu = Menu.buildFromTemplate([
-        { label: '打开', click: () => { console.log('打开应用'); } },
-        { label: '退出', role: 'quit' }
+        {
+            label: '打开', click: () => {
+                if (win) win.show()
+            }
+        },
+        {
+            label: '退出', click: () => {
+                app.isQuiting = true
+                app.quit()
+            }
+        },
     ]);
 
     tray.setToolTip('饥荒管理平台');
     tray.setContextMenu(contextMenu);
+
 }
+
+app.setName('饥荒管理平台')
 
 app.whenReady().then(() => {
     createTray()
@@ -87,6 +116,14 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
+
+app.on('before-quit', () => {
+    app.isQuiting = true; // 设置标志位
+});
+
+app.on('activate', () => {
+    if (win) win.show()
+});
 
 ipcMain.on('open-dashboard-window', () => {
     if (win) win.close()
@@ -125,5 +162,5 @@ ipcMain.on('clearStore', (event) => {
 })
 
 ipcMain.on('open-dev-tool', () => {
-    if (win) win.webContents.openDevTools({ mode: 'detach' })
+    if (win) win.webContents.openDevTools({mode: 'detach'})
 })
