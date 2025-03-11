@@ -1,4 +1,4 @@
-const {app, ipcMain, BrowserWindow, Menu, Tray} = require('electron')
+const {app, ipcMain, BrowserWindow, Menu, Tray, shell, dialog} = require('electron')
 const {join} = require('path')
 const fs = require('fs')
 const Store = require('electron-store')
@@ -59,6 +59,30 @@ const createWindow = (main) => {
             submenu: [
                 {role: 'reload', label: "重新载入"},
                 {type: 'separator'},
+                { role: 'minimize', label: '最小化' },
+            ]
+        },
+        {
+            label: '帮助',
+            submenu: [
+                {
+                    label: '了解更多',
+                    click: async () => {
+                        await shell.openExternal('https://electronjs.org')
+                    }
+                },
+                {
+                    label: '关于',
+                    click: () => {
+                        dialog.showMessageBox({
+                            type: 'info',
+                            title: '饥荒管理平台',
+                            message: '饥荒管理平台',
+                            detail: `版本: ${app.getVersion()}\n作者: Miracle\n开源协议: MIT`,
+                            buttons: ['确定'],
+                        });
+                    },
+                },
             ]
         }
     ];
