@@ -88,7 +88,7 @@
       "deleteAppDataOnUninstall": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "ElectronDeskTopTool"
+      "shortcutName": "饥荒管理平台"
     },
     "win": {
       "icon": "./public/icon.png",

@@ -1,19 +1,11 @@
-const { app, ipcMain, BrowserWindow } = require('electron')
+const { app, ipcMain, BrowserWindow, Menu, Tray } = require('electron')
 const { join } = require('path')
 const fs = require('fs')
 const Store = require('electron-store')
 
 
 const store = new Store()
-let win
-// let iconPath
-// if (process.platform === 'win32') {
-//     iconPath = join(__dirname, '../public/favicon.ico'); // Windows
-// } else if (process.platform === 'darwin') {
-//     iconPath = join(__dirname, '../public/logo.icns'); // macOS
-// } else {
-//     iconPath = join(__dirname, '../public/logo-linux.png'); // Linux
-// }
+let win, tray
 
 // 屏蔽安全警告
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
@@ -48,11 +40,39 @@ const createWindow = (main) => {
         win.webContents.openDevTools({ mode: 'detach' })
     } else {
         win.loadFile(join(__dirname, '../dist/index.html'), {hash: main ? '#/dashboard' : '#/config'})
-        win.webContents.openDevTools({ mode: 'detach' })
     }
+
+    const template = [
+        {
+            label: '文件',
+            submenu: [
+                { role: 'quit', label: "关闭"},
+            ]
+        },
+        {
+            label: '视图',
+            submenu: [
+                { role: 'reload', label: "重新载入" },
+                { type: 'separator' },
+            ]
+        }
+    ];
+
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
 }
 
 app.whenReady().then(() => {
+    let iconPath = '../public/icon.png'
+    tray = new Tray(join(__dirname, iconPath));
+
+    const contextMenu = Menu.buildFromTemplate([
+        { label: '打开', click: () => { console.log('打开应用'); } },
+        { label: '退出', role: 'quit' }
+    ]);
+
+    tray.setToolTip('我的应用');
+    tray.setContextMenu(contextMenu);
     createWindow(false)
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -96,4 +116,8 @@ ipcMain.on('deleteStore', (event, key) => {
 
 ipcMain.on('clearStore', (event) => {
     event.returnValue = store.clear() || ''
+})
+
+ipcMain.on('open-dev-tool', () => {
+    if (win) win.webContents.openDevTools({ mode: 'detach' })
 })
