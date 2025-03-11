@@ -8,7 +8,7 @@
         </h1>
         <VSpacer />
         <IconBtn
-            href="https://github.com/themeselection/materio-vuetify-vuejs-admin-template-free"
+            href="https://github.com"
             target="_blank"
             rel="noopener noreferrer"
         >
@@ -18,8 +18,9 @@
       </div>
     </template>
     <div class="auth-wrapper d-flex align-center justify-center pa-4" style="margin-top: -15px">
-      <v-row>
+      <v-row dense>
         <v-col v-for="config in configs" cols="12" sm="6">
+<!--          {{config}}-->
           <config :config-item="config"/>
         </v-col>
         <v-col cols="12" sm="6">
