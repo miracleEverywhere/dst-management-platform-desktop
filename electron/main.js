@@ -62,7 +62,7 @@ const createWindow = (main) => {
     Menu.setApplicationMenu(menu);
 }
 
-app.whenReady().then(() => {
+const createTray = () => {
     let iconPath = '../public/icon.png'
     tray = new Tray(join(__dirname, iconPath));
 
@@ -71,12 +71,13 @@ app.whenReady().then(() => {
         { label: '退出', role: 'quit' }
     ]);
 
-    tray.setToolTip('我的应用');
+    tray.setToolTip('饥荒管理平台');
     tray.setContextMenu(contextMenu);
+}
+
+app.whenReady().then(() => {
+    createTray()
     createWindow(false)
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    })
 })
 
 app.on('window-all-closed', () => {
@@ -85,6 +86,7 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('open-dashboard-window', () => {
     if (win) win.close()
+    createTray()
     createWindow(true)
 })
 
