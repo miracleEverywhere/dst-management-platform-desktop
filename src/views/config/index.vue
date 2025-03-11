@@ -1,12 +1,12 @@
 <template>
   <v-card style="width: 500px; min-height: 259px;">
-    <template v-if="props.configItem.name">
+    <template v-if="configItem.name">
       <v-card-item>
         <v-card-title>
-          {{ props.configItem.name }}
+          {{ configItem.name }}
         </v-card-title>
         <v-card-subtitle>
-          {{ props.configItem.remark }}
+          {{ configItem.remark }}
         </v-card-subtitle>
         <template v-slot:append>
           <v-menu v-model="menu" location="bottom end">
@@ -35,14 +35,14 @@
             <div>
               <v-chip color="success" label variant="outlined">
                 <v-icon icon="ri-global-line" start></v-icon>
-                http://{{ props.configItem.ip }}:{{ props.configItem.port }}
+                http://{{ configItem.ip }}:{{ configItem.port }}
               </v-chip>
               <div style="margin-top: 10px">
-                <v-chip v-if="props.configItem.type==='master'||props.configItem.type==='both'"
+                <v-chip v-if="configItem.type==='master'||configItem.type==='both'"
                         color="primary" style="margin-right: 5px">地面<v-icon v-if="sysInfo.master===1" icon="ri-check-line" end/>
                   <v-icon v-if="sysInfo.master===0" icon="ri-close-line" end/>
                 </v-chip>
-                <v-chip v-if="props.configItem.type==='cave'||props.configItem.type==='both'"
+                <v-chip v-if="configItem.type==='cave'||configItem.type==='both'"
                         color="success">洞穴<v-icon v-if="sysInfo.caves===1" icon="ri-check-line" end/>
                   <v-icon v-if="sysInfo.caves===0" icon="ri-close-line" end/>
                 </v-chip>
@@ -175,14 +175,20 @@ const globalStore = useGlobalStore()
 const props = defineProps({
   configItem: {
     type: Object,
-    default: {
+    default: () => ({
       id: undefined,
       name: undefined,
       type: undefined, // 1 master; 2 cave; 3 both;
       ip: undefined,
       port: undefined,
       token: undefined,
-    }
+    })
+  }
+})
+
+const configItem = computed(() => {
+  return {
+    ...props.configItem
   }
 })
 
@@ -195,7 +201,7 @@ const roomInfo = ref({
 })
 
 const handleGotoDashboard = () => {
-  globalStore.setConfigInfo(props.configItem)
+  globalStore.setConfigInfo(configItem.value)
   ElectronApi.window.dashboard()
 }
 
@@ -290,10 +296,10 @@ const initDialog = (edit) => {
     }
   } else {
     addForm.value = {
-      ip: props.configItem.ip,
-      port: props.configItem.port,
-      token: props.configItem.token,
-      remark: props.configItem.remark,
+      ip: configItem.value.ip,
+      port: configItem.value.port,
+      token: configItem.value.token,
+      remark: configItem.value.remark,
     }
   }
 
@@ -363,9 +369,9 @@ const handleUpdate = async (event) => {
   globalStore.url = `http://${addForm.value.ip}:${addForm.value.port}/v1`
   globalStore.token = addForm.value.token
   const newConfig = {
-    id: props.configItem.id,
-    name: props.configItem.name,
-    type: props.configItem.type, // 1 master; 2 cave; 3 both;
+    id: configItem.value.id,
+    name: configItem.value.name,
+    type: configItem.value.type, // 1 master; 2 cave; 3 both;
     ip: addForm.value.ip,
     port: addForm.value.port,
     token: addForm.value.token,
@@ -425,7 +431,7 @@ const handleUpdate = async (event) => {
 
 const handleDelete = async () => {
   const dbValue = ElectronApi.store.get(DB_KEY.configs)
-  const targetIndex = dbValue.findIndex(item => item.id === props.configItem.id);
+  const targetIndex = dbValue.findIndex(item => item.id === configItem.value.id);
 
   if (targetIndex !== -1) {
     // 2. 使用 splice 方法删除目标对象
@@ -447,8 +453,8 @@ const sysInfo = ref({
 })
 const needContinue = ref(true)
 const getCpuMemStatus = () => {
-  globalStore.url = `http://${props.configItem.ip}:${props.configItem.port}/v1`
-  globalStore.token = props.configItem.token
+  globalStore.url = `http://${configItem.value.ip}:${configItem.value.port}/v1`
+  globalStore.token = configItem.value.token
   homeApi.sysInfo.get().then(response => {
     sysInfo.value = response.data
   }).catch(() => {
@@ -459,7 +465,7 @@ const getCpuMemStatus = () => {
 let intervalId = null
 const startRequests = () => {
   intervalId = setInterval(() => {
-    if (props.configItem.name && needContinue.value) {
+    if (configItem.value.name && needContinue.value) {
       getCpuMemStatus()
     }
   }, 2000)

@@ -19,9 +19,8 @@
     </template>
     <div class="auth-wrapper d-flex align-center justify-center pa-4" style="margin-top: -15px">
       <v-row dense>
-        <v-col v-for="config in configs" cols="12" sm="6">
-<!--          {{config}}-->
-          <config :config-item="config"/>
+        <v-col v-for="configItem in configs" cols="12" sm="6">
+          <config :config-item="configItem"/>
         </v-col>
         <v-col cols="12" sm="6">
           <config/>
