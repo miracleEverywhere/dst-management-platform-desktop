@@ -1,5 +1,5 @@
 {
-  "name": "dst-management-platform-desktop",
+  "name": "dmp-desktop",
   "private": true,
   "version": "1.0.2",
   "main": "electron/main.js",
@@ -91,7 +91,7 @@
       "shortcutName": "ElectronDeskTopTool"
     },
     "win": {
-      "icon": "./public/logo.png",
+      "icon": "./public/icon-512.png",
       "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
       "target": [
         {
@@ -100,11 +100,14 @@
       ]
     },
     "mac": {
-      "icon": "./public/logo.icns",
+      "icon": "./public/icon.icns",
       "artifactName": "${productName}-v${version}-${platform}-setup.${ext}"
     },
+    "dmg": {
+      "iconSize": 20
+    },
     "linux": {
-      "icon": "./public/logo.png",
+      "icon": "./public/icon-512.png",
       "artifactName": "${productName}-v${version}-${platform}-setup.${ext}"
     }
   }

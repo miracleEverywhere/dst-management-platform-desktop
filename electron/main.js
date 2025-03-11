@@ -6,14 +6,14 @@ const Store = require('electron-store')
 
 const store = new Store()
 let win
-let iconPath
-if (process.platform === 'win32') {
-    iconPath = join(__dirname, '../public/favicon.ico'); // Windows
-} else if (process.platform === 'darwin') {
-    iconPath = join(__dirname, '../public/icon.icns'); // macOS
-} else {
-    iconPath = join(__dirname, '../public/icon.png'); // Linux
-}
+// let iconPath
+// if (process.platform === 'win32') {
+//     iconPath = join(__dirname, '../public/favicon.ico'); // Windows
+// } else if (process.platform === 'darwin') {
+//     iconPath = join(__dirname, '../public/logo.icns'); // macOS
+// } else {
+//     iconPath = join(__dirname, '../public/logo-linux.png'); // Linux
+// }
 
 // 屏蔽安全警告
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
@@ -25,13 +25,13 @@ const createWindow = (main) => {
         height = 900
     } else {
         width = 1090
-        height = 768
+        height = 800
     }
     win = new BrowserWindow({
         width: width,
         height: height,
         resizable: main,
-        icon: iconPath,
+        // icon: iconPath,
         autoHideMenuBar: true,
         title: '饥荒管理平台',
         webPreferences: {

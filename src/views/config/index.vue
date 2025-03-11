@@ -88,7 +88,7 @@
                     <v-text-field v-model="addForm.remark" label="备注" clearable></v-text-field>
                   </v-col>
                   <v-col class="mt-4" cols="12" sm="12">
-                    <v-btn block class="mt-2" type="submit">提交</v-btn>
+                    <v-btn block class="mt-2" type="submit" :loading="loading">提交</v-btn>
                   </v-col>
                   <v-col cols="12" sm="12" style="margin-top: -20px">
                     <v-btn block class="mt-2" color="white" @click="dialogEdit=false">取消</v-btn>
@@ -136,10 +136,10 @@
                           <v-text-field v-model="addForm.remark" label="备注" clearable></v-text-field>
                         </v-col>
                         <v-col class="mt-4" cols="12" sm="12">
-                          <v-btn block class="mt-2" type="submit">提交</v-btn>
+                          <v-btn block class="mt-2" type="submit" :loading="loading">提交</v-btn>
                         </v-col>
                         <v-col cols="12" sm="12" style="margin-top: -20px">
-                          <v-btn block class="mt-2" color="white" :loading="loading" @click="dialog=false">取消</v-btn>
+                          <v-btn block class="mt-2" color="white" @click="dialog=false">取消</v-btn>
                         </v-col>
                       </v-row>
                     </v-container>
