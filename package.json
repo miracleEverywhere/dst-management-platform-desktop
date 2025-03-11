@@ -1,7 +1,7 @@
 {
   "name": "dmp-desktop",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
