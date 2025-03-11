@@ -63,7 +63,11 @@ const createWindow = (main) => {
 }
 
 const createTray = () => {
-    let iconPath = '../public/icon.png'
+    let iconPath = '../public/icon.ico'
+    if (process.platform === 'darwin') {
+        iconPath = '../public/iconTray@2x.png'
+    }
+
     tray = new Tray(join(__dirname, iconPath));
 
     const contextMenu = Menu.buildFromTemplate([
