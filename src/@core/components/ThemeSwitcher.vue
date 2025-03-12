@@ -6,7 +6,7 @@
         open-delay="1000"
         scroll-strategy="close"
     >
-      <span class="text-capitalize">{{ currentThemeName }}</span>
+      <span class="text-capitalize">{{ zhCurrentThemeNameMap[currentThemeName] }}</span>
     </VTooltip>
   </IconBtn>
 </template>
@@ -36,6 +36,11 @@ const {
   next: getNextThemeName,
   index: currentThemeIndex,
 } = useCycleList(props.themes.map(t => t.name), { initialValue: themeName })
+
+const zhCurrentThemeNameMap = {
+  light: '明亮',
+  dark: '黑暗'
+}
 
 const changeTheme = () => {
   globalTheme.name.value = getNextThemeName()

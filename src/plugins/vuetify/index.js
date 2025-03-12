@@ -4,6 +4,8 @@ import defaults from './defaults'
 import { icons } from './icons'
 import { themes } from './theme'
 
+import { pl, zhHans } from 'vuetify/locale'
+
 // Styles
 import '@core/scss/template/libs/vuetify/index.scss'
 import 'vuetify/styles'
@@ -18,6 +20,11 @@ export default function (app) {
     theme: {
       defaultTheme: 'light',
       themes,
+    },
+    locale: {
+      locale: 'zhHans',
+      fallback: 'sv',
+      messages: { zhHans, pl },
     },
   })
 

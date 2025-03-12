@@ -66,27 +66,44 @@
                   </template>
                   <v-card title="模组信息">
                     <v-card-text>
-                      <v-table :theme="globalStore.theme">
-                        <thead>
-                        <tr>
-                          <th class="text-left">
-                            Name
-                          </th>
-                          <th class="text-left">
-                            Calories
-                          </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr
-                            v-for="modInfo in modInfoList"
-                            :key="modInfo.id"
-                        >
-                          <td>{{ modInfo.name }}</td>
-                          <td>{{ modInfo.id }}</td>
-                        </tr>
-                        </tbody>
-                      </v-table>
+                      <v-data-table
+                          :headers="modInfoTableHeaders"
+                          :items="modInfoList"
+                          :loading="modInfoLoading"
+                          :items-per-page="10"
+                          :page.sync="modInfoTablePage"
+                          :server-items-length="modInfoTableRows"
+                      >
+                        <!-- 加载效果 -->
+                        <template v-slot:loading>
+                          <v-skeleton-loader type="table-row@8"></v-skeleton-loader>
+                        </template>
+
+                        <template v-slot:item.preview_url="{item}">
+                          <v-img :src="item.preview_url" aspect-ratio="1" width="100"/>
+                        </template>
+
+                        <template v-slot:item.size="{item}">
+                          <v-chip label color="info">
+                            <v-icon icon="ri-hard-drive-3-line" start/>
+                            {{formatBytes(item.size)}}
+                          </v-chip>
+                        </template>
+
+                        <template v-slot:item.id="{item}">
+                          <v-chip label color="primary">
+                            <v-icon icon="ri-info-card-line" start/>
+                            {{item.id}}
+                          </v-chip>
+                        </template>
+
+                        <!-- 自定义 tags 列 -->
+                        <template v-slot:item.tags="{ item }">
+                          <v-chip v-for="tag in item.tags" :key="tag.tag" class="ma-1" label small>
+                            {{ tag.display_name }}
+                          </v-chip>
+                        </template>
+                      </v-data-table>
                     </v-card-text>
                   </v-card>
                 </v-dialog>
@@ -179,7 +196,7 @@
 
 <script setup>
 import {onMounted, onBeforeUnmount} from "vue";
-import {initTheme, truncateString} from "@/utils/tools";
+import {formatBytes, initTheme, truncateString} from "@/utils/tools";
 import useGlobalStore from "@/plugins/pinia/global";
 import externalApi from "@/api/externalApi";
 import homeApi from "@/api/home";
@@ -305,10 +322,20 @@ const handleGetModInfo = () => {
   modInfoLoading.value = true
   externalApi.modInfo.get().then(response => {
     modInfoList.value = response.data
+    modInfoTableRows.value = modInfoList.value.length
   }).finally(() => {
     modInfoLoading.value = false
   })
 }
+const modInfoTableHeaders = ref([
+  { title: "名称", value: "name"},
+  { title: "预览", value: "preview_url" },
+  { title: "大小", value: "size" },
+  { title: "ID", value: "id" },
+  { title: "标签", value: "tags" },
+])
+const modInfoTablePage = ref(1)
+const modInfoTableRows = ref(0)
 
 onBeforeUnmount(() => {
   cancelRequests();
