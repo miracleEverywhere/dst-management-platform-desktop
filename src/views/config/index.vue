@@ -58,7 +58,6 @@
             </v-progress-circular>
           </v-col>
         </v-row>
-
         <VBtn block style="margin-top: 25px" @click="handleGotoDashboard">
           进入
         </VBtn>
@@ -114,7 +113,6 @@
               <template v-slot:activator="{ props: activatorProps }">
                 <v-icon icon="ri-add-line" size="50" v-bind="activatorProps"></v-icon>
               </template>
-
               <v-card title="新建">
                 <v-card-text>
                   <v-form fast-fail @submit.prevent="handleAdd">
