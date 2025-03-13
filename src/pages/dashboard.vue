@@ -192,6 +192,35 @@
       </v-card>
     </v-col>
   </v-row>
+  <v-row>
+    <v-col cols="12" sm="6">
+      <v-card>
+        <v-card-title>
+          控制面板
+        </v-card-title>
+        <v-card-text>
+          <v-row dense class="mb-4">
+            <div class="d-flex align-center">
+              <span>地面</span>
+              <v-switch v-model="computedSwitchMaster" :loading="masterLoading"
+                        :label="computedSwitchMaster?'运行中':'已停止'"
+                        @change="masterCavesChange('master')" class="ml-4">
+              </v-switch>
+              <span class="ml-8">洞穴</span>
+              <v-switch v-model="computedSwitchCaves" :loading="cavesLoading"
+                        :label="computedSwitchCaves?'运行中':'已停止'"
+                        @change="masterCavesChange('caves')" class="ml-4">
+              </v-switch>
+            </div>
+          </v-row>
+
+        </v-card-text>
+      </v-card>
+    </v-col>
+    <v-col cols="12" sm="6">
+
+    </v-col>
+  </v-row>
 </template>
 
 <script setup>
@@ -336,6 +365,49 @@ const modInfoTableHeaders = ref([
 ])
 const modInfoTablePage = ref(1)
 const modInfoTableRows = ref(0)
+
+const computedSwitchMaster = computed({
+  get: () => sysInfo.value.master === 1,
+  set: (newValue) => {
+    sysInfo.value.master = newValue ? 1 : 0;
+  },
+})
+const computedSwitchCaves = computed({
+  get: () => sysInfo.value.caves === 1,
+  set: (newValue) => {
+    sysInfo.value.caves = newValue ? 1 : 0;
+  },
+})
+const masterLoading = ref(false)
+const cavesLoading = ref(false)
+const masterCavesChange = (world) => {
+  needContinue.value = false
+  const reqForm = {
+    type: 'masterSwitch',
+    info: sysInfo.value.master
+  }
+  if (world === 'master') {
+    const reqForm = {
+      type: 'masterSwitch',
+      info: sysInfo.value.master
+    }
+    masterLoading.value = true
+    homeApi.exec.post(reqForm).finally(() => {
+      masterLoading.value = false
+      needContinue.value = true
+    })
+  } else {
+    const reqForm = {
+      type: 'cavesSwitch',
+      info: sysInfo.value.caves
+    }
+    cavesLoading.value = true
+    homeApi.exec.post(reqForm).finally(() => {
+      cavesLoading.value = false
+      needContinue.value = true
+    })
+  }
+}
 
 onBeforeUnmount(() => {
   cancelRequests();
