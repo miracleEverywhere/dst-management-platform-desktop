@@ -249,7 +249,7 @@
                 <v-dialog persistent max-width="500" class="flex-wrap">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
-                           size="small" class="mr-6"
+                           size="small" class="mr-6" variant="outlined"
                     ></v-btn>
                   </template>
                   <template v-slot:default="{ isActive }">
@@ -276,7 +276,7 @@
                 <v-dialog persistent max-width="500" class="flex-wrap">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
-                           size="small" class="mr-6"
+                           size="small" class="mr-6" variant="outlined"
                     ></v-btn>
                   </template>
                   <template v-slot:default="{ isActive }">
@@ -301,7 +301,39 @@
       </v-card>
     </v-col>
     <v-col cols="12" sm="6">
+      <v-card min-height="262">
+        <v-card-title>
+          命令执行
+        </v-card-title>
+        <v-card-text>
+          <v-row no-gutters class="mb-16 mt-4">
+            <v-col>
+              <v-text-field v-model="announceForm.message" density="compact" label="公告内容" variant="underlined" clearable>
+              </v-text-field>
+            </v-col>
+            <v-col cols="2">
+              <v-btn color="black" variant="text"
+                     :loading="announceLoading" @click="handleAnnounce">发送</v-btn>
+            </v-col>
+          </v-row>
 
+          <v-row no-gutters class="mb-4">
+            <v-col cols="3">
+              <v-select v-model="consoleForm.world" density="compact" label="世界" :items="consoleExecMap"
+                        :item-props="setItemProps" variant="underlined">
+              </v-select>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="consoleForm.cmd" density="compact" label="命令内容" variant="underlined" clearable>
+              </v-text-field>
+            </v-col>
+            <v-col cols="2">
+              <v-btn color="black" variant="text" :loading="consoleLoading"
+                     @click="handleConsole">执行</v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
     </v-col>
   </v-row>
 </template>
@@ -501,12 +533,6 @@ const handleExec = async (type, info) => {
     type: type,
     info: info
   }
-  // await homeApi.exec.post(reqForm).then(response => {
-  //   showSnackbar(response.message)
-  // }).catch(() => {
-  // }).finally(() => {
-  //   execDialogConfirmButtonLoading.value = false
-  // })
   try {
     const response = await homeApi.exec.post(reqForm)
     showSnackbar(response.message)
@@ -523,6 +549,67 @@ const buttonMap = {
   reset: {name: '重置世界', color: 'error'},
   delete: {name: '删除世界', color: 'primary'},
 }
+
+const consoleExecMap = ref([
+  {title: '地面', value: 'master'},
+  {title: '洞穴', value: 'caves'},
+])
+
+const announceLoading = ref(false)
+const announceForm = ref({
+  message: ''
+})
+const handleAnnounce = () => {
+  if (announceForm.value.message === '') {
+    showSnackbar('请输入要宣告的内容', 'error')
+    return
+  }
+  announceLoading.value = true
+  homeApi.interface.announce.post(announceForm.value).then(response => {
+    showSnackbar(response.message)
+    announceForm.value.message = ''
+  }).finally(() => {
+    announceLoading.value = false
+  })
+}
+
+const consoleLoading = ref(false)
+const consoleForm = ref({
+  cmd: '',
+  world: ''
+})
+const handleConsole = () => {
+  if (consoleForm.value.world === '') {
+    showSnackbar('请选择地面或洞穴', 'error')
+    return
+  }
+  if (consoleForm.value.cmd === '') {
+    showSnackbar('请输入要执行的命令', 'error')
+    return
+  }
+  consoleLoading.value = true
+  homeApi.interface.console.post(consoleForm.value).then(response => {
+    showSnackbar(response.message)
+    consoleForm.value.cmd = ''
+  }).finally(() => {
+    consoleLoading.value = false
+  })
+}
+const setItemProps = (item) => {
+  let disabled, icon
+  if (item.title === '地面') {
+    icon = 'ri-sun-fill'
+    disabled = sysInfo.value.master !== 1;
+  } else {
+    icon = 'ri-typhoon-fill'
+    disabled = sysInfo.value.caves !== 1;
+  }
+
+  return {
+    disabled: disabled,
+    prependIcon: icon
+  }
+};
 
 onBeforeUnmount(() => {
   cancelRequests();
