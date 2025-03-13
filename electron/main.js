@@ -25,6 +25,21 @@ const template = [
         ]
     },
     {
+        label: '编辑',
+        submenu: [
+            {
+                label: '复制',
+                accelerator: 'CmdOrCtrl+C',
+                role: 'copy',
+            },
+            {
+                label: '粘贴',
+                accelerator: 'CmdOrCtrl+V',
+                role: 'paste',
+            },
+        ],
+    },
+    {
         label: '视图',
         submenu: [
             {role: 'reload', label: "重新载入"},
@@ -81,10 +96,8 @@ const createWinConfig = () => {
         winConfig.loadFile(join(__dirname, '../dist/index.html'), {hash: '#/config'})
     }
 
-    if (process.platform === 'darwin') {
-        const menuConfig = Menu.buildFromTemplate(template);
-        Menu.setApplicationMenu(menuConfig);
-    }
+    const menuConfig = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menuConfig);
 
     winConfig.on('close', (event) => {
         if (!app.isQuiting) {
@@ -128,10 +141,8 @@ const createWinDashboard = () => {
         winDashboard.loadFile(join(__dirname, '../dist/index.html'), {hash: '#/dashboard'})
     }
 
-    if (process.platform === 'darwin') {
-        const menuDashboard = Menu.buildFromTemplate(template);
-        Menu.setApplicationMenu(menuDashboard);
-    }
+    const menuConfig = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menuConfig);
 
     winDashboard.on('close', (event) => {
         if (!app.isQuiting) {

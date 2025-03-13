@@ -114,7 +114,7 @@
             <v-col cols="12" sm="7">
               <div class="d-flex align-center">
                 <span>游戏版本</span>
-                <v-chip :color="roomInfo.seasonInfo.cycles>-1?'success':'danger'"
+                <v-chip :color="version.local===version.server?'success':'danger'"
                         label class="ml-4">
                   ({{ version.local }}/{{ version.server }})
                 </v-chip>
@@ -123,7 +123,7 @@
             <v-col cols="12" sm="5">
               <div class="d-flex align-center">
                 <span>在线玩家</span>
-                <v-chip label color="primary" class="ml-4">
+                <v-chip label color="success" class="ml-4">
                   {{ roomInfo.playerNum }}
                 </v-chip>
               </div>
@@ -204,16 +204,99 @@
               <span>地面</span>
               <v-switch v-model="computedSwitchMaster" :loading="masterLoading"
                         :label="computedSwitchMaster?'运行中':'已停止'"
+                        color="success"
                         @change="masterCavesChange('master')" class="ml-4">
               </v-switch>
               <span class="ml-8">洞穴</span>
               <v-switch v-model="computedSwitchCaves" :loading="cavesLoading"
+                        color="success"
                         :label="computedSwitchCaves?'运行中':'已停止'"
                         @change="masterCavesChange('caves')" class="ml-4">
               </v-switch>
             </div>
           </v-row>
-
+          <v-row dense class="mb-4">
+            <div class="d-flex align-center">
+              <span>回档</span>
+              <template v-for="day in 5">
+                <v-dialog max-width="500">
+                  <template v-slot:activator="{ props: activatorProps }">
+                    <v-btn v-bind="activatorProps" color="info" :text="day+'天'"
+                           variant="text" size="small"
+                    ></v-btn>
+                  </template>
+                  <template v-slot:default="{ isActive }">
+                    <v-card title="请确认此操作">
+                      <v-card-text>
+                        将进行回档{{day}}天操作，是否继续？
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn text="取消" @click="isActive.value = false"></v-btn>
+                        <v-btn text="回档" :loading="execDialogConfirmButtonLoading"
+                               @click="handleExec('rollback', day);isActive.value=false"
+                        ></v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </template>
+                </v-dialog>
+              </template>
+            </div>
+          </v-row>
+          <v-row dense class="mb-4">
+            <div class="d-flex align-center">
+              <template v-for="[k, v] in Object.entries(buttonMap).slice(0, 3)">
+                <v-dialog persistent max-width="500" class="flex-wrap">
+                  <template v-slot:activator="{ props: activatorProps }">
+                    <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
+                           size="small" class="mr-6"
+                    ></v-btn>
+                  </template>
+                  <template v-slot:default="{ isActive }">
+                    <v-card title="请确认此操作">
+                      <v-card-text>
+                        将进行{{v.name}}操作，是否继续？
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn text="取消" @click="isActive.value = false"></v-btn>
+                        <v-btn :text="v.name" :loading="execDialogConfirmButtonLoading"
+                               @click="async () => {await handleExec(k, 0);isActive.value = false}"
+                        ></v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </template>
+                </v-dialog>
+              </template>
+            </div>
+          </v-row>
+          <v-row dense class="mb-4">
+            <div class="d-flex align-center">
+              <template v-for="[k, v] in Object.entries(buttonMap).slice(-3)">
+                <v-dialog persistent max-width="500" class="flex-wrap">
+                  <template v-slot:activator="{ props: activatorProps }">
+                    <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
+                           size="small" class="mr-6"
+                    ></v-btn>
+                  </template>
+                  <template v-slot:default="{ isActive }">
+                    <v-card title="请确认此操作">
+                      <v-card-text>
+                        将进行{{v.name}}操作，是否继续？
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn text="取消" @click="isActive.value = false"></v-btn>
+                        <v-btn :text="v.name" :loading="execDialogConfirmButtonLoading"
+                               @click="async () => {await handleExec(k, 0);isActive.value = false}"
+                        ></v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </template>
+                </v-dialog>
+              </template>
+            </div>
+          </v-row>
         </v-card-text>
       </v-card>
     </v-col>
@@ -229,6 +312,8 @@ import {formatBytes, initTheme, truncateString} from "@/utils/tools";
 import useGlobalStore from "@/plugins/pinia/global";
 import externalApi from "@/api/externalApi";
 import homeApi from "@/api/home";
+import {showSnackbar} from "@/utils/snackbar";
+import {sleep} from "@antfu/utils";
 
 
 onMounted(() => {
@@ -407,6 +492,36 @@ const masterCavesChange = (world) => {
       needContinue.value = true
     })
   }
+}
+
+const execDialogConfirmButtonLoading = ref(false)
+const handleExec = async (type, info) => {
+  execDialogConfirmButtonLoading.value = true
+  const reqForm = {
+    type: type,
+    info: info
+  }
+  // await homeApi.exec.post(reqForm).then(response => {
+  //   showSnackbar(response.message)
+  // }).catch(() => {
+  // }).finally(() => {
+  //   execDialogConfirmButtonLoading.value = false
+  // })
+  try {
+    const response = await homeApi.exec.post(reqForm)
+    showSnackbar(response.message)
+  } finally {
+    execDialogConfirmButtonLoading.value = false
+  }
+
+}
+const buttonMap = {
+  startup: {name: '启动游戏', color: 'success'},
+  restart: {name: '重启游戏', color: 'info'},
+  update: {name: '更新游戏', color: 'warning'},
+  shutdown: {name: '关闭游戏', color: 'secondary'},
+  reset: {name: '重置世界', color: 'error'},
+  delete: {name: '删除世界', color: 'primary'},
 }
 
 onBeforeUnmount(() => {
