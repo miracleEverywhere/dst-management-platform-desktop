@@ -120,7 +120,7 @@ const createWinConfig = () => {
 const createWinDashboard = () => {
     winDashboard = new BrowserWindow({
         width: 1600,
-        height: 900,
+        height: 1080,
         resizable: true,
         // icon: iconPath,
         autoHideMenuBar: true,
@@ -167,11 +167,14 @@ const createTray = () => {
     tray = new Tray(join(__dirname, iconPath));
 
     const contextMenu = Menu.buildFromTemplate([
+        {role: 'reload', label: "重新载入"},
+        {type: 'separator'},
         {
             label: '退出', click: () => {
                 app.isQuiting = true
                 app.quit()
-            }
+            },
+
         },
     ]);
 

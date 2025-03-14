@@ -18,6 +18,7 @@
     "@vueuse/math": "^10.11.1",
     "apexcharts": "^3.54.1",
     "axios": "^1.7.7",
+    "codemirror": "^5.65.5",
     "electron-store": "^8.0.0",
     "pinia": "^2.3.0",
     "pinia-plugin-persistedstate": "^4.2.0",

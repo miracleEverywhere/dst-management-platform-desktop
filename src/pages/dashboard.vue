@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="12" sm="6">
-      <v-card min-height="330">
+      <v-card height="330">
         <v-card-title>
           房间信息
         </v-card-title>
@@ -141,7 +141,7 @@
       </v-card>
     </v-col>
     <v-col  cols="12" sm="6">
-      <v-card min-height="330">
+      <v-card height="330">
         <v-card-title>
           系统信息
         </v-card-title>
