@@ -9,7 +9,7 @@ const location = ref('top');
 const timeout = ref(3000);
 
 // 显示 Snackbar 的函数
-export function showSnackbar(message, type = 'success') {
+export function showSnackbar(message, type = 'primary') {
     snackbar.value = true;
     color.value = type;
     text.value = message;

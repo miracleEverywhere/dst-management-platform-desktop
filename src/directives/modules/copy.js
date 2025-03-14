@@ -15,7 +15,7 @@ export default {
             textarea.setSelectionRange(0, textarea.value.length)
             const result = document.execCommand('Copy')
             if (result) {
-                showSnackbar('复制成功', 'success')
+                showSnackbar('复制成功')
             }
             document.body.removeChild(textarea)
         }

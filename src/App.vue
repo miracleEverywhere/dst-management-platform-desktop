@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :location="location" variant="flat">
+    <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :location="location" variant="elevated">
       {{ text }}
     </v-snackbar>
     <router-view/>

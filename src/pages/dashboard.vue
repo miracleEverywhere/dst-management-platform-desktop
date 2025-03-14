@@ -249,7 +249,7 @@
                 <v-dialog persistent max-width="500" class="flex-wrap">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
-                           size="small" class="mr-6" variant="outlined"
+                           size="small" class="mr-6" variant="elevated"
                     ></v-btn>
                   </template>
                   <template v-slot:default="{ isActive }">
@@ -276,7 +276,7 @@
                 <v-dialog persistent max-width="500" class="flex-wrap">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
-                           size="small" class="mr-6" variant="outlined"
+                           size="small" class="mr-6" variant="elevated"
                     ></v-btn>
                   </template>
                   <template v-slot:default="{ isActive }">

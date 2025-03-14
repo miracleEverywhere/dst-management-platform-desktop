@@ -38,7 +38,7 @@ export const validateIpv4 = (ip) => {
 
 export const truncateString = (str) => {
     if (str.length > 15) {
-        return str.slice(0, 18) + '...';
+        return str.slice(0, 15) + '...';
     } else {
         return str;
     }
