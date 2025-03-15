@@ -28,7 +28,7 @@
             <v-col cols="12" sm="7">
               <div class="d-flex align-center">
                 <span>天数</span>
-                <v-chip :color="roomInfo.seasonInfo.cycles>-1?'success':'danger'"
+                <v-chip :color="roomInfo.seasonInfo.cycles>-1?'success':'error'"
                         label class="ml-4">
                   {{ roomInfo.seasonInfo.cycles }}
                 </v-chip>
@@ -37,7 +37,7 @@
             <v-col cols="12" sm="5">
               <div class="d-flex align-center">
                 <span>阶段</span>
-                <v-chip :color="roomInfo.seasonInfo.phase.zh==='获取失败'?'danger':'success'"
+                <v-chip :color="roomInfo.seasonInfo.phase.zh==='获取失败'?'error':'success'"
                         label class="ml-4">
                   {{ roomInfo.seasonInfo.phase.zh }}
                 </v-chip>
@@ -48,7 +48,7 @@
             <v-col cols="12" sm="7">
               <div class="d-flex align-center">
                 <span>季节</span>
-                <v-chip :color="roomInfo.seasonInfo.cycles>-1?'success':'danger'"
+                <v-chip :color="roomInfo.seasonInfo.cycles>-1?'success':'error'"
                         label class="ml-4">
                   {{ roomInfo.seasonInfo.season.zh }} {{ getSeasonDays(roomInfo.seasonInfo.season.en) }}
                 </v-chip>

@@ -2,3 +2,9 @@
     align-content: center;
     text-align: center
 }
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
