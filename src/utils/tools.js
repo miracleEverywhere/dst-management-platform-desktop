@@ -1,7 +1,8 @@
 import ElectronApi from "@/utils/electronApi";
 import {useTheme} from "vuetify";
-import { v4 } from 'uuid';
+import {v4} from 'uuid';
 import {DB_KEY} from "@/config";
+import useGlobalStore from "@/plugins/pinia/global";
 
 export const initTheme = () => {
     const {
@@ -10,9 +11,11 @@ export const initTheme = () => {
     } = useTheme()
 
     let theme = ElectronApi.store.get(DB_KEY.theme)
+    const globalStore = useGlobalStore()
 
     if (theme) {
         globalTheme.name.value = theme
+        globalStore.theme = theme
     } else {
         ElectronApi.store.set(DB_KEY.theme, 'light')
     }
@@ -64,7 +67,7 @@ export const saveFile = (base64Data, fileName) => {
     const byteArray = new Uint8Array(byteNumbers);
 
     // 创建 Blob 对象
-    const blob = new Blob([byteArray], { type: 'application/octet-stream' });
+    const blob = new Blob([byteArray], {type: 'application/octet-stream'});
 
     // 适用于其他现代浏览器
     const url = window.URL.createObjectURL(blob);
@@ -75,4 +78,8 @@ export const saveFile = (base64Data, fileName) => {
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
+}
+
+export const createMdEditorValue = (value, lang, stat) => {
+    return '```' + lang + ' ::' + stat + '\n' + value
 }

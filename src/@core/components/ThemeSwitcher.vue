@@ -44,6 +44,7 @@ const zhCurrentThemeNameMap = {
 
 const changeTheme = () => {
   globalTheme.name.value = getNextThemeName()
+  globalStore.theme = globalTheme.name.value
   ElectronApi.store.set('theme', globalTheme.name.value)
 }
 
