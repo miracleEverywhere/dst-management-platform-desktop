@@ -105,6 +105,5 @@ jobs:
           files: |
             release/*.exe
             release/*.dmg
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          token: ${{GH_TOKETOKEN}}
 
