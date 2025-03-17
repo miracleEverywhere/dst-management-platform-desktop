@@ -18,24 +18,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
 
       - name: Install dependencies
         run: npm install
 
       - name: Build Electron package
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            npm run build -- --win
-          else
-            npm run build -- --mac --arm64
-          fi
+        run: npm run electron:build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}-build
-          path: dist/
+          path: release/
 
   release:
     needs: build
@@ -44,7 +39,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          path: dist/
+          path: release/
 
       - name: Create Release
         id: create_release
@@ -63,6 +58,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/*.${{ matrix.os == 'windows-latest' && 'exe' || 'dmg' }}
+          asset_path: release/*.${{ matrix.os == 'windows-latest' && 'exe' || 'dmg' }}
           asset_name: ${{ matrix.os }}-build.${{ matrix.os == 'windows-latest' && 'exe' || 'dmg' }}
           asset_content_type: application/octet-stream
