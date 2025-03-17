@@ -1,3 +1,68 @@
+#name: Build and Release Electron App
+#
+#on:
+#  push:
+#    tags:
+#      - 'v*.*.*'
+#
+#jobs:
+#  build:
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [windows-latest, macos-latest]
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#
+#      - name: Setup Node.js
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 22
+#
+#      - name: Install dependencies
+#        run: npm install
+#
+#      - name: Build Electron package
+#        run: npm run electron:build
+#
+#      - name: Upload artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: ${{ matrix.os }}-build
+#          path: release/
+#
+#  release:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          path: release/
+#
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ github.ref }}
+#          release_name: Release ${{ github.ref }}
+#          draft: false
+#          prerelease: false
+#
+#      - name: Upload Release Assets
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: release/*.${{ matrix.os == 'windows-latest' && 'exe' || 'dmg' }}
+#          asset_name: 饥荒管理平台-${{ github.ref_name }}-${{ matrix.os == 'windows-latest' && 'win32' || 'darwin' }}-setup.${{ matrix.os == 'windows-latest' && 'exe' || 'dmg' }}
+#          asset_content_type: application/octet-stream
+#
+#---
 name: Build and Release Electron App
 
 on:
@@ -6,58 +71,40 @@ on:
       - 'v*.*.*'
 
 jobs:
-  build:
+  release:
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
     steps:
-      - name: Checkout code
+      - name: Check out Git repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22
+          node-version: 20
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
 
-      - name: Build Electron package
+      - name: build-mac
+        if: matrix.os == 'macos-latest'
         run: npm run electron:build
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.os }}-build
-          path: release/
+      - name: build-win
+        if: matrix.os == 'windows-latest'
+        run: npm run electron:build
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
+      - name: release
+        uses: softprops/action-gh-release@v1
         with:
-          path: release/
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+          draft: true
+          files: |
+            dist/*.exe
+            dist/*.dmg
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: Upload Release Assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/*.${{ matrix.os == 'windows-latest' && 'exe' || 'dmg' }}
-          asset_name: 饥荒管理平台-${{ github.ref_name }}-${{ matrix.os == 'windows-latest' && 'win32' || 'darwin' }}-setup.${{ matrix.os == 'windows-latest' && 'exe' || 'dmg' }}
-          asset_content_type: application/octet-stream
