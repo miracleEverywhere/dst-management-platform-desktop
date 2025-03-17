@@ -106,5 +106,5 @@ jobs:
             release/*.exe
             release/*.dmg
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
