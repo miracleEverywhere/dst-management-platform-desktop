@@ -24,7 +24,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install Dependencies
         run: npm install
@@ -33,24 +33,24 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: npm run electron:build
 
-      - name: build-win
-        if: matrix.os == 'windows-latest'
-        run: npm run electron:build
+#      - name: build-win
+#        if: matrix.os == 'windows-latest'
+#        run: npm run electron:build
 
-      - name: List release files
-        run: ls -R release
+#      - name: List release files
+#        run: ls -R release
 
-      - name: Verify GITHUB_TOKEN
-        run: |
-          echo "GITHUB_TOKEN is set: ${{ secrets.GITHUB_TOKEN != '' }}"
+#      - name: Verify GITHUB_TOKEN
+#        run: |
+#          echo "GITHUB_TOKEN is set: ${{ secrets.GITHUB_TOKEN != '' }}"
 
-      - name: release
-        uses: softprops/action-gh-release@v1
-        env:
-          ACTIONS_STEP_DEBUG: true
-        with:
-          draft: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-            release/*.exe
-            release/*.dmg
+#      - name: release
+#        uses: softprops/action-gh-release@v1
+#        env:
+#          ACTIONS_STEP_DEBUG: true
+#        with:
+#          draft: true
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          files: |
+#            release/*.exe
+#            release/*.dmg
