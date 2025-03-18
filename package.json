@@ -94,7 +94,7 @@
     },
     "win": {
       "icon": "./public/favicon.ico",
-      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
+      "artifactName": "DMP-v${version}-${platform}-setup.${ext}",
       "target": [
         {
           "target": "nsis"
@@ -103,12 +103,8 @@
     },
     "mac": {
       "icon": "./public/icon.icns",
-      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
+      "artifactName": "DMP-v${version}-${platform}-setup.${ext}",
       "target": "dmg"
-    },
-    "linux": {
-      "icon": "./public/icon.png",
-      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}"
     }
   }
 }
