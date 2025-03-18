@@ -1,74 +1,13 @@
-#name: Build and Release Electron App
-#
-#on:
-#  push:
-#    tags:
-#      - 'v*.*.*'
-#
-#jobs:
-#  build:
-#    runs-on: ${{ matrix.os }}
-#    strategy:
-#      matrix:
-#        os: [windows-latest, macos-latest]
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#
-#      - name: Setup Node.js
-#        uses: actions/setup-node@v3
-#        with:
-#          node-version: 22
-#
-#      - name: Install dependencies
-#        run: npm install
-#
-#      - name: Build Electron package
-#        run: npm run electron:build
-#
-#      - name: Upload artifacts
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: ${{ matrix.os }}-build
-#          path: release/
-#
-#  release:
-#    needs: build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Download artifacts
-#        uses: actions/download-artifact@v3
-#        with:
-#          path: release/
-#
-#      - name: Create Release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ github.ref }}
-#          release_name: Release ${{ github.ref }}
-#          draft: false
-#          prerelease: false
-#
-#      - name: Upload Release Assets
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: release/*.${{ matrix.os == 'windows-latest' && 'exe' || 'dmg' }}
-#          asset_name: 饥荒管理平台-${{ github.ref_name }}-${{ matrix.os == 'windows-latest' && 'win32' || 'darwin' }}-setup.${{ matrix.os == 'windows-latest' && 'exe' || 'dmg' }}
-#          asset_content_type: application/octet-stream
-#
-#---
 name: Build and Release Electron App
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    tags: ['v*']
+
+permissions:
+  contents: write
+  actions: write
+  pull-requests: write
 
 jobs:
   release:
@@ -85,7 +24,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install Dependencies
         run: npm install
@@ -94,16 +33,24 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: npm run electron:build
 
-      - name: build-win
-        if: matrix.os == 'windows-latest'
-        run: npm run electron:build
+#      - name: build-win
+#        if: matrix.os == 'windows-latest'
+#        run: npm run electron:build
 
-      - name: release
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          token: ${{ secrets.GH_TOKEN }}
-          files: |
-            release/*.exe
-            release/*.dmg
+#      - name: List release files
+#        run: ls -R release
 
+#      - name: Verify GITHUB_TOKEN
+#        run: |
+#          echo "GITHUB_TOKEN is set: ${{ secrets.GITHUB_TOKEN != '' }}"
+
+#      - name: release
+#        uses: softprops/action-gh-release@v1
+#        env:
+#          ACTIONS_STEP_DEBUG: true
+#        with:
+#          draft: true
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          files: |
+#            release/*.exe
+#            release/*.dmg
