@@ -39,9 +39,6 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: npm run electron:build
 
-      - name: List release files
-        run: ls -R release
-
       - name: release
         uses: softprops/action-gh-release@v1
         env:
