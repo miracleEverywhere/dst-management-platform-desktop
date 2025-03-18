@@ -85,7 +85,6 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
       "perMachine": true,
       "deleteAppDataOnUninstall": true,
       "createDesktopShortcut": true,
@@ -94,7 +93,7 @@
     },
     "win": {
       "icon": "./public/favicon.ico",
-      "artifactName": "DMP-v${version}-${platform}-setup.${ext}",
+      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
       "target": [
         {
           "target": "nsis"
@@ -103,7 +102,7 @@
     },
     "mac": {
       "icon": "./public/icon.icns",
-      "artifactName": "DMP-v${version}-${platform}-setup.${ext}",
+      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
       "target": "dmg"
     }
   }
