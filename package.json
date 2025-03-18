@@ -93,7 +93,7 @@
     },
     "win": {
       "icon": "./public/favicon.ico",
-      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
+      "artifactName": "DMP-v${version}-${platform}.${ext}",
       "target": [
         {
           "target": "nsis"
@@ -102,7 +102,7 @@
     },
     "mac": {
       "icon": "./public/icon.icns",
-      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
+      "artifactName": "DMP-v${version}-${platform}.${ext}",
       "target": "dmg"
     }
   }
