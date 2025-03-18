@@ -67,8 +67,10 @@ name: Build and Release Electron App
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    tags: ['v*']
+
+permissions:
+  contents: write
 
 jobs:
   release:
