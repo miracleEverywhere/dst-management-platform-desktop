@@ -114,7 +114,7 @@
             <v-col cols="12" sm="7">
               <div class="d-flex align-center">
                 <span>游戏版本</span>
-                <v-chip :color="version.local===version.server?'success':'danger'"
+                <v-chip :color="version.local===version.server?'success':'error'"
                         label class="ml-4">
                   ({{ version.local }}/{{ version.server }})
                 </v-chip>
@@ -249,7 +249,7 @@
                 <v-dialog persistent max-width="500" class="flex-wrap">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
-                           size="small" class="mr-6" variant="elevated"
+                           size="small" class="mr-6" variant="tonal"
                     ></v-btn>
                   </template>
                   <template v-slot:default="{ isActive }">
@@ -276,7 +276,7 @@
                 <v-dialog persistent max-width="500" class="flex-wrap">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
-                           size="small" class="mr-6" variant="elevated"
+                           size="small" class="mr-6" variant="tonal"
                     ></v-btn>
                   </template>
                   <template v-slot:default="{ isActive }">
