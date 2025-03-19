@@ -1,7 +1,13 @@
 <template>
   <v-app>
-    <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :location="location" variant="elevated">
-      {{ text }}
+    <v-snackbar v-model="snackbar" :timeout="timeout" transition="slide-y-transition"
+                :location="location" variant="flat" color="#FFFFFF00">
+      <v-card>
+        <v-alert :type="color" variant="text" density="compact">
+          {{ text }}
+        </v-alert>
+      </v-card>
+
     </v-snackbar>
     <router-view/>
   </v-app>
@@ -10,6 +16,9 @@
 <script setup>
 import { useSnackbar } from './utils/snackbar';
 
-// 使用 Snackbar 的状态和方法
 const { snackbar, color, text, location, timeout } = useSnackbar();
+
 </script>
+
+<style scoped>
+</style>
