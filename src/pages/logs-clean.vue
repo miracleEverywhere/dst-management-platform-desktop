@@ -72,7 +72,10 @@ onMounted(() => {
 })
 
 const logsInfo = ref([])
-const handleGetLogsInfo = () => {
+const handleGetLogsInfo = (tip=false) => {
+  if (tip) {
+    showSnackbar('刷新成功', 'success')
+  }
   logsInfoLoading.value = true
   logsApi.clean.status.get().then(response => {
     logsInfo.value = response.data
