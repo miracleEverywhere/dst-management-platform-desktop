@@ -1,4 +1,4 @@
-### 如果遇到 xxx 已损坏，解决方法：
+### MacOS 如果遇到 xxx 已损坏，解决方法：
 打开终端，输入以下代码，需要输入开机密码
 ```shell
 sudo spctl --master-disable
