@@ -8,3 +8,35 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.tip_primary {
+    padding: 8px 16px;
+    background-color: #8C57FF1A;
+    border-radius: 4px;
+    border-left: 5px solid #8C57FF;
+    margin: 20px 0;
+}
+.tip_info {
+    padding: 8px 16px;
+    background-color: #16B1FF1A;
+    border-radius: 4px;
+    border-left: 5px solid #16B1FF;
+    margin: 20px 0;
+}
+.tip_warning {
+    padding: 8px 16px;
+    background-color: #FFB4001A;
+    border-radius: 4px;
+    border-left: 5px solid #FFB400;
+    margin: 20px 0;
+}
+.tip_error {
+    padding: 8px 16px;
+    background-color: #FF4C511A;
+    border-radius: 4px;
+    border-left: 5px solid #FF4C51;
+    margin: 20px 0;
+}
+.custom-block .custom-block-title {
+    font-weight: 700;
+}
