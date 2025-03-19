@@ -50,7 +50,7 @@ instance.interceptors.response.use(
             showSnackbar(error.status + " " + error.data.message, 'error');
         } else {
             error.data.message = "连接到服务器失败";
-            showSnackbar(error.status + " " + error.data.message, 'error');
+            showSnackbar(error.data.message, 'error');
         }
         return Promise.reject(error); // 将错误返回给 try{} catch(){} 中进行捕获，就算不进行捕获，上方 res.data.status != 200也会抛出提示。
     }
