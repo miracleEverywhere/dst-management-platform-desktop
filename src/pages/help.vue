@@ -17,7 +17,7 @@
           <div class="tip_info">
             群号：733948644
           </div>
-          <v-img :src="QQqun" :width="300"></v-img>
+          <v-img :src="globalStore.theme==='dark'?qunDark:qunLight" :width="300"></v-img>
         </div>
       </v-expansion-panel-text>
     </v-expansion-panel>
@@ -176,7 +176,8 @@ import 'md-editor-v3/lib/preview.css';
 
 const globalStore = useGlobalStore()
 
-const QQqun =  new URL('@/views/help/images/QQqun.JPG', import.meta.url).href
+const qunLight =  new URL('@/views/help/images/IMG_4193.JPG', import.meta.url).href
+const qunDark =  new URL('@/views/help/images/IMG_4194.JPG', import.meta.url).href
 
 const twoCode = ref('```shell ::close\n# 备份\ncd ~\nmv dst/bin/lib32/steamclient.so dst/bin/lib32/steamclient.so.bak\nmv dst/steamclient.so dst/steamclient.so.bak\n# 替换\ncp steamcmd/linux32/steamclient.so dst/bin/lib32/steamclient.so\ncp steamcmd/linux32/steamclient.so dst/steamclient.so\n```')
 const threeCodeOne = ref('```lua ::close\nreturn {\n  background_node_range={ 0, 1 },\n  desc="你敢去熔炉里证明你自己的实力吗？",\n  hideminimap=false,\n  id="LAVAARENA",\n  location="lavaarena",\n  max_playlist_position=999,\n  min_playlist_position=0,\n  name="熔炉",\n  numrandom_set_pieces=0,\n  override_level_string=false,\n  overrides={\n    autumn="default",\n    basicresource_regrowth="none",\n    beefaloheat="default",\n    boons="never",\n    brightmarecreatures="default",\n    crow_carnival="default",\n    darkness="default",\n    day="default",\n    dropeverythingondespawn="default",\n    extrastartingitems="default",\n    ghostenabled="always",\n    ghostsanitydrain="always",\n    hallowed_nights="default",\n    healthpenalty="always",\n    hunger="default",\n    keep_disconnected_tiles=true,\n    krampus="default",\n    layout_mode="RestrictNodesByKey",\n    lessdamagetaken="none",\n    no_joining_islands=true,\n    no_wormholes_to_disconnected_tiles=true,\n    poi="never",\n    portalresurection="none",\n    protected="never",\n    resettime="default",\n    roads="never",\n    season_start="default",\n    seasonalstartingitems="default",\n    shadowcreatures="default",\n    spawnmode="fixed",\n    spawnprotection="default",\n    specialevent="default",\n    spring="default",\n    start_location="lavaarena",\n    summer="default",\n    task_set="lavaarena_taskset",\n    temperaturedamage="default",\n    touchstone="never",\n    traps="never",\n    winter="default",\n    winters_feast="default",\n    world_size="small",\n    year_of_the_beefalo="default",\n    year_of_the_bunnyman="default",\n    year_of_the_carrat="default",\n    year_of_the_catcoon="default",\n    year_of_the_dragonfly="default",\n    year_of_the_gobbler="default",\n    year_of_the_pig="default",\n    year_of_the_varg="default"\n  },\n  required_prefabs={ "lavaarena_portal" },\n  settings_desc="你敢去熔炉里证明你自己的实力吗？",\n  settings_id="LAVAARENA",\n  settings_name="熔炉",\n  substitutes={  },\n  version=2,\n  worldgen_desc="你敢去熔炉里证明你自己的实力吗？",\n  worldgen_id="LAVAARENA",\n  worldgen_name="熔炉"\n}\n```')
