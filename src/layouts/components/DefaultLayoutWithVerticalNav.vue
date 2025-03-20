@@ -25,7 +25,7 @@
         <VSpacer />
 
         <IconBtn
-            href="https://github.com/themeselection/materio-vuetify-vuejs-admin-template-free"
+            href="https://github.com/miracleEverywhere/dst-management-platform-desktop"
             target="_blank"
             rel="noopener noreferrer"
         >

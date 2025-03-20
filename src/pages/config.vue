@@ -8,7 +8,7 @@
         </h1>
         <VSpacer />
         <IconBtn
-            href="https://github.com"
+            href="https://github.com/miracleEverywhere/dst-management-platform-desktop"
             target="_blank"
             rel="noopener noreferrer"
         >
