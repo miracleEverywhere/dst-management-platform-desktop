@@ -285,6 +285,7 @@ const addFormRules = {
 }
 
 const initDialog = (edit) => {
+  loading.value = false
   if (!edit) {
     addForm.value = {
       ip: undefined,
