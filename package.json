@@ -2,6 +2,14 @@
   "name": "dmp-desktop",
   "private": true,
   "version": "v1.0.5",
+  "description": "饥荒管理平台",
+  "homepage": "https://github.com/miracleEverywhere/dst-management-platform-desktop",
+  "license": "MIT",
+  "author": {
+    "name": "Miracle",
+    "email": "123@abc.xyz",
+    "url": "https://github.com/miracleEverywhere/dst-management-platform-desktop"
+  },
   "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
@@ -110,7 +118,7 @@
       "icon": "./public/icon.png",
       "artifactName": "DMP-v${version}-${platform}.${ext}",
       "target": [
-        "deb"
+        "AppImage"
       ],
       "category": "Utility"
     }
