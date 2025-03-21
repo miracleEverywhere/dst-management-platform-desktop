@@ -89,7 +89,8 @@
       "deleteAppDataOnUninstall": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "饥荒管理平台"
+      "shortcutName": "饥荒管理平台",
+      "allowToChangeInstallationDirectory": true
     },
     "win": {
       "icon": "./public/favicon.ico",
@@ -104,6 +105,14 @@
       "icon": "./public/icon.icns",
       "artifactName": "DMP-v${version}-${platform}.${ext}",
       "target": "dmg"
+    },
+    "linux": {
+      "icon": "./public/icon.png",
+      "artifactName": "DMP-v${version}-${platform}.${ext}",
+      "target": [
+        "deb"
+      ],
+      "category": "Utility"
     }
   }
 }
