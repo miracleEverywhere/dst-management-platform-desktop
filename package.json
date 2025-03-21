@@ -7,7 +7,7 @@
   "license": "MIT",
   "author": {
     "name": "Miracle",
-    "email": "123@abc.xyz",
+    "email": "Miracle@abc.xyz",
     "url": "https://github.com/miracleEverywhere/dst-management-platform-desktop"
   },
   "main": "electron/main.js",
