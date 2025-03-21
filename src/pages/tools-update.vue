@@ -58,7 +58,7 @@
     </v-card>
 </template>
 
-<script name="toolsUpdate" setup lang="ts">
+<script setup>
 import { onMounted, ref, computed } from "vue";
 import toolsApi from "@/api/tools";
 import { VTimePicker } from "vuetify/labs/VTimePicker";
@@ -99,7 +99,7 @@ const handleUpdate = () => {
         time: checkTime.value,
         enable: checkEnable.value
     }
-    toolsApi.update.put(updateForm).then((response: any) => {
+    toolsApi.update.put(updateForm).then((response) => {
         showSnackbar(response.message, 'success')
     }).finally(() => {
         loadingTime.value = false
