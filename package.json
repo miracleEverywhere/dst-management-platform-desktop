@@ -115,7 +115,7 @@
       "target": "dmg"
     },
     "linux": {
-      "icon": "./public/favicon.ico",
+      "icon": "./public/icon.png",
       "artifactName": "DMP-v${version}-${platform}-amd64.${ext}",
       "target": [
         "AppImage"

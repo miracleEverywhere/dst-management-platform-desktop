@@ -163,6 +163,9 @@ const createTray = () => {
   if (process.platform === 'darwin') {
     iconPath = '../public/iconTray@2x.png'
   }
+  if (process.platform === 'linux') {
+    iconPath = '../public/iconTray@2x.png'
+  }
 
   tray = new Tray(join(__dirname, iconPath));
 
