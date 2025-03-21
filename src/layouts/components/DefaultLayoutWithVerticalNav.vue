@@ -1,9 +1,9 @@
 <template>
   <VerticalNavLayout>
-    <!-- 👉 navbar -->
+    <!-- 👉 navbar 顶部一长条-->
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
-        <!-- 👉 Vertical nav toggle in overlay mode -->
+        <!-- 👉 小屏幕菜单按钮 -->
         <IconBtn
             class="ms-n3 d-lg-none"
             @click="toggleVerticalOverlayNavActive(true)"
@@ -51,18 +51,17 @@
           to="/"
           class="app-logo app-title-wrapper"
       >
-        <!-- eslint-disable vue/no-v-html -->
+        <!-- LOGO -->
         <div
             class="d-flex"
             v-html="logo"
         />
-        <!-- eslint-enable -->
-
+        <!-- 标题 -->
         <h1 class="font-weight-medium leading-normal text-xl text-uppercase">
           {{title}}
         </h1>
       </RouterLink>
-
+      <!-- 标题右边的关闭按钮 -->
       <IconBtn
           class="d-block d-lg-none"
           @click="toggleIsOverlayNavActive(false)"
