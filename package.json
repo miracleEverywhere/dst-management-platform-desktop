@@ -102,7 +102,7 @@
     },
     "win": {
       "icon": "./public/favicon.ico",
-      "artifactName": "DMP-v${version}-${platform}.${ext}",
+      "artifactName": "DMP-v${version}-${platform}-amd64.${ext}",
       "target": [
         {
           "target": "nsis"
@@ -111,12 +111,12 @@
     },
     "mac": {
       "icon": "./public/icon.icns",
-      "artifactName": "DMP-v${version}-${platform}.${ext}",
+      "artifactName": "DMP-v${version}-${platform}-arm64.${ext}",
       "target": "dmg"
     },
     "linux": {
       "icon": "./public/icon.png",
-      "artifactName": "DMP-v${version}-${platform}.${ext}",
+      "artifactName": "DMP-v${version}-${platform}-amd64.${ext}",
       "target": [
         "AppImage"
       ],
