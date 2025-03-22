@@ -6,79 +6,79 @@ export const routes = [
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/pages/dashboard.vue'),
+        component: () => import('@/views/dashboard/index.vue'),
       },
       {
         path: 'settings/room',
-        component: () => import('@/pages/settings-room.vue'),
+        component: () => import('@/views/settings/room.vue'),
       },
       {
         path: 'settings/player',
-        component: () => import('@/pages/settings-player.vue'),
+        component: () => import('@/views/settings/player.vue'),
       },
       {
         path: 'settings/mod',
-        component: () => import('@/pages/settings-mod.vue'),
+        component: () => import('@/views/settings/mod.vue'),
       },
       {
         path: 'settings/import',
-        component: () => import('@/pages/settings-import.vue'),
+        component: () => import('@/views/settings/import.vue'),
       },
       {
         path: 'settings/system',
-        component: () => import('@/pages/settings-system.vue'),
+        component: () => import('@/views/settings/system.vue'),
       },
       {
         path: 'tools/update',
-        component: () => import('@/pages/tools-update.vue'),
+        component: () => import('@/views/tools/update.vue'),
       },
       {
         path: 'tools/backup',
-        component: () => import('@/pages/tools-backup.vue'),
+        component: () => import('@/views/tools/backup.vue'),
       },
       {
         path: 'tools/announce',
-        component: () => import('@/pages/tools-announce.vue'),
+        component: () => import('@/views/tools/announce.vue'),
       },
       {
         path: 'tools/install',
-        component: () => import('@/pages/tools-install.vue'),
+        component: () => import('@/views/tools/install.vue'),
       },
       {
         path: 'tools/statistics',
-        component: () => import('@/pages/tools-statistics.vue'),
+        component: () => import('@/views/tools/statistics.vue'),
       },
       {
         path: 'tools/metrics',
-        component: () => import('@/pages/tools-metrics.vue'),
+        component: () => import('@/views/tools/metrics.vue'),
       },
       {
         path: 'logs/ground',
-        component: () => import('@/pages/logs-ground.vue'),
+        component: () => import('@/views/logs/ground.vue'),
       },
       {
         path: 'logs/cave',
-        component: () => import('@/pages/logs-cave.vue'),
+        component: () => import('@/views/logs/cave.vue'),
       },
       {
         path: 'logs/chat',
-        component: () => import('@/pages/logs-chat.vue'),
+        component: () => import('@/views/logs/chat.vue'),
       },
       {
         path: 'logs/dmp',
-        component: () => import('@/pages/logs-dmp.vue'),
+        component: () => import('@/views/logs/dmp.vue'),
       },
       {
         path: 'logs/runtime',
-        component: () => import('@/pages/logs-runtime.vue'),
+        component: () => import('@/views/logs/runtime.vue'),
       },
       {
         path: 'logs/clean',
-        component: () => import('@/pages/logs-clean.vue'),
+        component: () => import('@/views/logs/clean.vue'),
       },
       {
         path: 'help',
-        component: () => import('@/pages/help.vue'),
+        component: () => import('@/views/help/index.vue'),
       },
     ],
   },
@@ -88,11 +88,11 @@ export const routes = [
     children: [
       {
         path: 'config',
-        component: () => import('@/pages/config.vue'),
+        component: () => import('@/views/config/index.vue'),
       },
       {
         path: '/:pathMatch(.*)*',
-        component: () => import('@/pages/[...error].vue'),
+        component: () => import('@/components/[...error].vue'),
       },
     ],
   },
