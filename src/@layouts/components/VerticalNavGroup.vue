@@ -4,9 +4,17 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  isOpen: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const isOpen = ref(false)
+const emit = defineEmits(['toggle'])
+
+const handleClick = () => {
+  emit('toggle')
+}
 </script>
 
 <template>
@@ -16,7 +24,7 @@ const isOpen = ref(false)
   >
     <div
       class="nav-group-label"
-      @click="isOpen = !isOpen"
+      @click="handleClick"
     >
       <VIcon
         :icon="item.icon || 'ri-checkbox-blank-circle-line'"
