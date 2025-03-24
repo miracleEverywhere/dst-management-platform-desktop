@@ -8,8 +8,12 @@ const text = ref('');
 const location = ref('top');
 const timeout = ref(3000);
 
-// 显示 Snackbar 的函数
-export function showSnackbar(message, type = 'primary') {
+/**
+ * 显示 Snackbar 的函数
+ * @param message 要显示的内容
+ * @param type 默认值为success，一共有4种：[success, info, warning, error]
+ */
+export function showSnackbar(message, type = 'success') {
     snackbar.value = true;
     color.value = type;
     text.value = message;
