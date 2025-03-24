@@ -1,7 +1,7 @@
 import ElectronApi from "@/utils/electronApi";
-import {useTheme} from "vuetify";
-import {v4} from 'uuid';
-import {DB_KEY} from "@/config";
+import { useTheme } from "vuetify";
+import { v4 } from 'uuid';
+import { DB_KEY } from "@/config";
 import useGlobalStore from "@/plugins/pinia/global";
 
 export const initTheme = () => {
@@ -67,7 +67,7 @@ export const saveFile = (base64Data, fileName) => {
     const byteArray = new Uint8Array(byteNumbers);
 
     // 创建 Blob 对象
-    const blob = new Blob([byteArray], {type: 'application/octet-stream'});
+    const blob = new Blob([byteArray], { type: 'application/octet-stream' });
 
     // 适用于其他现代浏览器
     const url = window.URL.createObjectURL(blob);
@@ -84,10 +84,23 @@ export const createMdEditorValue = (value, lang, stat) => {
     return '```' + lang + ' ::' + stat + '\n' + value
 }
 
-export const timestamp2timeWithoutDate = (timestamp) => {
-    const date = new Date(timestamp);
-    const hours = ('0' + date.getHours()).slice(-2);
-    const minutes = ('0' + date.getMinutes()).slice(-2);
-    const seconds = ('0' + date.getSeconds()).slice(-2);
-    return hours + ':' + minutes + ':' + seconds;
+export function seconds2Time(totalSeconds) {
+    const years = Math.floor(totalSeconds / (365 * 24 * 60 * 60));
+    totalSeconds %= (365 * 24 * 60 * 60);
+    const days = Math.floor(totalSeconds / (24 * 60 * 60));
+    totalSeconds %= (24 * 60 * 60);
+    const hours = Math.floor(totalSeconds / (60 * 60));
+    totalSeconds %= (60 * 60);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    const timeParts = [];
+
+    if (years > 0) timeParts.push(`${years}年`);
+    if (days > 0) timeParts.push(`${days}天`);
+    if (hours > 0) timeParts.push(`${hours}时`);
+    if (minutes > 0) timeParts.push(`${minutes}分`);
+    if (seconds > 0) timeParts.push(`${seconds}秒`);
+
+    return timeParts.length > 0 ? timeParts.join(' ') : '0秒';
 }
