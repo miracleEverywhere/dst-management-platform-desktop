@@ -53,7 +53,7 @@ const template = [
       {
         label: '了解更多',
         click: async () => {
-          await shell.openExternal('https://electronjs.org')
+          await shell.openExternal('https://github.com/miracleEverywhere/dst-management-platform-desktop')
         }
       },
       {

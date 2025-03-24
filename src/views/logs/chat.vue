@@ -1,5 +1,6 @@
 <template>
-  <v-tabs v-model="tab" @update:modelValue="handleTabChange" align-tabs="start" color="primary">
+  <v-tabs v-model="tab" @update:modelValue="handleTabChange"
+          align-tabs="start" color="primary" show-arrows class="v-tabs-pill">
     <v-tab value="current">当前日志</v-tab>
     <v-tab value="historical">历史日志</v-tab>
   </v-tabs>
