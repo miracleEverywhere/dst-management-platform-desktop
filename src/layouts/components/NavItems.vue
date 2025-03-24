@@ -10,9 +10,11 @@
   <!-- 👉 settings -->
   <VerticalNavGroup
       :item="{
-      title: '设置',
-      icon: 'ri-settings-line',
-    }"
+        title: '设置',
+        icon: 'ri-settings-line',
+      }"
+      :is-open="activeGroupId === 'settings'"
+      @toggle="handleGroupToggle('settings')"
   >
     <VerticalNavLink
         :item="{
@@ -53,9 +55,11 @@
   <!-- 👉 tools -->
   <VerticalNavGroup
       :item="{
-      title: '工具',
-      icon: 'ri-tools-line',
-    }"
+        title: '工具',
+        icon: 'ri-tools-line',
+      }"
+      :is-open="activeGroupId === 'tools'"
+      @toggle="handleGroupToggle('tools')"
   >
     <VerticalNavLink
         :item="{
@@ -103,9 +107,11 @@
   <!-- 👉 logs -->
   <VerticalNavGroup
       :item="{
-      title: '日志',
-      icon: 'ri-blogger-line',
-    }"
+        title: '日志',
+        icon: 'ri-blogger-line',
+      }"
+      :is-open="activeGroupId === 'logs'"
+      @toggle="handleGroupToggle('logs')"
   >
     <VerticalNavLink
         :item="{
@@ -164,4 +170,16 @@
 <script setup>
 import VerticalNavGroup from '@layouts/components/VerticalNavGroup.vue'
 import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
+
+// 当前展开的菜单组ID
+const activeGroupId = ref(null)
+
+// 展开/折叠
+const handleGroupToggle = (groupId) => {
+  if (activeGroupId.value === groupId) {
+    activeGroupId.value = null
+  } else {
+    activeGroupId.value = groupId
+  }
+}
 </script>
