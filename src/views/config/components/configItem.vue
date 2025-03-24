@@ -62,7 +62,7 @@
             </v-progress-circular>
           </v-col>
         </v-row>
-        <VBtn block style="margin-top: 25px" @click="handleGotoDashboard">
+        <VBtn block :disabled="sysInfo.master===0&&sysInfo.caves===0" style="margin-top: 25px" @click="handleGotoDashboard">
           进入
         </VBtn>
       </v-card-text>
