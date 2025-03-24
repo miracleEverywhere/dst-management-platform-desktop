@@ -39,11 +39,15 @@
               </v-chip>
               <div style="margin-top: 10px">
                 <v-chip v-if="configItem.type==='master'||configItem.type==='both'"
-                        color="primary" style="margin-right: 5px">地面<v-icon v-if="sysInfo.master===1" icon="ri-check-line" end/>
+                        :color="sysInfo.master===1?'primary':'error'" style="margin-right: 5px">
+                  地面
+                  <v-icon v-if="sysInfo.master===1" icon="ri-check-line" end/>
                   <v-icon v-if="sysInfo.master===0" icon="ri-close-line" end/>
                 </v-chip>
                 <v-chip v-if="configItem.type==='cave'||configItem.type==='both'"
-                        color="success">洞穴<v-icon v-if="sysInfo.caves===1" icon="ri-check-line" end/>
+                        :color="sysInfo.master===1?'success':'error'">
+                  洞穴
+                  <v-icon v-if="sysInfo.caves===1" icon="ri-check-line" end/>
                   <v-icon v-if="sysInfo.caves===0" icon="ri-close-line" end/>
                 </v-chip>
               </div>
