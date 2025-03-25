@@ -1,13 +1,12 @@
 <template>
   <!-- 👉 Dashboards -->
-  <VerticalNavGroup
+  <VerticalNavLink
     :item="{
       title: '首页',
       icon: 'ri-home-smile-line',
       to: '/dashboard',
     }"
-    :is-open="activeGroupId === 'dashboard'"
-    @toggle="handleGroupToggle('dashboard')"
+    @click="handleCloseAll('dashboard')"
   />
   <!-- 👉 settings -->
   <VerticalNavGroup
@@ -165,6 +164,7 @@
       icon: 'ri-heart-2-line',
       to: '/help',
     }"
+    @click="handleCloseAll('help')"
   />
 
 </template>
@@ -182,6 +182,16 @@ const handleGroupToggle = (groupId) => {
     activeGroupId.value = null
   } else {
     activeGroupId.value = groupId
+  }
+}
+
+const handleCloseAll = (linkId) => {
+  if (linkId === 'dashboard') {
+    activeGroupId.value = null
+    return
+  }
+  if (linkId === 'help') {
+    activeGroupId.value = null
   }
 }
 </script>
