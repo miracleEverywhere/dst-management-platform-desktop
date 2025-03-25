@@ -3,29 +3,48 @@
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-item title="房间设置" :value="0" :color="step>0?'success':''"
-                        :complete="step>0" icon="ri-number-1">
+                        :complete="step>0">
+          <template #icon>
+            <v-icon icon="ri-number-1" size="12"></v-icon>
+          </template>
         </v-stepper-item>
         <v-divider></v-divider>
 
         <v-stepper-item title="地面设置" :value="1" :color="step>1?'success':''"
-                        :complete="step>1" icon="ri-number-2"></v-stepper-item>
+                        :complete="step>1">
+          <template #icon>
+            <v-icon icon="ri-number-2" size="12"></v-icon>
+          </template>
+        </v-stepper-item>
         <v-divider></v-divider>
 
         <v-stepper-item title="洞穴设置" :value="2" :color="step>2?'success':''"
-                        :complete="step>2" icon="ri-number-3"></v-stepper-item>
+                        :complete="step>2">
+          <template #icon>
+            <v-icon icon="ri-number-3" size="12"></v-icon>
+          </template>
+        </v-stepper-item>
         <v-divider></v-divider>
 
         <v-stepper-item title="模组设置" :value="3" :color="step>3?'success':''"
-                        :complete="step>3" icon="ri-number-4"></v-stepper-item>
+                        :complete="step>3">
+          <template #icon>
+            <v-icon icon="ri-number-4" size="12"></v-icon>
+          </template>
+        </v-stepper-item>
         <v-divider></v-divider>
 
         <v-stepper-item title="设置完成" :value="4" :color="step>4?'success':''"
-                        :complete="step>4" icon="ri-number-5"></v-stepper-item>
+                        :complete="step>4">
+          <template #icon>
+            <v-icon icon="ri-number-5" size="12"></v-icon>
+          </template>
+        </v-stepper-item>
       </v-stepper-header>
 
       <v-stepper-window v-model="step">
         <v-stepper-window-item :value="0">
-          0
+          <v-btn @click="showSnackbar('test')">test</v-btn>
         </v-stepper-window-item>
         <v-stepper-window-item :value="1">
           1
@@ -68,6 +87,7 @@
 
 <script setup>
 import settingApi from "@/api/setting.js"
+import {showSnackbar} from "@/utils/snackbar";
 
 onMounted(async () => {
   await getMultiHost()
