@@ -1,4 +1,5 @@
 <script setup>
+const router = useRouter();
 const props = defineProps({
   item: {
     type: Object,
@@ -14,6 +15,9 @@ const emit = defineEmits(['toggle'])
 
 const handleClick = () => {
   emit('toggle')
+  if (props.item.to === '/dashboard') {
+    router.push(props.item.to)
+  }
 }
 </script>
 
@@ -38,6 +42,7 @@ const handleClick = () => {
         {{ item.badgeContent }}
       </span>
       <VIcon
+        v-if="item.to !== '/dashboard'"
         icon="ri-arrow-right-s-line"
         class="nav-group-arrow"
       />
