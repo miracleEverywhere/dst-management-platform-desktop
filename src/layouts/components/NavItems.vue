@@ -6,7 +6,7 @@
       icon: 'ri-home-smile-line',
       to: '/dashboard',
     }"
-    @click="handleCloseAll('dashboard')"
+    @click="handleCloseAll"
   />
   <!-- 👉 settings -->
   <VerticalNavGroup
@@ -164,7 +164,7 @@
       icon: 'ri-heart-2-line',
       to: '/help',
     }"
-    @click="handleCloseAll('help')"
+    @click="handleCloseAll"
   />
 
 </template>
@@ -185,13 +185,7 @@ const handleGroupToggle = (groupId) => {
   }
 }
 
-const handleCloseAll = (linkId) => {
-  if (linkId === 'dashboard') {
-    activeGroupId.value = null
-    return
-  }
-  if (linkId === 'help') {
-    activeGroupId.value = null
-  }
+const handleCloseAll = () => {
+  activeGroupId.value = null
 }
 </script>
