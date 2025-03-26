@@ -2,40 +2,40 @@
   <template v-if="!isMultiHost">
     <v-stepper v-model="step">
       <v-stepper-header>
-        <v-stepper-item title="房间设置" :value="0" :color="step>0?'success':''"
-                        :complete="step>0">
+        <v-stepper-item :color="step>0?'success':''" :complete="step>0" :value="0"
+                        title="房间设置">
           <template #icon>
             <v-icon icon="ri-number-1" size="12"></v-icon>
           </template>
         </v-stepper-item>
         <v-divider></v-divider>
 
-        <v-stepper-item title="地面设置" :value="1" :color="step>1?'success':''"
-                        :complete="step>1">
+        <v-stepper-item :color="step>1?'success':''" :complete="step>1" :value="1"
+                        title="地面设置">
           <template #icon>
             <v-icon icon="ri-number-2" size="12"></v-icon>
           </template>
         </v-stepper-item>
         <v-divider></v-divider>
 
-        <v-stepper-item title="洞穴设置" :value="2" :color="step>2?'success':''"
-                        :complete="step>2">
+        <v-stepper-item :color="step>2?'success':''" :complete="step>2" :value="2"
+                        title="洞穴设置">
           <template #icon>
             <v-icon icon="ri-number-3" size="12"></v-icon>
           </template>
         </v-stepper-item>
         <v-divider></v-divider>
 
-        <v-stepper-item title="模组设置" :value="3" :color="step>3?'success':''"
-                        :complete="step>3">
+        <v-stepper-item :color="step>3?'success':''" :complete="step>3" :value="3"
+                        title="模组设置">
           <template #icon>
             <v-icon icon="ri-number-4" size="12"></v-icon>
           </template>
         </v-stepper-item>
         <v-divider></v-divider>
 
-        <v-stepper-item title="设置完成" :value="4" :color="step>4?'success':''"
-                        :complete="step>4">
+        <v-stepper-item :color="step>4?'success':''" :complete="step>4" :value="4"
+                        title="设置完成">
           <template #icon>
             <v-icon icon="ri-number-5" size="12"></v-icon>
           </template>
@@ -44,7 +44,104 @@
 
       <v-stepper-window v-model="step">
         <v-stepper-window-item :value="0">
-          <v-btn @click="showSnackbar('test')">test</v-btn>
+          <v-form ref="roomBaseFormRef" fast-fail>
+            <v-container>
+              <v-row>
+                <v-col cols="6">
+                  <div style="display: flex; align-items: center">
+                    <span>当前模式为：</span>
+                    <v-chip>
+                      单机器模式
+                    </v-chip>
+                    <v-btn class="ml-1" variant="text">点击切换为多机器模式</v-btn>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field v-model="roomBaseForm.name" :rules="roomBaseFormRules.name"
+                                clearable label="房间名"></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field v-model="roomBaseForm.description"
+                                clearable label="房间描述"></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-number-input v-model="roomBaseForm.masterPort" clearable
+                                  control-variant="stacked" inset label="地面端口"
+                                  variant="outlined" :rules="roomBaseFormRules.masterPort"
+                  ></v-number-input>
+                </v-col>
+                <v-col cols="6">
+                  <v-number-input v-model="roomBaseForm.cavesPort" clearable
+                                  control-variant="stacked" inset label="洞穴端口"
+                                  variant="outlined" :rules="roomBaseFormRules.cavesPort"
+                  ></v-number-input>
+                </v-col>
+                <v-col cols="6" style="margin-top: -20px">
+                  <v-radio-group v-model="roomBaseForm.gameMode" inline>
+                    <template #prepend>
+                      <span>游戏模式</span>
+                    </template>
+                    <v-radio label="无尽" value="endless"/>
+                    <v-radio label="生存" value="survival"/>
+                    <v-radio label="熔炉" value="lavaarena"/>
+                    <v-radio label="暴食" value="quagmire"/>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="3" style="margin-top: -20px">
+                  <v-switch v-model="roomBaseForm.pvp" inset>
+                    <template #prepend>
+                      <span>玩家对战</span>
+                    </template>
+                  </v-switch>
+                </v-col>
+                <v-col cols="3" style="margin-top: -20px">
+                  <v-switch v-model="roomBaseForm.vote" inset>
+                    <template #prepend>
+                      <span>玩家投票</span>
+                    </template>
+                  </v-switch>
+                </v-col>
+                <v-col cols="6">
+                  <v-slider v-model="roomBaseForm.playerNum" :max="99" :min="2"
+                      class="align-center" hide-details step="1"
+                  >
+                    <template #label>
+                      <span>玩家数量</span>
+                    </template>
+                    <template v-slot:append>
+                      <v-text-field v-model="roomBaseForm.playerNum" density="compact"
+                          style="width: 70px" type="number" hide-details single-line
+                      ></v-text-field>
+                    </template>
+                  </v-slider>
+                </v-col>
+                <v-col cols="6">
+                  <v-slider v-model="roomBaseForm.backDays" :max="50" :min="5"
+                            class="align-center" hide-details step="1"
+                  >
+                    <template #label>
+                      <span>回档天数</span>
+                    </template>
+                    <template v-slot:append>
+                      <v-text-field v-model="roomBaseForm.backDays" density="compact"
+                                    style="width: 70px" type="number" hide-details single-line
+                      ></v-text-field>
+                    </template>
+                  </v-slider>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field v-model="roomBaseForm.password"
+                                label="房间密码" required clearable></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field v-model="roomBaseForm.token" :rules="roomBaseFormRules.token"
+                                label="游戏令牌" clearable></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
         </v-stepper-window-item>
         <v-stepper-window-item :value="1">
           1
@@ -62,10 +159,10 @@
 
       <v-stepper-actions>
         <template #prev>
-          <v-btn @click="step--" variant="tonal" color="grey-lighten-3">上一步</v-btn>
+          <v-btn color="grey-lighten-3" variant="tonal" @click="step--">上一步</v-btn>
         </template>
         <template #next>
-          <v-btn @click="step++" variant="tonal" color="primary">下一步</v-btn>
+          <v-btn color="primary" variant="elevated" @click="handleNext">下一步</v-btn>
         </template>
       </v-stepper-actions>
     </v-stepper>
@@ -86,8 +183,9 @@
 </template>
 
 <script setup>
+import {VNumberInput} from 'vuetify/labs/VNumberInput'
 import settingApi from "@/api/setting.js"
-import {showSnackbar} from "@/utils/snackbar";
+import {validateIpv4} from "@/utils/tools";
 
 onMounted(async () => {
   await getMultiHost()
@@ -102,6 +200,105 @@ const getMultiHost = async () => {
 }
 
 const step = ref(0)
+const handleNext = async () => {
+  if (isMultiHost.value) {
+
+  } else {
+    if (step.value === 0) {
+      const { valid } = await roomBaseFormRef.value.validate();
+      if (valid) {
+        step.value++
+      }
+    }
+  }
+}
+
+const roomBaseFormRef = ref()
+const roomBaseForm = ref({
+  name: '',
+  description: '',
+  gameMode: '',
+  pvp: false,
+  playerNum: 6,
+  backDays: 10,
+  vote: true,
+  password: '',
+  token: '',
+  masterPort: 0,
+  cavesPort: 0,
+  shardMasterPort: undefined,
+  steamMasterPort: undefined,
+  steamAuthenticationPort: undefined,
+  shardMasterIp: undefined,
+  clusterKey: undefined,
+})
+const roomBaseFormRules = {
+  name: [
+    value => {
+      if (value) {
+        return true
+      }
+      return '请输入房间名'
+    },
+  ],
+  masterPort: [
+    value => {
+      if (value) {
+        if (value >= 0 && value <= 65535) {
+          if (value === roomBaseForm.value.cavesPort) {
+            return '地面洞穴端口不能相同'
+          } else {
+            return true
+          }
+        } else {
+          return '端口范围：1-65535'
+        }
+      }
+      return '请输入地面端口'
+    }
+  ],
+  cavesPort: [
+    value => {
+      if (value) {
+        if (value >= 0 && value <= 65535) {
+          if (value === roomBaseForm.value.masterPort) {
+            return '地面洞穴端口不能相同'
+          } else {
+            return true
+          }
+        } else {
+          return '端口范围：1-65535'
+        }
+      }
+      return '请输入地面端口'
+    }
+  ],
+  token: [
+    value => {
+      if (value) {
+        return true
+      }
+      return '请输入游戏令牌'
+    }
+  ]
+}
+
+const roomGroundFormRef = ref()
+const roomGroundForm = ref({
+  groundSetting: '',
+})
+
+const roomCaveFormRef = ref()
+const roomCaveForm = ref({
+  caveSetting: '',
+})
+
+const roomModFormRef = ref()
+const roomModForm = ref({
+  modSetting: '',
+})
+
+const multiHostIsMaster = ref(true)
 
 const handleGetCurrentRoomSetting = () => {
   settingApi.room.get().then(response => {

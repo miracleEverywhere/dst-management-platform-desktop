@@ -1,4 +1,3 @@
-
 export default class ElectronApi {
     electronAPI;
     static store = {
@@ -26,6 +25,9 @@ export default class ElectronApi {
         },
         config() {
             window.electronAPI.openConfigWindow()
+        },
+        reload() {
+            window.electronAPI.reloadWindow()
         }
     }
 }

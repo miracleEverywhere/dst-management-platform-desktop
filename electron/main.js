@@ -275,5 +275,9 @@ ipcMain.on('clearStore', (event) => {
 })
 
 ipcMain.on('open-dev-tool', () => {
-  if (win) win.webContents.openDevTools({mode: 'detach'})
+  if (needShownWin) needShownWin.webContents.openDevTools({mode: 'detach'})
+})
+
+ipcMain.on('reload-window', () => {
+  if (needShownWin) needShownWin.reload()
 })

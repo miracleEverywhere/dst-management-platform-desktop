@@ -15,6 +15,12 @@
           <VIcon icon="ri-github-fill" />
         </IconBtn>
         <NavbarThemeSwitcher class="me-2" />
+        <IconBtn>
+          <v-tooltip activator="parent" open-delay="1000" scroll-strategy="close">
+            刷新整个页面
+          </v-tooltip>
+          <VIcon icon="ri-refresh-line" @click="handleReload" />
+        </IconBtn>
       </div>
     </template>
     <div class="auth-wrapper d-flex align-center justify-center pa-4" style="margin-top: -15px">
@@ -79,7 +85,9 @@ const initConfigs = () => {
   }
 }
 
-
+const handleReload = () => {
+  ElectronApi.window.reload()
+}
 
 </script>
 
