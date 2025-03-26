@@ -10,7 +10,7 @@
                 </template>
                 <template #text>
                     <div class="d-flex align-center justify-space-between mb-4">
-                        <div class="mr-4" style="width: 80%;">
+                        <div class="mr-4" style="width: 70%;">
                             <v-progress-linear bg-color="blue"
                                 :model-value="parseFloat(diskUsage.toFixed(1))"></v-progress-linear>
                         </div>
