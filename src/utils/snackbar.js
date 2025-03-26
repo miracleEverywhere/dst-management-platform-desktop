@@ -39,8 +39,8 @@ export function useSnackbar() {
         color,
         text,
         location,
-        timeout,
         icon,
+        timeout,
         showSnackbar,
     };
 }
