@@ -39,7 +39,17 @@
         <NavbarThemeSwitcher class="me-2" />
 
         <IconBtn>
-          <VIcon icon="ri-shut-down-line" @click="handleOut" />
+          <v-tooltip activator="parent" open-delay="1000" scroll-strategy="close">
+            刷新整个页面
+          </v-tooltip>
+          <VIcon icon="ri-refresh-line" @click="handleReload" />
+        </IconBtn>
+
+        <IconBtn>
+          <v-tooltip activator="parent" open-delay="1000" scroll-strategy="close">
+            退出当前存档，返回存档选择界面
+          </v-tooltip>
+          <VIcon icon="ri-logout-box-r-line" @click="handleOut" />
         </IconBtn>
 
 <!--        <UserProfile />-->
@@ -103,6 +113,10 @@ const title = import.meta.env.VITE_TITLE
 const handleOut = () => {
   globalStore.clearStore()
   ElectronApi.window.config()
+}
+
+const handleReload = () => {
+  ElectronApi.window.reload()
 }
 </script>
 
