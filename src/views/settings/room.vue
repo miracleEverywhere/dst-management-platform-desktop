@@ -44,7 +44,7 @@
 
       <v-stepper-window v-model="step">
         <v-stepper-window-item :value="0">
-          <v-form fast-fail>
+          <v-form ref="roomBaseFormRef" fast-fail>
             <v-container>
               <v-row>
                 <v-col cols="6">
@@ -59,23 +59,23 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-text-field v-model="roomBaseForm.name"
-                                clearable label="房间名" required></v-text-field>
+                  <v-text-field v-model="roomBaseForm.name" :rules="roomBaseFormRules.name"
+                                clearable label="房间名"></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-text-field v-model="roomBaseForm.description"
-                                clearable label="房间描述" required></v-text-field>
+                                clearable label="房间描述"></v-text-field>
                 </v-col>
                 <v-col cols="6">
                   <v-number-input v-model="roomBaseForm.masterPort" clearable
                                   control-variant="stacked" inset label="地面端口"
-                                  required variant="outlined"
+                                  variant="outlined" :rules="roomBaseFormRules.masterPort"
                   ></v-number-input>
                 </v-col>
                 <v-col cols="6">
                   <v-number-input v-model="roomBaseForm.cavesPort" clearable
                                   control-variant="stacked" inset label="洞穴端口"
-                                  required variant="outlined"
+                                  variant="outlined" :rules="roomBaseFormRules.cavesPort"
                   ></v-number-input>
                 </v-col>
                 <v-col cols="6" style="margin-top: -20px">
@@ -136,8 +136,8 @@
                                 label="房间密码" required clearable></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-text-field v-model="roomBaseForm.token"
-                                label="游戏令牌" required clearable></v-text-field>
+                  <v-text-field v-model="roomBaseForm.token" :rules="roomBaseFormRules.token"
+                                label="游戏令牌" clearable></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -162,7 +162,7 @@
           <v-btn color="grey-lighten-3" variant="tonal" @click="step--">上一步</v-btn>
         </template>
         <template #next>
-          <v-btn color="primary" variant="elevated" @click="step++">下一步</v-btn>
+          <v-btn color="primary" variant="elevated" @click="handleNext">下一步</v-btn>
         </template>
       </v-stepper-actions>
     </v-stepper>
@@ -185,6 +185,7 @@
 <script setup>
 import {VNumberInput} from 'vuetify/labs/VNumberInput'
 import settingApi from "@/api/setting.js"
+import {validateIpv4} from "@/utils/tools";
 
 onMounted(async () => {
   await getMultiHost()
@@ -199,6 +200,18 @@ const getMultiHost = async () => {
 }
 
 const step = ref(0)
+const handleNext = async () => {
+  if (isMultiHost.value) {
+
+  } else {
+    if (step.value === 0) {
+      const { valid } = await roomBaseFormRef.value.validate();
+      if (valid) {
+        step.value++
+      }
+    }
+  }
+}
 
 const roomBaseFormRef = ref()
 const roomBaseForm = ref({
@@ -219,6 +232,56 @@ const roomBaseForm = ref({
   shardMasterIp: undefined,
   clusterKey: undefined,
 })
+const roomBaseFormRules = {
+  name: [
+    value => {
+      if (value) {
+        return true
+      }
+      return '请输入房间名'
+    },
+  ],
+  masterPort: [
+    value => {
+      if (value) {
+        if (value >= 0 && value <= 65535) {
+          if (value === roomBaseForm.value.cavesPort) {
+            return '地面洞穴端口不能相同'
+          } else {
+            return true
+          }
+        } else {
+          return '端口范围：1-65535'
+        }
+      }
+      return '请输入地面端口'
+    }
+  ],
+  cavesPort: [
+    value => {
+      if (value) {
+        if (value >= 0 && value <= 65535) {
+          if (value === roomBaseForm.value.masterPort) {
+            return '地面洞穴端口不能相同'
+          } else {
+            return true
+          }
+        } else {
+          return '端口范围：1-65535'
+        }
+      }
+      return '请输入地面端口'
+    }
+  ],
+  token: [
+    value => {
+      if (value) {
+        return true
+      }
+      return '请输入游戏令牌'
+    }
+  ]
+}
 
 const roomGroundFormRef = ref()
 const roomGroundForm = ref({
