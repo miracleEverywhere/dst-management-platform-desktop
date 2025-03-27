@@ -1,12 +1,12 @@
 <<template>
   <v-row>
     <v-col cols="12" sm="6">
-      <v-card height="330">
+      <v-card height="400">
         <v-card-title>
           房间信息
         </v-card-title>
         <v-card-text v-if="roomInfo.roomSettingBase.name!==''">
-          <v-row dense class="mb-4">
+          <v-row dense class="mb-4 mt-4">
             <v-col cols="12" sm="7">
               <div class="d-flex align-center">
                 <span>房间名</span>
@@ -24,7 +24,7 @@
               </div>
             </v-col>
           </v-row>
-          <v-row dense class="mb-4">
+          <v-row dense class="mb-4 mt-6">
             <v-col cols="12" sm="7">
               <div class="d-flex align-center">
                 <span>天数</span>
@@ -44,7 +44,7 @@
               </div>
             </v-col>
           </v-row>
-          <v-row dense class="mb-4">
+          <v-row dense class="mb-4 mt-6">
             <v-col cols="12" sm="7">
               <div class="d-flex align-center">
                 <span>季节</span>
@@ -110,7 +110,7 @@
               </div>
             </v-col>
           </v-row>
-          <v-row dense class="mb-4">
+          <v-row dense class="mb-4 mt-6">
             <v-col cols="12" sm="7">
               <div class="d-flex align-center">
                 <span>游戏版本</span>
@@ -141,7 +141,7 @@
       </v-card>
     </v-col>
     <v-col  cols="12" sm="6">
-      <v-card height="330">
+      <v-card height="400">
         <v-card-title>
           系统信息
         </v-card-title>
@@ -149,6 +149,9 @@
           <div class="mt-2">
             <div class="d-flex align-center justify-center">
               <v-icon icon="ri-cpu-line"></v-icon>
+              <span class="mr-2 ml-1">CPU</span>
+              <v-progress-linear :model-value="sysInfo.cpu" rounded height="8"
+                                 color="grey-lighten-2" class="w-33 ml-2"/>
               <span class="ml-2">{{sysInfo.cpu.toFixed(1)}}%</span>
             </div>
             <v-sparkline
@@ -170,9 +173,11 @@
           <div class="mt-2">
             <div class="d-flex align-center justify-center">
               <v-icon icon="ri-ram-line"></v-icon>
+              <span class="mr-2 ml-1">内存</span>
+              <v-progress-linear :model-value="sysInfo.memory" rounded height="8"
+                                 color="grey-lighten-2" class="w-33 ml-2"/>
               <span class="ml-2">{{sysInfo.memory.toFixed(1)}}%</span>
             </div>
-
             <v-sparkline
                 height="60"
                 :auto-line-width="false"
@@ -194,20 +199,20 @@
   </v-row>
   <v-row>
     <v-col cols="12" sm="6">
-      <v-card>
+      <v-card height="400">
         <v-card-title>
           控制面板
         </v-card-title>
         <v-card-text>
-          <v-row dense class="mb-4">
+          <v-row dense class="mb-4 mt-4">
             <div class="d-flex align-center">
-              <span>地面</span>
+              <span style="font-size: larger">地面</span>
               <v-switch v-model="computedSwitchMaster" :loading="masterLoading"
                         :label="computedSwitchMaster?'运行中':'已停止'"
                         color="success"
                         @change="masterCavesChange('master')" class="ml-4">
               </v-switch>
-              <span class="ml-8">洞穴</span>
+              <span class="ml-8" style="font-size: larger">洞穴</span>
               <v-switch v-model="computedSwitchCaves" :loading="cavesLoading"
                         color="success"
                         :label="computedSwitchCaves?'运行中':'已停止'"
@@ -215,14 +220,14 @@
               </v-switch>
             </div>
           </v-row>
-          <v-row dense class="mb-4">
+          <v-row dense class="mb-4 mt-6">
             <div class="d-flex align-center">
-              <span>回档</span>
+              <span style="font-size: larger">回档</span>
               <template v-for="day in 5">
                 <v-dialog max-width="500">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" color="info" :text="day+'天'"
-                           variant="text" size="small"
+                           variant="text" size="large"
                     ></v-btn>
                   </template>
                   <template v-slot:default="{ isActive }">
@@ -243,13 +248,14 @@
               </template>
             </div>
           </v-row>
-          <v-row dense class="mb-4">
+          <v-divider class="mt-10 mb-10"/>
+          <v-row dense class="mb-4 mt-6">
             <div class="d-flex align-center">
               <template v-for="[k, v] in Object.entries(buttonMap).slice(0, 3)">
                 <v-dialog persistent max-width="500" class="flex-wrap">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
-                           size="small" class="mr-6" variant="tonal"
+                           size="large" class="mr-6" variant="tonal"
                     ></v-btn>
                   </template>
                   <template v-slot:default="{ isActive }">
@@ -270,13 +276,13 @@
               </template>
             </div>
           </v-row>
-          <v-row dense class="mb-4">
+          <v-row dense class="mb-4 mt-6">
             <div class="d-flex align-center">
               <template v-for="[k, v] in Object.entries(buttonMap).slice(-3)">
                 <v-dialog persistent max-width="500" class="flex-wrap">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
-                           size="small" class="mr-6" variant="tonal"
+                           size="large" class="mr-6" variant="tonal"
                     ></v-btn>
                   </template>
                   <template v-slot:default="{ isActive }">
@@ -301,12 +307,12 @@
       </v-card>
     </v-col>
     <v-col cols="12" sm="6">
-      <v-card min-height="262">
+      <v-card height="400">
         <v-card-title>
           命令执行
         </v-card-title>
         <v-card-text>
-          <v-row no-gutters class="mb-16 mt-4">
+          <v-row no-gutters class="mb-16 mt-12">
             <v-col>
               <v-text-field v-model="announceForm.message" density="compact" label="公告内容" variant="underlined" clearable>
               </v-text-field>
@@ -317,7 +323,7 @@
             </v-col>
           </v-row>
 
-          <v-row no-gutters class="mb-4">
+          <v-row no-gutters class="mb-4" style="margin-top: 100px">
             <v-col cols="3">
               <v-select v-model="consoleForm.world" density="compact" label="世界" :items="consoleExecMap"
                         :item-props="setItemProps" variant="underlined">
