@@ -1,9 +1,11 @@
 import axios from 'axios';
 import useGlobalStore from '@/plugins/pinia/global'
+import useConfigStore from '@/plugins/pinia/config'
 import { showSnackbar } from '@/utils/snackbar';
 
 
 const globalStore = useGlobalStore()
+const configStore = useConfigStore()
 
 // 创建一个 axios 实例
 const instance = axios.create({
@@ -14,8 +16,8 @@ const instance = axios.create({
 // 请求拦截器：在请求发送之前添加 token
 instance.interceptors.request.use(
     (config) => {
-        config.baseURL = globalStore.url
-        const token = globalStore.token;
+        config.baseURL = configStore.inConfig?configStore.url:globalStore.url
+        const token = configStore.inConfig?configStore.token:globalStore.token;
         config.headers["X-I18n-Lang"] = 'zh'
         // 如果 token 存在，将其添加到请求头中
         if (token) {

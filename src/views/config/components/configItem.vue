@@ -160,6 +160,7 @@
 <script setup>
 import ElectronApi from "@/utils/electronApi"
 import useGlobalStore from '@/plugins/pinia/global'
+import useConfigStore from '@/plugins/pinia/config'
 import configApi from '@/api/config'
 import {sleep, uuid4, validateIpv4} from "@/utils/tools";
 import {DB_KEY} from "@/config";
@@ -168,11 +169,13 @@ import homeApi from "@/api/home"
 
 
 onMounted(() => {
+  configStore.inConfig = true
   startRequests()
 })
 
 
 const globalStore = useGlobalStore()
+const configStore = useConfigStore()
 
 const props = defineProps({
   configItem: {
@@ -204,6 +207,7 @@ const roomInfo = ref({
 
 const handleGotoDashboard = () => {
   globalStore.setConfigInfo(configItem.value)
+  configStore.inConfig = false
   ElectronApi.window.dashboard()
 }
 
@@ -315,8 +319,9 @@ const handleAdd = async (event) => {
     loading.value = false
     return
   }
-  globalStore.url = `http://${addForm.value.ip}:${addForm.value.port}/v1`
-  globalStore.token = addForm.value.token
+  configStore.inConfig = true
+  configStore.url = `http://${addForm.value.ip}:${addForm.value.port}/v1`
+  configStore.token = addForm.value.token
   const newConfig = {
     id: uuid4(),
     name: undefined,
@@ -369,8 +374,8 @@ const handleUpdate = async (event) => {
     loading.value = false
     return
   }
-  globalStore.url = `http://${addForm.value.ip}:${addForm.value.port}/v1`
-  globalStore.token = addForm.value.token
+  configStore.url = `http://${addForm.value.ip}:${addForm.value.port}/v1`
+  configStore.token = addForm.value.token
   const newConfig = {
     id: configItem.value.id,
     name: configItem.value.name,
@@ -456,8 +461,8 @@ const sysInfo = ref({
 })
 const needContinue = ref(true)
 const getCpuMemStatus = () => {
-  globalStore.url = `http://${configItem.value.ip}:${configItem.value.port}/v1`
-  globalStore.token = configItem.value.token
+  configStore.url = `http://${configItem.value.ip}:${configItem.value.port}/v1`
+  configStore.token = configItem.value.token
   homeApi.sysInfo.get().then(response => {
     sysInfo.value = response.data
   }).catch(() => {
