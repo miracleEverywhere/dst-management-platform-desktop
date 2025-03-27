@@ -1,62 +1,73 @@
 @font-face {
-    font-family: "ZhuZiAYuanJWD";
-    src: url("./ZhuZiAYuanJWD.woff2")
+  font-family: "ZhuZiAYuanJWD";
+  src: url("./ZhuZiAYuanJWD.woff2")
 }
 
 * {
-    font-family: "ZhuZiAYuanJWD", Helvetica, "Microsoft YaHei", sans-serif;
+  font-family: "ZhuZiAYuanJWD", Helvetica, "Microsoft YaHei", sans-serif;
 }
 
 .cc {
-    align-content: center;
-    text-align: center
+  align-content: center;
+  text-align: center
+}
+
+.fcc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .tip_primary {
-    padding: 8px 16px;
-    background-color: #8C57FF1A;
-    border-radius: 4px;
-    border-left: 5px solid #8C57FF;
-    margin: 20px 0;
+  padding: 8px 16px;
+  background-color: #8C57FF1A;
+  border-radius: 4px;
+  border-left: 5px solid #8C57FF;
+  margin: 20px 0;
 }
+
 .tip_success {
-    padding: 8px 16px;
-    background-color: #56CA001A;
-    border-radius: 4px;
-    border-left: 5px solid #56CA00;
-    margin: 20px 0;
+  padding: 8px 16px;
+  background-color: #56CA001A;
+  border-radius: 4px;
+  border-left: 5px solid #56CA00;
+  margin: 20px 0;
 }
+
 .tip_info {
-    padding: 8px 16px;
-    background-color: #16B1FF1A;
-    border-radius: 4px;
-    border-left: 5px solid #16B1FF;
-    margin: 20px 0;
+  padding: 8px 16px;
+  background-color: #16B1FF1A;
+  border-radius: 4px;
+  border-left: 5px solid #16B1FF;
+  margin: 20px 0;
 }
+
 .tip_warning {
-    padding: 8px 16px;
-    background-color: #FFB4001A;
-    border-radius: 4px;
-    border-left: 5px solid #FFB400;
-    margin: 20px 0;
+  padding: 8px 16px;
+  background-color: #FFB4001A;
+  border-radius: 4px;
+  border-left: 5px solid #FFB400;
+  margin: 20px 0;
 }
+
 .tip_error {
-    padding: 8px 16px;
-    background-color: #FF4C511A;
-    border-radius: 4px;
-    border-left: 5px solid #FF4C51;
-    margin: 20px 0;
+  padding: 8px 16px;
+  background-color: #FF4C511A;
+  border-radius: 4px;
+  border-left: 5px solid #FF4C51;
+  margin: 20px 0;
 }
+
 .custom-block-title {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .help-text {
-    line-height: 50px;
+  line-height: 50px;
 }
