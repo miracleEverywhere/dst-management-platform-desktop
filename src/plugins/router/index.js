@@ -7,6 +7,12 @@ const router = createRouter({
   routes,
 })
 
+if (window.electronAPI) {
+  window.electronAPI.onNavigate((path) => {
+    router.push(path).catch(() => {})
+  })
+}
+
 export default function (app) {
   app.use(router)
 }

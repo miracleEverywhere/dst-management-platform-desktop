@@ -144,6 +144,12 @@ const createWinDashboard = () => {
   const menuConfig = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menuConfig);
 
+  winDashboard.on('show', () => {
+    if (winDashboard && !winDashboard.isDestroyed()) {
+      winDashboard.webContents.send('force-navigate', '/dashboard')
+    }
+  })
+
   winDashboard.on('close', (event) => {
     if (!app.isQuiting) {
       // 如果不是通过退出菜单项触发的关闭事件，阻止关闭并隐藏窗口
