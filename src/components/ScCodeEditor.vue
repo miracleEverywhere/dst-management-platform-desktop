@@ -26,6 +26,7 @@ import 'codemirror/theme/darcula.css'
 
 //功能
 import 'codemirror/addon/selection/active-line'
+import 'codemirror/addon/display/autorefresh'
 
 //语言
 import 'codemirror/mode/javascript/javascript'
@@ -66,6 +67,7 @@ export default {
       contentValue: this.modelValue,
       coder: null,
       opt: {
+        autoRefresh: true,
         theme: this.theme,	//主题
         styleActiveLine: true,	//高亮当前行
         lineNumbers: true,	//行号
