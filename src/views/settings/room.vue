@@ -41,10 +41,9 @@
           </template>
         </v-stepper-item>
       </v-stepper-header>
-
       <v-stepper-window v-model="step">
         <v-stepper-window-item :value="0">
-          <v-container height="600" style="overflow-y: auto">
+          <v-container height="700" style="overflow-y: auto">
             <v-form ref="roomBaseFormRef" fast-fail>
               <v-container>
                 <v-row>
@@ -146,7 +145,7 @@
           </v-container>
         </v-stepper-window-item>
         <v-stepper-window-item :value="1">
-          <v-container height="600" style="overflow-y: auto">
+          <v-container height="700" style="overflow-y: auto">
             <v-tabs v-model="step2tab" align-tabs="start"
                     class="v-tabs-pill" color="primary" show-arrows @update:modelValue="handleStep2TabChange">
               <v-tab value="Code" prepend-icon="ri-code-s-slash-line">配置文件</v-tab>
@@ -536,6 +535,7 @@ const handleNext = async () => {
       if (valid) {
         step.value++
       }
+      return
     }
     if (step.value === 1) {
       if (!roomGroundForm.value.groundSetting) {
