@@ -5,92 +5,78 @@
       <div class="d-flex h-100 align-center">
         <!-- 👉 小屏幕菜单按钮 -->
         <IconBtn
-            class="ms-n3 d-lg-none"
-            @click="toggleVerticalOverlayNavActive(true)"
+          class="ms-n3 d-lg-none"
+          @click="toggleVerticalOverlayNavActive(true)"
         >
-          <VIcon icon="ri-menu-line" />
+          <VIcon icon="ri-menu-line"/>
         </IconBtn>
 
-        <!-- 👉 Search -->
         <div
-            class="d-flex align-center"
-            style="user-select: none;"
+          class="d-flex align-center"
+          style="user-select: none;"
         >
           <span class="d-none d-md-flex align-center text-disabled">
             <v-icon icon="ri-bookmark-3-line"></v-icon>
-            <span class="me-3 ml-1">{{globalStore.name}}</span>
+            <span class="me-3 ml-1">{{ globalStore.name }}</span>
           </span>
         </div>
 
-        <VSpacer />
+        <VSpacer/>
 
         <IconBtn
-            href="https://github.com/miracleEverywhere/dst-management-platform-desktop"
-            target="_blank"
-            rel="noopener noreferrer"
+          href="https://github.com/miracleEverywhere/dst-management-platform-desktop"
+          rel="noopener noreferrer"
+          target="_blank"
         >
-          <VIcon icon="ri-github-fill" />
+          <VIcon icon="ri-github-fill"/>
         </IconBtn>
 
-<!--        <IconBtn>-->
-<!--          <VIcon icon="ri-notification-line" />-->
-<!--        </IconBtn>-->
-
-        <NavbarThemeSwitcher class="me-2" />
+        <NavbarThemeSwitcher class="me-2"/>
 
         <IconBtn>
           <v-tooltip activator="parent" open-delay="1000" scroll-strategy="close">
-            刷新整个页面
+            重新载入应用
           </v-tooltip>
-          <VIcon icon="ri-refresh-line" @click="handleReload" />
+          <VIcon icon="ri-refresh-line" @click="handleReload"/>
         </IconBtn>
 
         <IconBtn>
           <v-tooltip activator="parent" open-delay="1000" scroll-strategy="close">
             退出当前存档，返回存档选择界面
           </v-tooltip>
-          <VIcon icon="ri-logout-box-r-line" @click="handleOut" />
+          <VIcon icon="ri-logout-box-r-line" @click="handleOut"/>
         </IconBtn>
-
-<!--        <UserProfile />-->
       </div>
     </template>
 
     <template #vertical-nav-header="{ toggleIsOverlayNavActive }">
       <RouterLink
-          to="/"
-          class="app-logo app-title-wrapper"
+        class="app-logo app-title-wrapper"
+        to="/"
       >
         <!-- LOGO -->
         <div
-            class="d-flex"
-            v-html="logo"
+          class="d-flex"
+          v-html="logo"
         />
         <!-- 标题 -->
         <h1 class="font-weight-medium leading-normal text-xl text-uppercase">
-          {{title}}
+          {{ title }}
         </h1>
       </RouterLink>
       <!-- 标题右边的关闭按钮 -->
       <IconBtn
-          class="d-block d-lg-none"
-          @click="toggleIsOverlayNavActive(false)"
+        class="d-block d-lg-none"
+        @click="toggleIsOverlayNavActive(false)"
       >
-        <VIcon icon="ri-close-line" />
+        <VIcon icon="ri-close-line"/>
       </IconBtn>
     </template>
 
     <template #vertical-nav-content>
-      <NavItems />
+      <NavItems/>
     </template>
-
-    <!-- 👉 Pages -->
-    <slot />
-
-    <!-- 👉 Footer -->
-<!--    <template #footer>-->
-<!--      <Footer />-->
-<!--    </template>-->
+    <slot/>
   </VerticalNavLayout>
 </template>
 
@@ -98,19 +84,18 @@
 import NavItems from '@/layouts/components/NavItems.vue'
 import logo from '@images/logo.svg?raw'
 import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
-
-// Components
-// import Footer from '@/layouts/components/Footer.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
-// import UserProfile from '@/layouts/components/UserProfile.vue'
 import useGlobalStore from "@/plugins/pinia/global";
+import useConfigStore from '@/plugins/pinia/config'
 import ElectronApi from "@/utils/electronApi";
 
 const globalStore = useGlobalStore()
+const configStore = useConfigStore()
 
 const title = import.meta.env.VITE_TITLE
 
 const handleOut = () => {
+  configStore.inConfig = true
   globalStore.clearStore()
   ElectronApi.window.config()
 }
