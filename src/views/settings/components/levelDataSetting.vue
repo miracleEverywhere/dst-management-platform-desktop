@@ -1,16 +1,20 @@
 <template>
   <div style="display: flex; align-items: center; margin: 5px; width:215px">
-    <el-image :src="getImageUrl(props.image)" fit="fill" style="width: 75px; height: 75px"/>
+    <v-img :src="getImageUrl(props.image)" fit="fill" style="width: 75px; height: 75px"/>
     <div style="width: 140px">
       <div class="fcc">
-        <el-tag size="large" :type="modelValue===defaultModelValue?'primary':'warning'">
+        <v-chip size="large" :color="modelValue===defaultModelValue?'primary':'warning'"
+                density="compact"
+        >
           {{props.i18n.zh}}
-        </el-tag>
+        </v-chip>
       </div>
       <div style="margin: 5px 0" class="fcc">
-        <el-button :icon="ArrowLeftBold" link type="primary" :disabled="leftClickDisabled" @click="leftClick"></el-button>
-        <el-tag size="large" effect="plain" type="primary" style="margin: 0 5px; width: 100px">{{getDisplayTagValue()}}</el-tag>
-        <el-button :icon="ArrowRightBold" link type="primary" :disabled="rightClickDisabled" @click="rightClick"></el-button>
+        <icon-btn icon="ri-arrow-left-s-line" :disabled="leftClickDisabled" @click="leftClick"></icon-btn>
+        <v-chip label density="compact" style="margin: 0 5px;">
+          {{getDisplayTagValue()}}
+        </v-chip>
+        <icon-btn icon="ri-arrow-right-s-line" :disabled="rightClickDisabled" @click="rightClick"></icon-btn>
       </div>
     </div>
 
@@ -18,9 +22,7 @@
 </template>
 
 <script setup>
-import {ArrowLeftBold, ArrowRightBold} from '@element-plus/icons-vue'
 import {computed, ref, watch, defineEmits, onMounted} from "vue";
-import useGlobalStore from "@/stores/modules/global.ts";
 import {configsMap, overrides} from "@/views/settings/components/levelDataMap.js"
 
 const props = defineProps({
@@ -67,8 +69,7 @@ onMounted(() => {
   }
 })
 
-const globalStore = useGlobalStore();
-const language = computed(() => globalStore.language);
+const language = ref('zh')
 
 const leftClickDisabled = ref(false)
 const rightClickDisabled = ref(false)
@@ -96,7 +97,11 @@ const getDisplayTagValue = () => {
   }
   // console.log(props.name)
   if (language.value === 'zh') {
-    return tagValue.zh
+    try {
+      return tagValue.zh
+    } catch {
+      console.log(props)
+    }
   } else {
     return tagValue.en
   }
