@@ -141,174 +141,180 @@
             </v-tabs>
             <v-tabs-window v-model="step2tab">
               <v-tabs-window-item value="Code">
-                <v-btn :disabled="roomBaseForm.gameMode !== 'endless'" color="info"
-                  @click="handleImportLeveldataLua('master', 'endless')" class="mt-2 mr-2"
-                  prepend-icon="ri-download-2-line">
-                  导入标准无尽
-                </v-btn>
-                <v-btn :disabled="roomBaseForm.gameMode !== 'survival'" color="info"
-                  @click="handleImportLeveldataLua('master', 'survival')" class="mt-2 mr-2"
-                  prepend-icon="ri-download-2-line">
-                  导入标准生存
-                </v-btn>
-                <sc-code-editor ref="editorGroundSettingRef" v-model="roomGroundForm.groundSetting" :height="300"
-                  class="mt-4" :theme="globalStore.theme === 'dark' ? 'darcula' : 'idea'" mode="lua"
-                  style="width: 100%"></sc-code-editor>
+                <div class="d-flex flex-column gap-4">
+                  <div>
+                    <v-btn :disabled="roomBaseForm.gameMode !== 'endless'" color="info"
+                    @click="handleImportLeveldataLua('master', 'endless')" class="mt-2 mr-2"
+                    prepend-icon="ri-download-2-line">
+                    导入标准无尽
+                  </v-btn>
+                  <v-btn :disabled="roomBaseForm.gameMode !== 'survival'" color="info"
+                    @click="handleImportLeveldataLua('master', 'survival')" class="mt-2 mr-2"
+                    prepend-icon="ri-download-2-line">
+                    导入标准生存
+                  </v-btn>
+                  </div>
+                  <ScCodeEditor ref="editorGroundSettingRef" v-model="roomGroundForm.groundSetting" :height="300"
+                    class="mt-4" :theme="globalStore.theme === 'dark' ? 'darcula' : 'idea'" mode="lua"
+                    style="width: 100%"></ScCodeEditor>
+                </div>
               </v-tabs-window-item>
-              <v-tabs-window-item value="Visualization" class="mt-2">
-                <v-alert><span style="font-weight: bolder">世界规则</span> - 全局</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldRule.global">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界规则</span> - 活动</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldRule.events">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界规则</span> - 冒险家</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldRule.survivors">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界规则</span> - 世界</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldRule.world">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界规则</span> - 资源再生</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldRule.resourceRegrowth">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界规则</span> - 非自然传送门资源</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldRule.unnaturalPortalResource">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界规则</span> - 生物</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldRule.creatures">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界规则</span> - 敌对生物</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldRule.hostileCreatures">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界规则</span> - 巨兽</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldRule.giants">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界生成</span> - 全局</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldGeneration.global">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界生成</span> - 世界</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldGeneration.world">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界生成</span> - 资源</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldGeneration.resources">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界生成</span> - 生物以及刷新点</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldGeneration.creaturesAndSpawners">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
-                </div>
-                <v-alert><span style="font-weight: bolder">世界生成</span> - 敌对生物以及刷新点</v-alert>
-                <div class="item-container">
-                  <template v-for="i in groundWorldGeneration.hostileCreaturesAndSpawners">
-                    <div>
-                      <LevelDataSetting :key="new Date().getTime()" v-model="overridesObj[i]"
-                        :configs="overrides[i].configs" :customConfigsValue="overrides[i].customConfigsValue"
-                        :defaultModelValue="overrides[i].modelValue" :i18n="overrides[i].i18n"
-                        :image="overrides[i].image" :name="i" @changeModelValue="handleModelValueChange" />
-                    </div>
-                  </template>
+              <v-tabs-window-item value="Visualization">
+                <div class="d-flex flex-column gap-4">
+                  <v-alert><span style="font-weight: bolder">世界规则</span> - 全局</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldRule.global">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界规则</span> - 活动</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldRule.events">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界规则</span> - 冒险家</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldRule.survivors">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界规则</span> - 世界</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldRule.world">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界规则</span> - 资源再生</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldRule.resourceRegrowth">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界规则</span> - 非自然传送门资源</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldRule.unnaturalPortalResource">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界规则</span> - 生物</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldRule.creatures">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界规则</span> - 敌对生物</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldRule.hostileCreatures">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界规则</span> - 巨兽</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldRule.giants">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界生成</span> - 全局</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldGeneration.global">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界生成</span> - 世界</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldGeneration.world">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界生成</span> - 资源</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldGeneration.resources">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界生成</span> - 生物以及刷新点</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldGeneration.creaturesAndSpawners">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
+                  <v-alert><span style="font-weight: bolder">世界生成</span> - 敌对生物以及刷新点</v-alert>
+                  <div class="item-container">
+                    <template v-for="(item, i) in groundWorldGeneration.hostileCreaturesAndSpawners">
+                      <div>
+                        <LevelDataSetting :key="i" v-model="overridesObj[item]"
+                          :configs="overrides[item].configs" :customConfigsValue="overrides[item].customConfigsValue"
+                          :defaultModelValue="overrides[item].modelValue" :i18n="overrides[item].i18n"
+                          :image="overrides[item].image" :name="item" @changeModelValue="debouncedHandleModelValueChange" />
+                      </div>
+                    </template>
+                  </div>
                 </div>
               </v-tabs-window-item>
             </v-tabs-window>
@@ -361,6 +367,40 @@ import {
   overrides,
 } from "@/views/settings/components/levelDataMap.js";
 import { showSnackbar } from "@/utils/snackbar";
+
+// 添加防抖函数
+const debounce = (fn, delay) => {
+  let timer = null;
+  return (...args) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+};
+
+const debouncedRefresh = debounce((editor) => {
+  requestAnimationFrame(() => {
+    if (editor) {
+      editor.refresh();
+    }
+  });
+}, 100);
+
+const debouncedHandleModelValueChange = debounce((data) => {
+  const key = data.name;
+  const value = data.value;
+  const ast = luaparse.parse(roomGroundForm.value.groundSetting);
+  // 提取 overrides 字段
+  const overridesTable = extractOverrides(ast);
+  // console.log(overridesTable)
+  for (let field of overridesTable.fields) {
+    if (field.key.name === key) {
+      field.value.raw = `"${value}"`;
+    }
+  }
+  const luaScript = astToLua(ast);
+  roomGroundForm.value.groundSetting = beautifyLua(luaScript);
+  debouncedRefresh(editorGroundSettingRef.value);
+}, 100);
 
 onMounted(async () => {
   await getMultiHost();
@@ -520,7 +560,7 @@ const handleStep2TabChange = async (tab) => {
   }
   if (tab === "Code") {
     roomGroundForm.value.groundSetting = beautifyLua(roomGroundForm.value.groundSetting);
-    await nextTick(() => {
+    requestAnimationFrame(() => {
       if (editorGroundSettingRef.value) {
         editorGroundSettingRef.value.refresh();
       }
@@ -617,25 +657,6 @@ const beautifyLua = (luaScript) => {
   removedWatermark = removedWatermark.replace(/^ +?\n/gm, "");
 
   return removedWatermark;
-};
-
-const handleModelValueChange = (data) => {
-  const key = data.name;
-  const value = data.value;
-  const ast = luaparse.parse(roomGroundForm.value.groundSetting);
-  // 提取 overrides 字段
-  const overridesTable = extractOverrides(ast);
-  // console.log(overridesTable)
-  for (let field of overridesTable.fields) {
-    if (field.key.name === key) {
-      field.value.raw = `"${value}"`;
-    }
-  }
-  const luaScript = astToLua(ast);
-  roomGroundForm.value.groundSetting = beautifyLua(luaScript);
-  if (editorGroundSettingRef.value) {
-    editorGroundSettingRef.value.refresh();
-  }
 };
 
 const astToLua = (astNode, indentLevel = 0) => {
