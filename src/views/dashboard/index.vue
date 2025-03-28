@@ -1,4 +1,4 @@
-<<template>
+<template>
   <v-row>
     <v-col cols="12" sm="6">
       <v-card height="400">
@@ -150,7 +150,7 @@
             <div class="d-flex align-center justify-center">
               <v-icon icon="ri-cpu-line"></v-icon>
               <span class="mr-2 ml-1">CPU</span>
-              <v-progress-linear :model-value="sysInfo.cpu" rounded height="8"
+              <v-progress-linear :value="sysInfo.cpu" rounded height="8"
                                  color="grey-lighten-2" class="w-33 ml-2"/>
               <span class="ml-2">{{sysInfo.cpu.toFixed(1)}}%</span>
             </div>
@@ -174,7 +174,7 @@
             <div class="d-flex align-center justify-center">
               <v-icon icon="ri-ram-line"></v-icon>
               <span class="mr-2 ml-1">内存</span>
-              <v-progress-linear :model-value="sysInfo.memory" rounded height="8"
+              <v-progress-linear :value="sysInfo.memory" rounded height="8"
                                  color="grey-lighten-2" class="w-33 ml-2"/>
               <span class="ml-2">{{sysInfo.memory.toFixed(1)}}%</span>
             </div>
@@ -382,41 +382,29 @@ const sysInfo = ref({
   caves: 0,
 })
 
-const cpuList = ref([])
-const memoryList = ref([])
-const needContinue = ref(true)
+const cpuList = ref(Array(60).fill(0)) 
+const memoryList = ref(Array(60).fill(0))
 
 const getSysInfo = () => {
   homeApi.sysInfo.get().then(response => {
-    sysInfo.value = response.data
-    if (cpuList.value.length > 60) {
-      cpuList.value.shift()
-      cpuList.value.push(sysInfo.value.cpu.toFixed(1))
-      memoryList.value.shift()
-      memoryList.value.push(sysInfo.value.memory.toFixed(1))
-    } else {
-      cpuList.value.push(sysInfo.value.cpu.toFixed(1))
-      memoryList.value.push(sysInfo.value.memory.toFixed(1))
+    if (!response.data) return; 
+    
+    const cpu = Number(response.data.cpu) || 0;
+    const memory = Number(response.data.memory) || 0;
+    
+    sysInfo.value = {
+      ...response.data,
+      cpu,
+      memory
     }
+    
+    cpuList.value = [...cpuList.value.slice(1), cpu];
+    memoryList.value = [...memoryList.value.slice(1), memory];
   }).catch(() => {
     needContinue.value = false
   })
 }
-
-let intervalId = null
-const startRequests = () => {
-  intervalId = setInterval(() => {
-    if (needContinue.value) {
-      getSysInfo()
-    }
-  }, 2000)
-}
-const cancelRequests = () => {
-  if (intervalId) {
-    clearInterval(intervalId)
-    intervalId = null
-  }
-}
+const needContinue = ref(true)
 
 const gradients = ['#f72047', '#ffd200', '#1feaea']
 
@@ -616,6 +604,21 @@ const setItemProps = (item) => {
     prependIcon: icon
   }
 };
+
+let intervalId = null
+const startRequests = () => {
+  intervalId = setInterval(() => {
+    if (needContinue.value) {
+      getSysInfo()
+    }
+  }, 2000)
+}
+const cancelRequests = () => {
+  if (intervalId) {
+    clearInterval(intervalId)
+    intervalId = null
+  }
+}
 
 onBeforeUnmount(() => {
   cancelRequests();
