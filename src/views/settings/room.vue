@@ -44,7 +44,7 @@
       <v-stepper-window v-model="step">
         <v-stepper-window-item :value="0">
           <v-container height="700" style="overflow-y: auto">
-            <v-form ref="roomBaseFormRef" fast-fail>
+            <v-form ref="roomBaseFormRef" fast-fail class="mt-4">
               <v-container>
                 <v-row>
                   <v-col cols="6">
@@ -67,18 +67,20 @@
                                   clearable label="房间描述"></v-text-field>
                   </v-col>
                   <v-col cols="6">
-                    <v-number-input v-model="roomBaseForm.masterPort" :rules="roomBaseFormRules.masterPort"
-                                    clearable control-variant="stacked" inset
+                    <v-number-input v-model="roomBaseForm.masterPort"
+                                    :rules="roomBaseFormRules.masterPort"
+                                    control-variant="stacked" inset
                                     label="地面端口" variant="outlined"
                     ></v-number-input>
                   </v-col>
                   <v-col cols="6">
-                    <v-number-input v-model="roomBaseForm.cavesPort" :rules="roomBaseFormRules.cavesPort"
-                                    clearable control-variant="stacked" inset
+                    <v-number-input v-model="roomBaseForm.cavesPort"
+                                    :rules="roomBaseFormRules.cavesPort"
+                                    control-variant="stacked" inset
                                     label="洞穴端口" variant="outlined"
                     ></v-number-input>
                   </v-col>
-                  <v-col cols="6" style="margin-top: -20px">
+                  <v-col cols="6" class="mt-2">
                     <v-radio-group v-model="roomBaseForm.gameMode" inline>
                       <template #prepend>
                         <span>游戏模式</span>
@@ -89,14 +91,14 @@
                       <v-radio label="暴食" value="quagmire"/>
                     </v-radio-group>
                   </v-col>
-                  <v-col cols="3" style="margin-top: -20px">
+                  <v-col cols="3" class="mt-2">
                     <v-switch v-model="roomBaseForm.pvp" inset>
                       <template #prepend>
                         <span>玩家对战</span>
                       </template>
                     </v-switch>
                   </v-col>
-                  <v-col cols="3" style="margin-top: -20px">
+                  <v-col cols="3" class="mt-2">
                     <v-switch v-model="roomBaseForm.vote" inset>
                       <template #prepend>
                         <span>玩家投票</span>
@@ -111,9 +113,9 @@
                         <span>玩家数量</span>
                       </template>
                       <template v-slot:append>
-                        <v-text-field v-model="roomBaseForm.playerNum" density="compact"
-                                      hide-details single-line style="width: 70px" type="number"
-                        ></v-text-field>
+                        <v-chip>
+                          {{roomBaseForm.playerNum}}
+                        </v-chip>
                       </template>
                     </v-slider>
                   </v-col>
@@ -125,13 +127,13 @@
                         <span>回档天数</span>
                       </template>
                       <template v-slot:append>
-                        <v-text-field v-model="roomBaseForm.backDays" density="compact"
-                                      hide-details single-line style="width: 70px" type="number"
-                        ></v-text-field>
+                        <v-chip>
+                          {{roomBaseForm.backDays}}
+                        </v-chip>
                       </template>
                     </v-slider>
                   </v-col>
-                  <v-col cols="12">
+                  <v-col cols="12" class="mt-8">
                     <v-text-field v-model="roomBaseForm.password"
                                   clearable label="房间密码" required></v-text-field>
                   </v-col>
