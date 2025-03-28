@@ -1371,10 +1371,6 @@ const handleNext = async () => {
       }
     }
     if (step.value === 2) {
-      if (!roomCaveForm.value.caveSetting) {
-        showSnackbar("洞穴设置不能为空", "error");
-        return;
-      }
       try {
         luaparse.parse(roomCaveForm.value.caveSetting);
         step.value++;
