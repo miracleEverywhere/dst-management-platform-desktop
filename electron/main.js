@@ -145,6 +145,9 @@ const createWinDashboard = () => {
   Menu.setApplicationMenu(menuConfig);
 
   winDashboard.on('show', () => {
+    if (process.env.VITE_DEV_SERVER_URL) {
+      return
+    }
     if (winDashboard && !winDashboard.isDestroyed()) {
       winDashboard.webContents.send('force-navigate', '/dashboard')
     }
