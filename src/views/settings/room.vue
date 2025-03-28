@@ -46,7 +46,7 @@
                     <div style="display: flex; align-items: center">
                       <span>当前模式为：</span>
                       <v-chip> 单机器模式</v-chip>
-                      <v-btn class="ml-1" variant="text">点击切换为多机器模式</v-btn>
+                      <v-btn class="ml-1" variant="text" @click="handleChangeMultiHost(true)">点击切换为多机器模式</v-btn>
                     </div>
                   </v-col>
                 </v-row>
@@ -554,16 +554,74 @@
     </v-stepper>
   </template>
   <template v-if="isMultiHost">
-    <v-stepper>
+    <v-stepper v-model="step">
       <v-stepper-header>
-        <v-stepper-item title="Select campaign settings" value="1"></v-stepper-item>
+        <v-stepper-item :color="step > 0 ? 'success' : ''" :complete="step > 0" :value="0" title="房间设置">
+          <template #icon>
+            <v-icon icon="ri-number-1" size="12"></v-icon>
+          </template>
+        </v-stepper-item>
         <v-divider></v-divider>
 
-        <v-stepper-item title="Create an ad group" value="2"></v-stepper-item>
+        <v-stepper-item :color="step > 1 ? 'success' : ''" :complete="step > 1" :value="1" title="世界设置">
+          <template #icon>
+            <v-icon icon="ri-number-2" size="12"></v-icon>
+          </template>
+        </v-stepper-item>
         <v-divider></v-divider>
 
-        <v-stepper-item title="Create an ad" value="3"></v-stepper-item>
+        <v-stepper-item :color="step > 2 ? 'success' : ''" :complete="step > 3" :value="3" title="模组设置">
+          <template #icon>
+            <v-icon icon="ri-number-3" size="12"></v-icon>
+          </template>
+        </v-stepper-item>
+        <v-divider></v-divider>
+
+        <v-stepper-item :color="step > 3 ? 'success' : ''" :complete="step > 4" :value="4" title="设置完成">
+          <template #icon>
+            <v-icon icon="ri-number-4" size="12"></v-icon>
+          </template>
+        </v-stepper-item>
       </v-stepper-header>
+      <v-stepper-window v-model="step">
+        <v-stepper-window-item :value="0">
+          <v-container height="700" style="overflow-y: auto">
+          </v-container>
+        </v-stepper-window-item>
+        <v-stepper-window-item :value="1">
+          <v-container height="700" style="overflow-y: auto">
+          </v-container>
+        </v-stepper-window-item>
+        <v-stepper-window-item :value="2">
+          <v-container height="700" style="overflow-y: auto">
+          </v-container>
+        </v-stepper-window-item>
+        <v-stepper-window-item :value="3">
+          <v-container height="700" style="overflow-y: auto">
+          </v-container>
+        </v-stepper-window-item>
+      </v-stepper-window>
+      <v-stepper-actions>
+        <template #prev>
+          <v-btn color="grey-lighten-3" variant="tonal" @click="step--">上一步</v-btn>
+        </template>
+        <template #next>
+          <v-btn v-if="step!==3" color="primary" variant="elevated" @click="handleNext">下一步</v-btn>
+          <v-menu open-on-hover>
+            <template v-slot:activator="{ props }">
+              <v-btn v-if="step===3" :disabled="false" color="success" prepend-icon="ri-list-unordered"
+                     variant="elevated" v-bind="props">
+                操作
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item title="保存" @click="showSnackbar('保存')" />
+              <v-list-item title="保存并重启" @click="showSnackbar('保存并重启')" />
+              <v-list-item title="生成新世界" @click="showSnackbar('生成新世界')" />
+            </v-list>
+          </v-menu>
+        </template>
+      </v-stepper-actions>
     </v-stepper>
   </template>
 </template>
@@ -994,6 +1052,33 @@ const astToLua = (astNode, indentLevel = 0) => {
       throw new Error(`Unsupported node type: ${astNode.type}`);
   }
 };
+
+const handleChangeMultiHost = (v) => {
+  settingApi.multihost.post({multiHost: !isMultiHost.value}).then(response => {
+    isMultiHost.value = !isMultiHost.value
+    if (v) {
+      clearSetting()
+    }
+  })
+}
+
+const clearSetting = () => {
+  roomGroundForm.value.groundSetting = ""
+  roomCaveForm.value.caveSetting = ""
+
+  roomBaseForm.value.masterPort = undefined
+  roomBaseForm.value.cavesPort = undefined
+  roomBaseForm.value.shardMasterPort = undefined
+  roomBaseForm.value.steamMasterPort = undefined
+  roomBaseForm.value.steamAuthenticationPort = undefined
+  if (multiHostIsMaster.value) {
+    roomBaseForm.value.shardMasterIp = '127.0.0.1'
+  } else {
+    roomBaseForm.value.shardMasterIp = undefined
+  }
+
+  roomBaseForm.value.clusterKey = undefined
+}
 </script>
 
 <style scoped>
