@@ -32,7 +32,14 @@
                 <template v-slot:loading>
                   <v-skeleton-loader type="table-row@12"></v-skeleton-loader>
                 </template>
-
+                <template v-slot:item.prefab="{item}">
+                  <v-chip v-if="item.prefab" color="info" label>
+                    {{ item.prefab }}
+                  </v-chip>
+                  <v-chip v-else color="warning" label>
+                    获取失败
+                  </v-chip>
+                </template>
                 <template v-slot:item.age="{item}">
                   <v-chip v-if="item.age" color="info" label>
                     <v-icon icon="ri-calendar-2-line" start/>
@@ -214,11 +221,9 @@
               </template>
               <template v-slot:item.prefab="{item}">
                 <v-chip v-if="item.prefab" color="info" label>
-                  <v-icon icon="ri-calendar-2-line" start/>
                   {{ item.prefab }}
                 </v-chip>
                 <v-chip v-else color="warning" label>
-                  <v-icon icon="ri-calendar-2-line" start/>
                   获取失败
                 </v-chip>
               </template>
