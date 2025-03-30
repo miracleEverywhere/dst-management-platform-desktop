@@ -82,7 +82,7 @@
             </v-card>
         </v-col>
         <v-col cols="24" lg="12">
-            <v-alert border="top" variant="tonal" type="primary" icon="$info">
+            <v-alert variant="tonal" color="warning" icon="$warning">
                 如果安装完成后，首页无法获取饥荒版本，请手动执行manual_install.sh脚本，执行方法：cd && ./manual_install.sh
             </v-alert>
         </v-col>
