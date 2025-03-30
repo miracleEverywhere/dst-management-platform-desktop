@@ -57,7 +57,7 @@
   <VerticalNavGroup
     :item="{
       title: '工具',
-      icon: 'ri-tools-line',
+      icon: 'ri-hammer-line',
     }"
     :is-open="activeGroupId === 'tools'"
     @toggle="handleGroupToggle('tools')"
