@@ -1,7 +1,7 @@
 {
   "name": "dmp-desktop",
   "private": true,
-  "version": "v1.0.5",
+  "version": "v1.2.0",
   "description": "饥荒管理平台",
   "homepage": "https://github.com/miracleEverywhere/dst-management-platform-desktop",
   "license": "MIT",
