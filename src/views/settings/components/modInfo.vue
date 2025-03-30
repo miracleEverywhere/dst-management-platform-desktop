@@ -1,93 +1,34 @@
 <template>
-  <el-card shadow="never">
-    <div style="display: flex; align-items: center; margin: 5px; width:280px">
-      <!--    <el-image :src="props.mod.preview_url" fit="fill" style="width: 80px; height: 80px"/>-->
-      <el-image :src="props.mod.preview_url" fit="fill" style="width: 80px; height: 80px"/>
+  <v-card variant="outlined" height="135" class="fcc">
+    <div style="display: flex; align-items: center; margin: 5px; width:320px">
+      <v-img :src="props.mod.preview_url" aspect-ratio="1" style="width: 80px; height: 80px"/>
       <div style="width: 200px">
         <div class="fcc">
-          <el-tooltip effect="light" :show-after="500" :content="props.mod.name" placement="top">
-            <el-tag size="small">{{computedName}}</el-tag>
-          </el-tooltip>
+            <v-chip label size="small" color="primary">
+              {{computedName}}
+              <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
+                {{props.mod.name}}
+              </v-tooltip>
+            </v-chip>
         </div>
         <div style="margin: 5px 0" class="fcc">
-          <el-rate v-model="computedRate" :max="5" disabled allow-half show-score/>
+          <v-rating v-model="computedRate" size="28" readonly half-increments/>
+          <span class="ml-2">{{computedRate}}</span>
         </div>
         <div class="fcc">
-          <el-button type="primary" size="small" @click="dialogVisible=true">{{t('setting.mod.download.detail')}}</el-button>
-          <el-button type="success" size="small" @click="handleDownload">{{t('setting.mod.download.download')}}</el-button>
+          <v-btn color="info" density="compact" size="small" @click="dialogVisible=true" class="mr-1">详情</v-btn>
+          <v-btn color="success" density="compact" size="small" @click="handleDownload">下载</v-btn>
         </div>
       </div>
     </div>
-  </el-card>
-
-  <el-dialog v-model="dialogVisible" :title="props.mod.name" width="80vw">
-    <div style="min-height: 50vh; margin-top: 20px">
-      <el-descriptions :column="2" border :direction="isMobile?'vertical':'horizontal'">
-        <el-descriptions-item :rowspan="isMobile?1:2" :width="140" align="center">
-          <template #label>
-            <el-icon><PictureFilled /></el-icon>
-          </template>
-          <el-image :style="isMobile?'width: 60px; height: 60px':'width: 120px; height: 120px'" :src="props.mod.preview_url"/>
-        </el-descriptions-item>
-        <el-descriptions-item label="ID" align="center">
-          <el-tag type="info">{{props.mod.id}}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item :label="t('setting.mod.download.size')" align="center">
-          <el-tag type="info">{{formatBytes(props.mod.size)}}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item align="center">
-          <template #label>
-            <div class="fcc">
-              <el-icon>
-                <sc-icon-ThumbUpFill />
-              </el-icon>
-            </div>
-          </template>
-          <el-tag type="info">{{props.mod.vote_data.votes_up}}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item v-if="isMobile"/>
-        <el-descriptions-item align="center">
-          <template #label>
-            <div class="fcc">
-              <el-icon>
-                <sc-icon-ThumbDownFill />
-              </el-icon>
-            </div>
-          </template>
-          <el-tag type="info">{{props.mod.vote_data.votes_down}}</el-tag>
-        </el-descriptions-item>
-
-        <el-descriptions-item>
-          <template #label>
-            <div class="fcc">
-              <el-icon>
-                <sc-icon-StarFill />
-              </el-icon>
-            </div>
-          </template>
-          <el-rate v-model="computedRate" :max="5" disabled allow-half show-score score-template="({value}/5)"/>
-        </el-descriptions-item>
-      </el-descriptions>
-      <div style="margin-top: 20px">
-        <el-scrollbar max-height="20vh">
-          {{props.mod.file_description}}
-        </el-scrollbar>
-      </div>
-    </div>
-  </el-dialog>
+  </v-card>
 </template>
 
 <script setup>
-import {computed, ref} from "vue";
-import {useScreenStore} from "@/hooks/screen/index.ts";
 import {formatBytes} from "@/utils/tools.js"
 import settingsApi from "@/api/setting"
-import {koiMsgSuccess} from "@/utils/koi.ts"
-import {useI18n} from "vue-i18n";
+import {showSnackbar} from "@/utils/snackbar";
 
-
-const {isMobile} = useScreenStore();
-const {t} = useI18n()
 
 const props = defineProps({
   mod: {
@@ -116,11 +57,24 @@ const handleDownload = () => {
     file_url: props.mod.file_url
   }
   settingsApi.mod.download.post(reqFrom).then(response => {
-    koiMsgSuccess(response.message)
+    showSnackbar(response.message)
   })
 }
-
 </script>
 
 <style scoped>
+.custom-rating {
+  position: relative;
+  display: inline-flex;
+}
+.partial-star {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.partial-star:nth-child(5) {
+  left: calc(4 * 24px); /* 假设每颗星宽 24px */
+}
 </style>
