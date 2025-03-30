@@ -122,6 +122,9 @@
                 <template v-slot:default="{ isActive }">
                   <v-card title="导入黑名单">
                     <v-card-text>
+                      <v-alert color="info" density="compact" class="mt-2 mb-2">
+                        请上传Excel文档，A列为黑名单用户的UID，每行一个
+                      </v-alert>
                       <v-file-upload density="default" icon="ri-upload-cloud-2-line"
                                      @update:modelValue="handleUpload">
                       </v-file-upload>
