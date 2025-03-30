@@ -94,11 +94,10 @@
               <v-col class="mt-4" cols="12">
                 <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               </v-col>
-              <v-col v-for="uid in adminListData" class="mt-2" cols="3">
-                <v-chip closable color="success" size="large" @click:close="handleDeleteAdmin(uid)">
+                <v-chip v-for="uid in adminListData" closable color="info" class="mt-2 mr-2"
+                        size="large" @click:close="handleDeleteAdmin(uid)">
                   {{ uid + getNickname(uid) }}
                 </v-chip>
-              </v-col>
             </v-row>
             <div v-else class="d-flex flex-column align-center justify-center" style="height: 600px">
               <v-icon color="warning" icon="ri-error-warning-fill" size="128"/>
@@ -140,11 +139,10 @@
               <v-col class="mt-4" cols="12">
                 <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               </v-col>
-              <v-col v-for="uid in blockListData" class="mt-2" cols="3">
-                <v-chip closable color="success" size="large" @click:close="handleDeleteBlock(uid)">
-                  {{ uid + getNickname(uid) }}
-                </v-chip>
-              </v-col>
+              <v-chip v-for="uid in blockListData" closable color="success" class="mt-2 mr-2"
+                      size="large" @click:close="handleDeleteBlock(uid)">
+                {{ uid + getNickname(uid) }}
+              </v-chip>
             </v-row>
             <div v-else class="d-flex flex-column align-center justify-center" style="height: 600px">
               <v-icon color="warning" icon="ri-error-warning-fill" size="128"/>
@@ -170,11 +168,10 @@
               <v-col class="mt-4" cols="12">
                 <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               </v-col>
-              <v-col v-for="uid in whiteListData" class="mt-2" cols="3">
-                <v-chip closable color="success" size="large" @click:close="handleDeleteWhite(uid)">
-                  {{ uid + getNickname(uid) }}
-                </v-chip>
-              </v-col>
+              <v-chip  v-for="uid in whiteListData" closable color="success" class="mt-2 mr-2"
+                       size="large" @click:close="handleDeleteWhite(uid)">
+                {{ uid + getNickname(uid) }}
+              </v-chip>
             </v-row>
             <div v-else class="d-flex flex-column align-center justify-center" style="height: 600px">
               <v-icon color="warning" icon="ri-error-warning-fill" size="128"/>
