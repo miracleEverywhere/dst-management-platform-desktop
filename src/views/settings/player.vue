@@ -187,7 +187,12 @@
       <v-card class="mt-4" height="800">
         <v-card-title>
           <div class="card-header">
-            <span>历史玩家</span>
+            <span>
+              历史玩家
+              <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
+                指平台启动以来，记录到的所有玩家信息
+              </v-tooltip>
+            </span>
             <v-btn @click="handleGetHistoryPlayer(true)">刷新</v-btn>
           </div>
         </v-card-title>
