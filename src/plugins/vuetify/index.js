@@ -3,6 +3,7 @@ import { VBtn } from 'vuetify/components/VBtn'
 import defaults from './defaults'
 import { icons } from './icons'
 import { themes } from './theme'
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
 
 import { pl, zhHans } from 'vuetify/locale'
 
@@ -17,6 +18,9 @@ export default function (app) {
     },
     defaults,
     icons,
+    components: {
+      VFileUpload,
+    },
     theme: {
       defaultTheme: 'light',
       themes,

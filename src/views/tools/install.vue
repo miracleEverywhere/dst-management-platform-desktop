@@ -59,7 +59,7 @@
                         <template
                             v-if="osInfo.Platform === 'ubuntu' || osInfo.Platform === 'centos' || osInfo.Platform === 'rocky'">
                             <v-icon color="success" size="64" icon="ri-checkbox-circle-fill" class="mb-4" />
-                            <div class="text-h5 mb-2 font-weight-bold">检查通过</div>
+                            <div class="mb-2" style="font-size: 1.3rem; font-weight: 400">检查通过</div>
                             <div class="text-medium-emphasis mb-4">请点击下方按钮进行安装</div>
                             <v-btn color="#2992ff" :loading="installing" variant="tonal" @click="handleInstall">
                                 安装
@@ -67,7 +67,7 @@
                         </template>
                         <template v-else>
                             <v-icon color="warning" size="64" icon="ri-error-warning-fill" class="mb-4" />
-                            <div class="text-h5 mb-2 font-weight-bold">检查不通过</div>
+                          <div class="mb-2" style="font-size: 1.3rem; font-weight: 400">检查不通过</div>
                             <div class="text-medium-emphasis mb-4">检查未通过，可能出现安装失败</div>
                             <v-btn color="warning" variant="tonal" :loading="installing"
                                 :disabled="osInfo.Platform === 'darwin'" @click="handleInstall" class="mb-2">
@@ -82,7 +82,7 @@
             </v-card>
         </v-col>
         <v-col cols="24" lg="12">
-            <v-alert border="top" variant="tonal" type="primary" icon="$info">
+            <v-alert variant="tonal" color="warning" icon="$warning">
                 如果安装完成后，首页无法获取饥荒版本，请手动执行manual_install.sh脚本，执行方法：cd && ./manual_install.sh
             </v-alert>
         </v-col>

@@ -132,7 +132,11 @@
                         </v-col>
                         <v-col cols="12" sm="12">
                           <v-text-field v-model="addForm.token" :rules="addFormRules.token"
-                                        label="令牌" required type="password" clearable></v-text-field>
+                                        label="令牌" required type="password" clearable>
+                            <v-tooltip activator="parent" open-delay="0" scroll-strategy="close">
+                              请前往网页版饥荒管理平台，点击 工具-令牌 进行创建
+                            </v-tooltip>
+                          </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="12">
                           <v-text-field v-model="addForm.remark" label="备注" clearable></v-text-field>
@@ -146,7 +150,6 @@
                       </v-row>
                     </v-container>
                   </v-form>
-
                 </v-card-text>
               </v-card>
             </v-dialog>

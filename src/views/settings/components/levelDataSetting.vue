@@ -22,8 +22,8 @@
 </template>
 
 <script setup>
-import {computed, ref, watch, defineEmits, onMounted} from "vue";
-import {configsMap, overrides} from "@/views/settings/components/levelDataMap.js"
+import {ref, watch, onMounted} from "vue";
+import {configsMap} from "@/views/settings/components/levelDataMap.js"
 
 const props = defineProps({
   configs: {type: Array, default: []},

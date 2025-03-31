@@ -121,7 +121,7 @@ const createWinDashboard = () => {
   winDashboard = new BrowserWindow({
     width: 1600,
     height: 1080,
-    resizable: true,
+    resizable: false,
     // icon: iconPath,
     autoHideMenuBar: true,
     title: '饥荒管理平台',
