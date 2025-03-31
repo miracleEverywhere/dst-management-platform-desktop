@@ -150,7 +150,7 @@
             <div class="d-flex align-center justify-center">
               <v-icon icon="ri-cpu-line"></v-icon>
               <span class="mr-2 ml-1">CPU</span>
-              <v-progress-linear :value="sysInfo.cpu" rounded height="8"
+              <v-progress-linear :model-value="sysInfo.cpu" rounded height="8"
                                  color="grey-lighten-2" class="w-33 ml-2"/>
               <span class="ml-2">{{sysInfo.cpu.toFixed(1)}}%</span>
             </div>
@@ -174,7 +174,7 @@
             <div class="d-flex align-center justify-center">
               <v-icon icon="ri-ram-line"></v-icon>
               <span class="mr-2 ml-1">内存</span>
-              <v-progress-linear :value="sysInfo.memory" rounded height="8"
+              <v-progress-linear :model-value="sysInfo.memory" rounded height="8"
                                  color="grey-lighten-2" class="w-33 ml-2"/>
               <span class="ml-2">{{sysInfo.memory.toFixed(1)}}%</span>
             </div>
