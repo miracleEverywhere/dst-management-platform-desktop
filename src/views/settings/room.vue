@@ -1240,15 +1240,10 @@ import {
   groundWorldRule,
   overrides,
 } from "@/views/settings/components/levelDataMap.js";
-<<<<<<< HEAD
 import { showSnackbar } from "@/utils/snackbar";
-import PreciseRating from '@/components/PreciseRating.vue'
-=======
-import {showSnackbar} from "@/utils/snackbar";
 import {sleep} from "@antfu/utils";
 import {validateIpv4} from "@/utils/tools";
->>>>>>> 3726d8af151d5494f163014e74a0c4e4fca46660
-
+import PreciseRating from '@/components/PreciseRating.vue'
 // 添加防抖函数
 const debounce = (fn, delay) => {
   let timer = null;
