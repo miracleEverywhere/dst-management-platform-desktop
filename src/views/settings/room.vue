@@ -1,5 +1,12 @@
 <template>
   <template v-if="!isMultiHost">
+    <precise-rating
+      :value="3.6"
+      :length="5"
+      :show-actual-value="true"
+      color="primary"
+      size="24"
+    />
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-item :color="step > 0 ? 'success' : ''" :complete="step > 0" :value="0" title="房间设置">
@@ -367,6 +374,7 @@ import {
   overrides,
 } from "@/views/settings/components/levelDataMap.js";
 import { showSnackbar } from "@/utils/snackbar";
+import PreciseRating from '@/components/PreciseRating.vue'
 
 // 添加防抖函数
 const debounce = (fn, delay) => {
