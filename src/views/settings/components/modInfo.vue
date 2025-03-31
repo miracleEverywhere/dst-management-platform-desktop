@@ -20,7 +20,76 @@
           />
         </div>
         <div class="fcc">
-          <v-btn color="info" density="compact" size="small" @click="dialogVisible=true" class="mr-4">详情</v-btn>
+          <v-dialog v-model="dialogVisible" class="flex-wrap" max-width="60%">
+            <template v-slot:activator="{ props: activatorProps }">
+              <v-btn color="info" density="compact" size="small" @click="dialogVisible=true"
+                     v-bind="activatorProps" class="mr-4">详情</v-btn>
+            </template>
+            <template v-slot:default="{ isActive }">
+              <v-card :title="props.mod.name">
+                <v-card-text>
+                  <v-table class="custom-table">
+                    <tbody>
+                      <tr>
+                        <td rowspan="2">
+                          <v-icon icon="ri-image-line"></v-icon>
+                        </td>
+                        <td rowspan="2">
+                          <v-img :src="props.mod.preview_url" aspect-ratio="1" style="width: 150px; height: 150px"/>
+                        </td>
+                        <td>ID</td>
+                        <td>
+                          <v-chip color="info" label>
+                            {{props.mod.id}}
+                          </v-chip>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>模组大小</td>
+                        <td>
+                          <v-chip color="info" label>
+                            {{formatBytes(props.mod.size)}}
+                          </v-chip>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <v-icon icon="ri-thumb-up-fill"></v-icon>
+                        </td>
+                        <td>
+                          <v-chip color="info" label>
+                            {{props.mod.vote_data.votes_up}}
+                          </v-chip>
+                        </td>
+                        <td>
+                          <v-icon icon="ri-thumb-down-fill"></v-icon>
+                        </td>
+                        <td>
+                          <v-chip color="info" label>
+                            {{props.mod.vote_data.votes_down}}
+                          </v-chip>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <v-icon icon="ri-star-fill"></v-icon>
+                        </td>
+                        <td colspan="3">
+                          <precise-rating
+                            :value="computedRate"
+                            :length="5"
+                            :show-actual-value="true"
+                            size="24"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+
+                  </v-table>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-dialog>
           <v-btn color="success" density="compact" size="small" @click="handleDownload">下载</v-btn>
         </div>
       </div>
@@ -68,18 +137,24 @@ const handleDownload = () => {
 </script>
 
 <style scoped>
-.custom-rating {
-  position: relative;
-  display: inline-flex;
+.custom-table {
+  border-collapse: collapse;
+  width: 100%;
 }
-.partial-star {
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  white-space: nowrap;
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  text-align: left;
 }
-.partial-star:nth-child(5) {
-  left: calc(4 * 24px); /* 假设每颗星宽 24px */
+
+.custom-table th {
+  background-color: #f5f5f5;
+  font-weight: 500;
+}
+
+.custom-table tr:hover {
+  background-color: rgba(0, 0, 0, 0.04);
 }
 </style>
