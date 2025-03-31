@@ -2,7 +2,7 @@
     <div class="precise-rating">
         <div class="rating-container">
             <div class="stars-background" ref="starsRef">
-                <v-icon v-for="n in props.length" :key="`star-bg-${n}`" icon="ri-star-line" :size="props.size"
+                <v-icon v-for="n in props.length" :key="`star-bg-${n}`" icon="ri-star-fill" :size="props.size"
                     :color="props.backgroundColor"></v-icon>
             </div>
             <div class="stars-foreground" :style="foregroundStyle">
@@ -11,13 +11,10 @@
             </div>
         </div>
         <span v-if="props.showActualValue" class="actual-value">{{ actualValue }}</span>
-        <span class="debug-info" style="font-size: 12px; color: #999;">{{ debugInfo }}</span>
     </div>
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch } from 'vue'
-
 const props = defineProps({
     value: {
         type: Number,
@@ -34,11 +31,11 @@ const props = defineProps({
     },
     color: {
         type: String,
-        default: 'warning'
+        default: '#FFC107'
     },
     backgroundColor: {
         type: String,
-        default: 'grey lighten-3'
+        default: '#E0E0E0'
     },
     showActualValue: {
         type: Boolean,
@@ -48,14 +45,12 @@ const props = defineProps({
 
 const starsRef = ref(null)
 const starWidth = ref(24)
-const debugInfo = ref('')
 
 const updateStarWidth = () => {
     if (starsRef.value) {
         const container = starsRef.value
         const totalWidth = container.getBoundingClientRect().width
         starWidth.value = totalWidth / props.length
-        debugInfo.value = `Total Width: ${totalWidth}, Star Width: ${starWidth.value}`
     }
 }
 
