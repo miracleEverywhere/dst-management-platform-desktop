@@ -18,10 +18,9 @@
             :show-actual-value="true"
             size="24"
           />
-<!--          <span class="ml-2">{{computedRate}}</span>-->
         </div>
         <div class="fcc">
-          <v-btn color="info" density="compact" size="small" @click="dialogVisible=true" class="mr-1">详情</v-btn>
+          <v-btn color="info" density="compact" size="small" @click="dialogVisible=true" class="mr-4">详情</v-btn>
           <v-btn color="success" density="compact" size="small" @click="handleDownload">下载</v-btn>
         </div>
       </div>
