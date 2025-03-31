@@ -36,6 +36,9 @@
                 </template>
               </div>
               <div class="d-flex justify-end mt-4">
+                <span class="align-content-center mr-2">
+                  共 {{modSearchData.total}}
+                </span>
                 <v-pagination
                   v-model="modSearchForm.page"
                   :length="Math.ceil(modSearchData.total/modSearchForm.pageSize)"
