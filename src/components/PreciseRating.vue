@@ -1,7 +1,7 @@
 <template>
   <div class="precise-rating">
     <div class="rating-container">
-      <div ref="starsRef" class="stars-background">
+      <div class="stars-background">
         <v-icon v-for="n in props.length" :key="`star-bg-${n}`" :color="props.backgroundColor" :size="props.size"
                 icon="ri-star-fill"></v-icon>
       </div>
@@ -43,24 +43,21 @@ const props = defineProps({
   }
 })
 
-const starsRef = ref(null)
-const starWidth = ref(24)
-
-const updateStarWidth = () => {
-  if (starsRef.value) {
-    const container = starsRef.value
-    const totalWidth = container.getBoundingClientRect().width
-    starWidth.value = totalWidth / props.length
+const getActualSize = computed(() => {
+  const numericSize = Number(props.size)
+  if (!isNaN(numericSize)) {
+    return numericSize
   }
-}
-
-onMounted(() => {
-  setTimeout(updateStarWidth, 100)
-})
-
-// 当size改变时重新计算
-watch(() => props.size, () => {
-  setTimeout(updateStarWidth, 100)
+  
+  const sizeMap = {
+    'x-small': 16,
+    'small': 24,
+    'default': 24,
+    'medium': 28,
+    'large': 32,
+    'x-large': 36
+  }
+  return sizeMap[props.size] || 24
 })
 
 const actualValue = computed(() => {
@@ -68,8 +65,8 @@ const actualValue = computed(() => {
 })
 
 const foregroundStyle = computed(() => {
-  const totalWidth = starWidth.value * props.length
-  const fillWidth = (props.value / props.length) * totalWidth
+  const starSize = getActualSize.value
+  const fillWidth = props.value * starSize
 
   return {
     position: 'absolute',
