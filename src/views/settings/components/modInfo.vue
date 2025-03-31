@@ -12,8 +12,13 @@
             </v-chip>
         </div>
         <div style="margin: 5px 0" class="fcc">
-          <v-rating v-model="computedRate" size="28" readonly half-increments/>
-          <span class="ml-2">{{computedRate}}</span>
+          <precise-rating
+            :value="computedRate"
+            :length="5"
+            :show-actual-value="true"
+            size="24"
+          />
+<!--          <span class="ml-2">{{computedRate}}</span>-->
         </div>
         <div class="fcc">
           <v-btn color="info" density="compact" size="small" @click="dialogVisible=true" class="mr-1">详情</v-btn>
@@ -28,6 +33,7 @@
 import {formatBytes} from "@/utils/tools.js"
 import settingsApi from "@/api/setting"
 import {showSnackbar} from "@/utils/snackbar";
+import PreciseRating from "@/components/PreciseRating.vue";
 
 
 const props = defineProps({
