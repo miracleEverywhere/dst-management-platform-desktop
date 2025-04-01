@@ -92,7 +92,7 @@
             </v-col>
           </v-row>
 
-          <v-alert density="compact" :color="colors.deepPurple.lighten2" class="mt-12 mb-4">系统监控</v-alert>
+          <v-alert density="compact" :color="colors.deepPurple.lighten1" class="mt-12 mb-4">系统监控</v-alert>
           <v-row>
             <v-col cols="4">
               <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
