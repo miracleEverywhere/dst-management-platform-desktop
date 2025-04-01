@@ -78,12 +78,12 @@
         <v-treeview
           v-model:opened="open"
           :items="items"
-          :item-props="true"
+          item-value="id"
           variant="flat"
           density="compact"
-          item-value="title"
           activatable
           open-on-click
+          no-filter
         >
           <template v-slot:prepend="{ item, isOpen }">
             <v-icon v-if="!item.file" :icon="isOpen ? 'ri-folder-open-fill' : 'ri-folder-fill'"></v-icon>
@@ -141,86 +141,107 @@ const files = shallowRef({
 
 const items = [
   {
+    id: 1,
     title: '压缩文件名xxx.zip',
     subtitle: '点击打开我',
     children: [
       {
+        id: 2,
         title: 'adminlist.txt',
         file: 'txt',
       },
       {
+        id: 3,
         title: 'blocklist.txt',
         file: 'txt',
       },
       {
+        id: 4,
         title: 'Caves',
         children: [
           {
+            id: 5,
             title: 'backup',
           },
           {
+            id: 6,
             title: 'leveldataoverride.lua',
             file: 'lua',
           },
           {
+            id: 7,
             title: 'modoverrides.lua',
             file: 'lua',
           },
           {
+            id: 8,
             title: 'save',
           },
           {
+            id: 9,
             title: 'server_chat_log.txt',
             file: 'txt',
           },
           {
+            id: 10,
             title: 'server.ini',
             file: 'ini',
           },
           {
+            id: 11,
             title: 'server_log.txt',
             file: 'txt',
           },
         ]
       },
       {
+        id: 12,
         title: 'cluster.ini',
         file: 'ini',
         required: true
       },
       {
+        id: 13,
         title: 'cluster_token.txt',
         file: 'txt',
         required: true
       },
       {
+        id: 14,
         title: 'Master',
         children: [
           {
+            id: 15,
             title: 'backup',
           },
           {
+            id: 16,
             title: 'leveldataoverride.lua',
             file: 'lua',
             required: true
           },
           {
+            id: 17,
             title: 'modoverrides.lua',
             file: 'lua',
           },
           {
+            id: 18,
             title: 'save',
           },
           {
+            id: 19,
             title: 'server_chat_log.txt',
             file: 'txt',
           },
           {
+            id: 20,
             title: 'server.ini',
             file: 'ini',
             required: true
           },
           {
+            id: 21,
             title: 'server_log.txt',
             file: 'txt',
           },
@@ -228,6 +249,7 @@ const items = [
         required: true
       },
       {
+        id: 22,
         title: 'whitelist.txt',
         file: 'txt',
       },
