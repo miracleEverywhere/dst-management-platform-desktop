@@ -443,8 +443,6 @@ const handleUpload = (file) => {
     blockListUploadVisible.value = false
     return
   }
-  console.log(file)
-  uploadLoading.value = true
   const formData = new FormData()
   formData.append('file', file)
   settingApi.player.addBlockUpload.post(formData).then(response => {
@@ -452,7 +450,6 @@ const handleUpload = (file) => {
     showSnackbar(response.message)
   }).finally(() => {
     blockListUploadVisible.value = false
-    uploadLoading.value = false
   })
 }
 
