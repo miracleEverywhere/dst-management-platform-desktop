@@ -324,7 +324,6 @@
                      :loading="announceLoading" @click="handleAnnounce">发送</v-btn>
             </v-col>
           </v-row>
-
           <v-row no-gutters class="mb-4" style="margin-top: 100px">
             <v-col cols="3">
               <v-select v-model="consoleForm.world" density="compact" label="世界" :items="consoleExecMap"
