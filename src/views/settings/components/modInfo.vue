@@ -54,25 +54,25 @@
                       </tr>
                       <tr>
                         <td>
-                          <v-icon icon="ri-thumb-up-fill"></v-icon>
+                          <v-icon icon="ri-thumb-up-fill" color="success"></v-icon>
                         </td>
                         <td>
-                          <v-chip color="info" label>
+                          <v-chip color="success" label>
                             {{props.mod.vote_data.votes_up}}
                           </v-chip>
                         </td>
                         <td>
-                          <v-icon icon="ri-thumb-down-fill"></v-icon>
+                          <v-icon icon="ri-thumb-down-fill" color="error"></v-icon>
                         </td>
                         <td>
-                          <v-chip color="info" label>
+                          <v-chip color="error" label>
                             {{props.mod.vote_data.votes_down}}
                           </v-chip>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <v-icon icon="ri-star-fill"></v-icon>
+                          <v-icon icon="ri-star-fill" color="warning"></v-icon>
                         </td>
                         <td colspan="3">
                           <precise-rating
@@ -84,8 +84,10 @@
                         </td>
                       </tr>
                     </tbody>
-
                   </v-table>
+                  <v-alert color="grey-lighten-3" class="mt-4 mb-4">
+                    {{props.mod.file_description}}
+                  </v-alert>
                 </v-card-text>
               </v-card>
             </template>
