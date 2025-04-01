@@ -20,7 +20,7 @@ const props = defineProps({
     >
       <VIcon
         :icon="item.icon || 'ri-checkbox-blank-circle-line'"
-        class="nav-item-icon"
+        class="nav-item-icon" size="20"
       />
       <!-- 👉 Title -->
       <span class="nav-item-title">

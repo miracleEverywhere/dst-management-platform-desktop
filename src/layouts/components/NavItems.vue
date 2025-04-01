@@ -20,35 +20,35 @@
     <VerticalNavLink
       :item="{
         title: '房间',
-        icon: 'ri-gamepad-fill',
+        icon: 'ri-gamepad-line',
         to: '/settings/room',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '玩家',
-        icon: 'ri-user-heart-fill',
+        icon: 'ri-user-heart-line',
         to: '/settings/player',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '模组',
-        icon: 'ri-file-settings-fill',
+        icon: 'ri-file-settings-line',
         to: '/settings/mod',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '导入',
-        icon: 'ri-import-fill',
+        icon: 'ri-import-line',
         to: '/settings/import',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '系统',
-        icon: 'ri-settings-4-fill',
+        icon: 'ri-settings-4-line',
         to: '/settings/system',
       }"
     />
@@ -65,42 +65,42 @@
     <VerticalNavLink
       :item="{
         title: '定时更新',
-        icon: 'ri-download-cloud-fill',
+        icon: 'ri-download-cloud-line',
         to: '/tools/update',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '定时备份',
-        icon: 'ri-save-2-fill',
+        icon: 'ri-save-2-line',
         to: '/tools/backup',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '定时通知',
-        icon: 'ri-notification-3-fill',
+        icon: 'ri-notification-3-line',
         to: '/tools/announce',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '安装游戏',
-        icon: 'ri-install-fill',
+        icon: 'ri-install-line',
         to: '/tools/install',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '玩家统计',
-        icon: 'ri-bar-chart-box-ai-fill',
+        icon: 'ri-bar-chart-box-ai-line',
         to: '/tools/statistics',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '系统监控',
-        icon: 'ri-line-chart-fill',
+        icon: 'ri-line-chart-line',
         to: '/tools/metrics',
       }"
     />
@@ -117,28 +117,28 @@
     <VerticalNavLink
       :item="{
         title: '地面日志',
-        icon: 'ri-sun-fill',
+        icon: 'ri-sun-line',
         to: '/logs/ground',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '洞穴日志',
-        icon: 'ri-typhoon-fill',
+        icon: 'ri-typhoon-line',
         to: '/logs/cave',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '聊天日志',
-        icon: 'ri-chat-smile-fill',
+        icon: 'ri-chat-smile-line',
         to: '/logs/chat',
       }"
     />
     <VerticalNavLink
       :item="{
         title: '请求日志',
-        icon: 'ri-code-box-fill',
+        icon: 'ri-code-box-line',
         to: '/logs/dmp',
       }"
     />
@@ -152,7 +152,7 @@
     <VerticalNavLink
       :item="{
         title: '清理日志',
-        icon: 'ri-file-shred-fill',
+        icon: 'ri-file-shred-line',
         to: '/logs/clean',
       }"
     />
