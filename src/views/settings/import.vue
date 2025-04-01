@@ -63,59 +63,42 @@
       </div>
     </v-card-title>
     <v-card-text>
-      <v-row>
-        <v-col cols="12">
-          <v-alert color="success" density="compact" class="mt-2">
-            上传过程中会自动备份存档，上传完成后请手动启动服务器
-          </v-alert>
-        </v-col>
-        <v-col cols="6">
-          <div class="tip_info">
-            <div>
+      <v-alert color="success" density="compact" class="mt-2">
+        上传过程中会自动备份存档，上传完成后请手动启动服务器
+      </v-alert>
+      <div class="tip_info">
+        <div>
               <span class="bolder">
                 请上传压缩文件(例如：my_cluster.zip)，压缩文件的内容如下，加粗文件为必须，会自动进行检测，如缺失会导致导入失败
               </span>
-            </div>
-            <div>.</div>
-            <div>├── adminlist.txt</div>
-            <div>├── blocklist.txt</div>
-            <div>├── Caves</div>
-            <div><span class="tree-tab">│</span>   ├── backup</div>
-            <div><span class="tree-tab">│</span>   ├── leveldataoverride.lua</div>
-            <div><span class="tree-tab">│</span>   ├── modoverrides.lua</div>
-            <div><span class="tree-tab">│</span>   ├── save</div>
-            <div><span class="tree-tab">│</span>   ├── server_chat_log.txt</div>
-            <div><span class="tree-tab">│</span>   ├── server.ini</div>
-            <div><span class="tree-tab">│</span>   └── server_log.txt</div>
-            <div>
-              <span class="bolder">├── cluster.ini</span>
-            </div>
-            <div>
-              <span class="bolder">├── cluster_token.txt</span>
-            </div>
-            <div class="bolder">├── Master</div>
-            <div><span class="tree-tab">│</span>   ├── backup</div>
-            <div class="bolder"><span class="tree-tab">│</span>   ├── leveldataoverride.lua</div>
-            <div class="bolder"><span class="tree-tab">│</span>   ├── modoverrides.lua</div>
-            <div><span class="tree-tab">│</span>   ├── save</div>
-            <div><span class="tree-tab">│</span>   ├── server_chat_log.txt</div>
-            <div class="bolder"><span class="tree-tab">│</span>   ├── server.ini</div>
-            <div><span class="tree-tab">│</span>   └── server_log.txt</div>
-            <div>└── whitelist.txt</div>
-          </div>
-        </v-col>
-        <v-col cols="6">
-          <div>
-            <v-card variant="outlined" width="100%" class="mb-4">
-              <v-img :src="imageZip" width="100%"></v-img>
-            </v-card>
-            <v-card variant="outlined" width="100%">
-              <v-img :src="imageZipMaster" width="100%"></v-img>
-            </v-card>
-
-          </div>
-        </v-col>
-      </v-row>
+        </div>
+        <div>.</div>
+        <div>├── adminlist.txt</div>
+        <div>├── blocklist.txt</div>
+        <div>├── Caves</div>
+        <div><span class="tree-tab">│</span>   ├── backup</div>
+        <div><span class="tree-tab">│</span>   ├── leveldataoverride.lua</div>
+        <div><span class="tree-tab">│</span>   ├── modoverrides.lua</div>
+        <div><span class="tree-tab">│</span>   ├── save</div>
+        <div><span class="tree-tab">│</span>   ├── server_chat_log.txt</div>
+        <div><span class="tree-tab">│</span>   ├── server.ini</div>
+        <div><span class="tree-tab">│</span>   └── server_log.txt</div>
+        <div>
+          <span class="bolder">├── cluster.ini</span>
+        </div>
+        <div>
+          <span class="bolder">├── cluster_token.txt</span>
+        </div>
+        <div class="bolder">├── Master</div>
+        <div><span class="tree-tab">│</span>   ├── backup</div>
+        <div class="bolder"><span class="tree-tab">│</span>   ├── leveldataoverride.lua</div>
+        <div class="bolder"><span class="tree-tab">│</span>   ├── modoverrides.lua</div>
+        <div><span class="tree-tab">│</span>   ├── save</div>
+        <div><span class="tree-tab">│</span>   ├── server_chat_log.txt</div>
+        <div class="bolder"><span class="tree-tab">│</span>   ├── server.ini</div>
+        <div><span class="tree-tab">│</span>   └── server_log.txt</div>
+        <div>└── whitelist.txt</div>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -149,10 +132,6 @@ const handleUpload = (file) => {
     uploadDialogVisible.value = false
   })
 }
-
-const imageZip = new URL('./images/zip-image.png', import.meta.url).href
-const imageZipMaster = new URL('./images/zip-image-master.png', import.meta.url).href
-const helpGif = new URL('./images/help.gif', import.meta.url).href
 
 const activeTabName = ref('win')
 </script>
