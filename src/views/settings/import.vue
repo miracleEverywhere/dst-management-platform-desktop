@@ -9,7 +9,7 @@
               <v-btn class="mr-2" color="primary" v-bind="activatorProps">导入存档</v-btn>
             </template>
             <template v-slot:default="{ isActive }">
-              <v-card title="导入黑名单">
+              <v-card title="导入存档">
                 <v-card-text>
                   <v-alert color="warning" density="compact" class="mt-2 mb-2">
                     请上传.zip文件，请严格按照教程中的路径进行压缩，上传过程中请勿关闭本对话框
