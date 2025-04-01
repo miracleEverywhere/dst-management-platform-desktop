@@ -54,10 +54,14 @@
             </div>
           </v-col>
           <v-col cols="12" sm="5">
-            <v-progress-circular :size="60" :width="5" color="primary" :model-value="sysInfo.cpu">
+            <v-progress-circular :size="60" :width="5" color="primary"
+                                 :indeterminate="sysInfo.cpu===0"
+                                 :model-value="sysInfo.cpu">
               CPU
             </v-progress-circular>
-            <v-progress-circular :size="60" :width="5" color="warning" :model-value="sysInfo.memory" style="margin-left: 20px">
+            <v-progress-circular :size="60" :width="5" color="warning"
+                                 :indeterminate="sysInfo.memory===0"
+                                 :model-value="sysInfo.memory" style="margin-left: 20px">
               内存
             </v-progress-circular>
           </v-col>
