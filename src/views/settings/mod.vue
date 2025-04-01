@@ -8,7 +8,7 @@
 
   <v-tabs-window v-model="activeTabName">
     <v-tabs-window-item value="Download">
-      <v-card class="mt-4" height="800">
+      <v-card class="mt-4" height="820">
         <v-card-text>
           <div>
             <v-text-field v-model="modSearchForm.searchText" density="compact"
@@ -56,7 +56,7 @@
       </v-card>
     </v-tabs-window-item>
     <v-tabs-window-item value="Add">
-      <v-card class="mt-4" height="800">
+      <v-card class="mt-4" height="820">
         <v-card-title>
           <div class="card-header">
             <span>已下载的模组</span>
@@ -134,7 +134,7 @@
     <v-tabs-window-item value="Setting">
       <v-row class="mt-1">
         <v-col cols="4">
-          <v-card height="800">
+          <v-card height="820">
             <v-card-text>
               <v-container height="770" style="overflow-y: auto">
                 <template v-if="modSettingFormatLoading">
@@ -194,7 +194,7 @@
           </v-card>
         </v-col>
         <v-col cols="8">
-          <v-card height="800">
+          <v-card height="820">
             <v-card-title>
               <div class="card-header">
                 <span>

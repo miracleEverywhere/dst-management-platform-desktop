@@ -1,5 +1,5 @@
 <template>
-  <v-card height="800">
+  <v-card height="870">
     <v-card-title>
       <div class="card-header">
         <span>系统设置</span>

@@ -10,7 +10,7 @@
 
   <v-tabs-window v-model="activeTab">
     <v-tabs-window-item value="players">
-      <v-card class="mt-4" height="800">
+      <v-card class="mt-4" height="820">
         <v-card-title>
           <div class="card-header">
             <span>玩家列表</span>
@@ -81,7 +81,7 @@
       </v-card>
     </v-tabs-window-item>
     <v-tabs-window-item value="adminList">
-      <v-card class="mt-4" height="800">
+      <v-card class="mt-4" height="820">
         <v-card-title>
           <div class="card-header">
             <span>管理员</span>
@@ -110,7 +110,7 @@
       </v-card>
     </v-tabs-window-item>
     <v-tabs-window-item value="blockList">
-      <v-card class="mt-4" height="800">
+      <v-card class="mt-4" height="820">
         <v-card-title>
           <div class="card-header">
             <span>黑名单</span>
@@ -158,7 +158,7 @@
       </v-card>
     </v-tabs-window-item>
     <v-tabs-window-item value="whiteList">
-      <v-card class="mt-4" height="800">
+      <v-card class="mt-4" height="820">
         <v-card-title>
           <div class="card-header">
             <span>白名单</span>
@@ -187,7 +187,7 @@
       </v-card>
     </v-tabs-window-item>
     <v-tabs-window-item value="history">
-      <v-card class="mt-4" height="800">
+      <v-card class="mt-4" height="820">
         <v-card-title>
           <div class="card-header">
             <span>
