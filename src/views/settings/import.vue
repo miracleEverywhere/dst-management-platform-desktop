@@ -6,7 +6,7 @@
         <div>
           <v-dialog v-model="uploadDialogVisible" class="flex-wrap" max-width="65%">
             <template v-slot:activator="{ props: activatorProps }">
-              <v-btn class="mr-2" color="primary" v-bind="activatorProps">导入存档</v-btn>
+              <v-btn class="mr-2" color="primary" v-bind="activatorProps">上传存档</v-btn>
             </template>
             <template v-slot:default="{ isActive }">
               <v-card title="导入存档">
@@ -29,7 +29,7 @@
               <v-card title="压缩教程">
                 <v-card-text>
                   <v-alert color="error" density="compact" class="mt-2 mb-2">
-                    注意！注意！！注意！！！请仔细查看导入页面文件树，加粗为必须，缺少加粗的文件会导致导入失败
+                    注意！注意！！注意！！！请仔细查看导入页面文件树，加粗为必须，缺少<v-icon icon="ri-pushpin-fill" color="xx"></v-icon>的文件会导致导入失败
                   </v-alert>
                   <v-tabs v-model="activeTabName" align-tabs="start"
                           class="v-tabs-pill" color="primary" show-arrows>
@@ -63,42 +63,33 @@
       </div>
     </v-card-title>
     <v-card-text>
-      <v-alert color="success" density="compact" class="mt-2">
-        上传过程中会自动备份存档，上传完成后请手动启动服务器
-      </v-alert>
-      <div class="tip_info">
-        <div>
-              <span class="bolder">
-                请上传压缩文件(例如：my_cluster.zip)，压缩文件的内容如下，加粗文件为必须，会自动进行检测，如缺失会导致导入失败
-              </span>
-        </div>
-        <div>.</div>
-        <div>├── adminlist.txt</div>
-        <div>├── blocklist.txt</div>
-        <div>├── Caves</div>
-        <div><span class="tree-tab">│</span>   ├── backup</div>
-        <div><span class="tree-tab">│</span>   ├── leveldataoverride.lua</div>
-        <div><span class="tree-tab">│</span>   ├── modoverrides.lua</div>
-        <div><span class="tree-tab">│</span>   ├── save</div>
-        <div><span class="tree-tab">│</span>   ├── server_chat_log.txt</div>
-        <div><span class="tree-tab">│</span>   ├── server.ini</div>
-        <div><span class="tree-tab">│</span>   └── server_log.txt</div>
-        <div>
-          <span class="bolder">├── cluster.ini</span>
-        </div>
-        <div>
-          <span class="bolder">├── cluster_token.txt</span>
-        </div>
-        <div class="bolder">├── Master</div>
-        <div><span class="tree-tab">│</span>   ├── backup</div>
-        <div class="bolder"><span class="tree-tab">│</span>   ├── leveldataoverride.lua</div>
-        <div class="bolder"><span class="tree-tab">│</span>   ├── modoverrides.lua</div>
-        <div><span class="tree-tab">│</span>   ├── save</div>
-        <div><span class="tree-tab">│</span>   ├── server_chat_log.txt</div>
-        <div class="bolder"><span class="tree-tab">│</span>   ├── server.ini</div>
-        <div><span class="tree-tab">│</span>   └── server_log.txt</div>
-        <div>└── whitelist.txt</div>
-      </div>
+      <v-container height="700" style="overflow-y: auto">
+        <v-alert color="info" density="compact" class="mt-2">
+          上传过程中会自动备份存档，上传完成后请手动启动服务器
+        </v-alert>
+        <v-alert color="warning" density="compact" class="mt-2">
+          请上传压缩文件(例如：my_cluster.zip)，压缩文件的内容如下，<v-icon icon="ri-pushpin-fill" color="error"></v-icon>文件为必须，会自动进行检测，如缺失会导致导入失败
+        </v-alert>
+        <v-treeview
+          v-model:opened="open"
+          :items="items"
+          :item-props="true"
+          variant="flat"
+          density="compact"
+          item-value="title"
+          activatable
+          open-on-click
+        >
+          <template v-slot:prepend="{ item, isOpen }">
+            <v-icon v-if="!item.file" :icon="isOpen ? 'ri-folder-open-fill' : 'ri-folder-fill'"></v-icon>
+            <v-icon v-else :icon="files[item.file]"></v-icon>
+          </template>
+
+          <template #append="{ item }">
+            <v-icon v-if="item.required" icon="ri-pushpin-fill" color="error"></v-icon>
+          </template>
+        </v-treeview>
+      </v-container>
     </v-card-text>
   </v-card>
 </template>
@@ -134,7 +125,117 @@ const handleUpload = (file) => {
 }
 
 const activeTabName = ref('win')
+
+const open = shallowRef(['public'])
+const files = shallowRef({
+  ini: 'ri-file-settings-line',
+  lua: 'ri-file-code-line',
+  txt: 'ri-file-text-line',
+})
+
+const items = [
+  {
+    title: '压缩文件名xxx.zip',
+    subtitle: '点击打开我',
+    children: [
+      {
+        title: 'adminlist.txt',
+        file: 'txt',
+      },
+      {
+        title: 'blocklist.txt',
+        file: 'txt',
+      },
+      {
+        title: 'Caves',
+        children: [
+          {
+            title: 'backup',
+          },
+          {
+            title: 'leveldataoverride.lua',
+            file: 'lua',
+          },
+          {
+            title: 'modoverrides.lua',
+            file: 'lua',
+          },
+          {
+            title: 'save',
+          },
+          {
+            title: 'server_chat_log.txt',
+            file: 'txt',
+          },
+          {
+            title: 'server.ini',
+            file: 'ini',
+          },
+          {
+            title: 'server_log.txt',
+            file: 'txt',
+          },
+        ]
+      },
+      {
+        title: 'cluster.ini',
+        file: 'ini',
+        required: true
+      },
+      {
+        title: 'cluster_token.txt',
+        file: 'txt',
+        required: true
+      },
+      {
+        title: 'Master',
+        children: [
+          {
+            title: 'backup',
+          },
+          {
+            title: 'leveldataoverride.lua',
+            file: 'lua',
+            required: true
+          },
+          {
+            title: 'modoverrides.lua',
+            file: 'lua',
+          },
+          {
+            title: 'save',
+          },
+          {
+            title: 'server_chat_log.txt',
+            file: 'txt',
+          },
+          {
+            title: 'server.ini',
+            file: 'ini',
+            required: true
+          },
+          {
+            title: 'server_log.txt',
+            file: 'txt',
+          },
+        ],
+        required: true
+      },
+      {
+        title: 'whitelist.txt',
+        file: 'txt',
+      },
+    ]
+  }
+]
 </script>
 
 <style scoped>
+.tree-tab {
+  margin-left: 1.5px
+}
+
+.bolder {
+  font-weight: bolder
+}
 </style>
