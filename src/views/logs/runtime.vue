@@ -1,5 +1,5 @@
 <template>
-  <log type="runtime"/>
+  <log type="runtime" style="margin-top: 50px!important;"/>
 </template>
 
 <script setup>

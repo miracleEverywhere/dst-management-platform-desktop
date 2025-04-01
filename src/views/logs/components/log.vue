@@ -1,5 +1,5 @@
 <template>
-  <v-card min-height="620" class="mt-4">
+  <v-card height="820" class="mt-4">
     <v-card-title>
       <v-row>
         <v-col cols="8">日志查看</v-col>
@@ -20,7 +20,7 @@
       </v-row>
     </v-card-title>
     <v-card-text>
-      <MdPreview :modelValue="logsValue" :theme="editorTheme" previewTheme="github" style="height: 666px;"/>
+      <MdPreview :modelValue="logsValue" :theme="editorTheme" previewTheme="github" style="height: 686px;"/>
       <div class="d-flex align-center justify-end" style="width: 100%">
         <div class="d-flex align-center" style="width: 210px">
           <v-text-field v-model="logsForm.line" density="compact" class="mr-2">
@@ -55,7 +55,6 @@ const props = defineProps({
 })
 
 onMounted(() => {
-  console.log(props)
   if (props.historical) {
     handleGetLogFile()
   } else {

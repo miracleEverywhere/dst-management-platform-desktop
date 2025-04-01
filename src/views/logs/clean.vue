@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card height="870">
     <v-card-title>
       <div class="card-header">
         <span>日志清理</span>

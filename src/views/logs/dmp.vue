@@ -1,5 +1,5 @@
 <template>
-  <log type="dmp"/>
+  <log type="dmp" style="margin-top: 50px!important;"/>
 </template>
 
 <script setup>
