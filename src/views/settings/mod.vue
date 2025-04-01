@@ -137,52 +137,57 @@
           <v-card height="800">
             <v-card-text>
               <v-container height="770" style="overflow-y: auto">
-                <template v-if="modSettingFormat">
-                  <template v-for="(mod, index) in modSettingFormat">
-                    <template v-if="mod.id===1">
-                      <div style="display: flex">
-                        <div>
-                          <v-img :src="imageClientModsDisabled" style="width: 75px; height: 75px"
-                                    @click="handleModClick(mod.id, mod.file_url)"/>
-                        </div>
-                        <div style="display: flex;margin-left: 5px;flex-direction: column;justify-content: center">
-                          <v-btn variant="text" color="primary" @click="handleModClick(mod.id, mod.file_url)">
-                            禁用客户端模组
-                          </v-btn>
-                          <div class="mt-1">
-                            <v-chip v-if="mod.enable" color="success">已启用</v-chip>
-                            <v-chip v-if="!mod.enable" color="xx">已禁用</v-chip>
-                          </div>
-                        </div>
-                      </div>
-                    </template>
-                    <template v-else>
-                      <div style="display: flex">
-                        <div>
-                          <v-img :src="mod.preview_url" style="width: 75px; height: 75px"
-                                    @click="handleModClick(mod.id, mod.file_url)"/>
-                        </div>
-                        <div style="display: flex;margin-left: 5px;flex-direction: column;justify-content: center">
-                          <v-btn variant="text" color="primary" @click="handleModClick(mod.id, mod.file_url)">
-                            {{ mod.name }}
-                          </v-btn>
-                          <div class="mt-1">
-                            <v-chip v-if="mod.enable" color="success">已启用</v-chip>
-                            <v-chip v-if="!mod.enable" color="xx">已禁用</v-chip>
-                          </div>
-                        </div>
-                      </div>
-                    </template>
-                    <v-divider v-if="index !== (modSettingFormat.length - 1)" class="mt-4 mb-4"/>
-                  </template>
+                <template v-if="modSettingFormatLoading">
+                  <sc-loading :height="700"></sc-loading>
                 </template>
-                <template v-else>
-                  <div class="d-flex flex-column align-center justify-center" style="height: 650px;">
-                    <v-icon color="warning" icon="ri-error-warning-fill" size="64"/>
-                    <div class="mt-8" style="font-size: 1.6rem; font-weight: 300; line-height: 1; letter-spacing: -0.015625em">
-                      服务器未添加模组
+                <template v-if="!modSettingFormatLoading">
+                  <template v-if="modSettingFormat">
+                    <template v-for="(mod, index) in modSettingFormat">
+                      <template v-if="mod.id===1">
+                        <div style="display: flex">
+                          <div>
+                            <v-img :src="imageClientModsDisabled" style="width: 75px; height: 75px"
+                                   @click="handleModClick(mod.id, mod.file_url)"/>
+                          </div>
+                          <div style="display: flex;margin-left: 5px;flex-direction: column;justify-content: center">
+                            <v-btn variant="text" color="primary" @click="handleModClick(mod.id, mod.file_url)">
+                              禁用客户端模组
+                            </v-btn>
+                            <div class="mt-1">
+                              <v-chip v-if="mod.enable" color="success">已启用</v-chip>
+                              <v-chip v-if="!mod.enable" color="xx">已禁用</v-chip>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                      <template v-else>
+                        <div style="display: flex">
+                          <div>
+                            <v-img :src="mod.preview_url" style="width: 75px; height: 75px"
+                                   @click="handleModClick(mod.id, mod.file_url)"/>
+                          </div>
+                          <div style="display: flex;margin-left: 5px;flex-direction: column;justify-content: center">
+                            <v-btn variant="text" color="primary" @click="handleModClick(mod.id, mod.file_url)">
+                              {{ mod.name }}
+                            </v-btn>
+                            <div class="mt-1">
+                              <v-chip v-if="mod.enable" color="success">已启用</v-chip>
+                              <v-chip v-if="!mod.enable" color="xx">已禁用</v-chip>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                      <v-divider v-if="index !== (modSettingFormat.length - 1)" class="mt-4 mb-4"/>
+                    </template>
+                  </template>
+                  <template v-else>
+                    <div class="d-flex flex-column align-center justify-center" style="height: 650px;">
+                      <v-icon color="warning" icon="ri-error-warning-fill" size="64"/>
+                      <div class="mt-8" style="font-size: 1.6rem; font-weight: 300; line-height: 1; letter-spacing: -0.015625em">
+                        服务器未添加模组
+                      </div>
                     </div>
-                  </div>
+                  </template>
                 </template>
               </v-container>
             </v-card-text>

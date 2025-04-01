@@ -4,19 +4,24 @@
       <div class="card-header">
         <span>存档导入</span>
         <div>
-          <v-dialog v-model="uploadDialogVisible" class="flex-wrap" max-width="65%">
+          <v-dialog v-model="uploadDialogVisible" :persistent="uploadLoading" class="flex-wrap" max-width="65%">
             <template v-slot:activator="{ props: activatorProps }">
               <v-btn class="mr-2" color="primary" v-bind="activatorProps">上传存档</v-btn>
             </template>
             <template v-slot:default="{ isActive }">
-              <v-card title="导入存档">
+              <v-card title="导入存档" min-height="500">
                 <v-card-text>
-                  <v-alert color="warning" density="compact" class="mt-2 mb-2">
-                    请上传.zip文件，请严格按照教程中的路径进行压缩，上传过程中请勿关闭本对话框
-                  </v-alert>
-                  <v-file-upload density="default" icon="ri-upload-cloud-2-line"
-                                 @update:modelValue="handleUpload">
-                  </v-file-upload>
+                  <template v-if="!uploadLoading">
+                    <v-alert color="warning" density="compact" class="mt-2 mb-2">
+                      请上传.zip文件，请严格按照教程中的路径进行压缩，上传过程中请勿关闭本对话框
+                    </v-alert>
+                    <v-file-upload density="default" icon="ri-upload-cloud-2-line"
+                                   @update:modelValue="handleUpload">
+                    </v-file-upload>
+                  </template>
+                  <template v-else>
+                    <sc-loading>上传中，请稍后</sc-loading>
+                  </template>
                 </v-card-text>
               </v-card>
             </template>
@@ -114,13 +119,14 @@ const handleUpload = (file) => {
     uploadDialogVisible.value = false
     return
   }
-
+  uploadLoading.value = true
   const formData = new FormData()
   formData.append('file', file)
   settingApi.import.upload.post(formData).then(response => {
     showSnackbar(response.message)
   }).finally(() => {
     uploadDialogVisible.value = false
+    uploadLoading.value = false
   })
 }
 
