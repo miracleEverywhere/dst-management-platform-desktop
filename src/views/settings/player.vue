@@ -33,7 +33,7 @@
                   <v-skeleton-loader type="table-row@12"></v-skeleton-loader>
                 </template>
                 <template v-slot:item.prefab="{item}">
-                  <v-chip v-if="item.prefab" color="info" label>
+                  <v-chip v-if="item.prefab" color="success" label>
                     {{ item.prefab }}
                   </v-chip>
                   <v-chip v-else color="warning" label>
@@ -225,7 +225,7 @@
                 </v-chip>
               </template>
               <template v-slot:item.prefab="{item}">
-                <v-chip v-if="item.prefab" color="info" label>
+                <v-chip v-if="item.prefab" color="success" label>
                   {{ item.prefab }}
                 </v-chip>
                 <v-chip v-else color="warning" label>

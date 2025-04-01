@@ -94,7 +94,7 @@
                 <v-skeleton-loader type="table-row@12"></v-skeleton-loader>
               </template>
               <template v-slot:item.id="{item}">
-                <v-chip color="grep-lighten-3" label>
+                <v-chip :color="colors.cyan.darken1" label>
                   {{ item.id }}
                 </v-chip>
               </template>
@@ -281,6 +281,7 @@ import toolsApi from "@/api/tools"
 import modInfo from "./components/modInfo.vue"
 import {formatBytes} from "@/utils/tools.js";
 import {showSnackbar} from "@/utils/snackbar";
+import colors from 'vuetify/lib/util/colors'
 
 
 onMounted(async () => {

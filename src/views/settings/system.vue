@@ -13,7 +13,7 @@
     <v-card-text>
       <v-container v-if="!loading" height="700" style="overflow-y: auto">
         <v-form ref="systemSettingFormRef" class="mt-4" fast-fail>
-          <v-alert density="compact" color="primary" class="mb-4">自动保活</v-alert>
+          <v-alert density="compact" :color="colors.red.lighten2" class="mb-4">自动保活</v-alert>
           <v-row>
             <v-col cols="3">
               <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
@@ -44,7 +44,7 @@
             </v-col>
           </v-row>
 
-          <v-alert density="compact" color="primary" class="mt-12 mb-4">玩家列表</v-alert>
+          <v-alert density="compact" :color="colors.pink.lighten2" class="mt-12 mb-4">玩家列表</v-alert>
           <v-row>
             <v-col>
               <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
@@ -61,7 +61,7 @@
 
           </v-row>
 
-          <v-alert density="compact" color="primary" class="mt-12 mb-4">昵称字典维护</v-alert>
+          <v-alert density="compact" :color="colors.purple.lighten2" class="mt-12 mb-4">昵称字典维护</v-alert>
           <v-row>
             <v-col cols="4">
               <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
@@ -92,7 +92,7 @@
             </v-col>
           </v-row>
 
-          <v-alert density="compact" color="primary" class="mt-12 mb-4">系统监控</v-alert>
+          <v-alert density="compact" :color="colors.deepPurple.lighten2" class="mt-12 mb-4">系统监控</v-alert>
           <v-row>
             <v-col cols="4">
               <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
@@ -111,7 +111,7 @@
             <v-spacer/>
           </v-row>
 
-          <v-alert density="compact" color="primary" class="mt-12 mb-4">64位启动</v-alert>
+          <v-alert density="compact" :color="colors.indigo.lighten2" class="mt-12 mb-4">64位启动</v-alert>
           <v-row>
             <v-col cols="4">
               <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
@@ -131,7 +131,7 @@
             <v-spacer/>
           </v-row>
 
-          <v-alert density="compact" color="primary" class="mt-12 mb-4">通信频率</v-alert>
+          <v-alert density="compact" :color="colors.blue.lighten1" class="mt-12 mb-4">通信频率</v-alert>
           <v-row>
             <v-col cols="4">
               <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
@@ -152,7 +152,7 @@
             <v-spacer/>
           </v-row>
 
-          <v-alert density="compact" color="primary" class="mt-12 mb-4">用户路径编码</v-alert>
+          <v-alert density="compact" :color="colors.lightBlue.darken3" class="mt-12 mb-4">用户路径编码</v-alert>
           <v-row>
             <v-col cols="3">
               <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
@@ -200,6 +200,7 @@ import {deepCopy} from "@/utils/tools.js";
 import toolsApi from "@/api/tools";
 import {showSnackbar} from "@/utils/snackbar";
 import {VNumberInput} from "vuetify/labs/VNumberInput";
+import colors from 'vuetify/lib/util/colors'
 
 onMounted(async () => {
   loading.value = true
