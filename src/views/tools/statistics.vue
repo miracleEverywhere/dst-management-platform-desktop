@@ -92,15 +92,14 @@ import {onMounted, ref, watch} from 'vue';
 
 // 时间范围选项
 const timeRanges = [
-  {title: '最近30分钟', value: 30},
-  {title: '最近1小时', value: 60},
-  {title: '最近3小时', value: 180},
-  {title: '最近6小时', value: 360},
-  {title: '最近12小时', value: 720},
-  {title: '最近24小时', value: 1440}
+  {title: '最近1小时', value: 120},
+  {title: '最近3小时', value: 360},
+  {title: '最近6小时', value: 720},
+  {title: '最近12小时', value: 1440},
+  {title: '最近24小时', value: 2880}
 ];
 
-const selectedTimeRange = ref(30); // 默认显示30分钟
+const selectedTimeRange = ref(720); // 默认显示30分钟
 
 const playerStatisticsResult = ref({
   num: -1,
@@ -120,7 +119,10 @@ const chartOptions = ref({
     type: 'area',
     height: 350,
     zoom: {
-      enabled: true
+      enabled: false
+    },
+    toolbar: {
+      show: false,
     }
   },
   dataLabels: {
@@ -131,10 +133,7 @@ const chartOptions = ref({
     width: 2
   },
   markers: {
-    size: 4,
-    hover: {
-      size: 6
-    }
+    size: 0
   },
   fill: {
     type: 'gradient',
@@ -155,33 +154,30 @@ const chartOptions = ref({
         day: 'dd/MM',
         hour: 'HH:mm'
       }
+    },
+    tooltip: {
+      enabled: false
     }
   },
   yaxis: {
     min: 0,
-    forceNiceScale: false,
-    decimalsInFloat: 0,
-    labels: {
-      formatter: function (val) {
-        return parseInt(val);
-      }
-    }
+    forceNiceScale: true,
   },
   tooltip: {
+    enabled: true,
     x: {
-      format: 'yyyy-MM-dd HH:mm:ss'
+      formatter: (ts) => {
+        const date = new Date(ts)
+        return date.toLocaleTimeString()
+      }
     }
   }
 });
 
 // 根据时间范围过滤数据
-const filterDataByTimeRange = (data, minutes) => {
-  const now = Date.now();
-  const rangeStart = now - (minutes * 60 * 1000); // 转换为毫秒
-  return data.filter(item => {
-    const itemTime = new Date(item.timestamp).getTime();
-    return itemTime >= rangeStart && itemTime <= now;
-  });
+const filterDataByTimeRange = (data, nums) => {
+
+  return data.slice(-nums)
 };
 
 // 获取玩家统计信息
@@ -192,12 +188,11 @@ const getInfo = (refresh = false) => {
 
     // 根据选择的时间范围过滤数据
     const filteredData = filterDataByTimeRange(response.data, selectedTimeRange.value);
-
     // 处理数据
     // 更新数据
     series.value[0].data = filteredData.map(item => ({
       x: new Date(item.timestamp).getTime(),
-      y: Math.random() * 5
+      y: item.num
     }));
 
     // 更新统计信息
