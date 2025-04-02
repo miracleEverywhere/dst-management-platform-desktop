@@ -33,7 +33,7 @@
 
         <NavbarThemeSwitcher class="me-2"/>
 
-        <IconBtn>
+        <IconBtn :disabled="needDisabled()" >
           <v-tooltip activator="parent" open-delay="1000" scroll-strategy="close">
             重新载入应用
           </v-tooltip>
@@ -89,6 +89,7 @@ import useGlobalStore from "@/plugins/pinia/global";
 import useConfigStore from '@/plugins/pinia/config'
 import ElectronApi from "@/utils/electronApi";
 
+const router = useRouter()
 const globalStore = useGlobalStore()
 const configStore = useConfigStore()
 
@@ -102,6 +103,17 @@ const handleOut = () => {
 
 const handleReload = () => {
   ElectronApi.window.reload()
+}
+
+const needDisabled = () => {
+  if (router.currentRoute.value.fullPath === '/tools/statistics') {
+    return true
+  }
+  if (router.currentRoute.value.fullPath === '/tools/metrics') {
+    return true
+  }
+
+  return false
 }
 </script>
 
