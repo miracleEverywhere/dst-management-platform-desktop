@@ -166,10 +166,7 @@ const chartOptions = ref({
   tooltip: {
     enabled: true,
     x: {
-      formatter: (ts) => {
-        const date = new Date(ts)
-        return date.toLocaleTimeString()
-      }
+      format: 'yyyy-MM-dd HH:mm:ss'
     }
   }
 });
