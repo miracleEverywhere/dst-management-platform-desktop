@@ -20,6 +20,7 @@
         </template>
         <template #text>
           <VueApexCharts
+            ref="chartRef"
             :options="chartOptions"
             :series="series"
             height="350"
@@ -90,6 +91,7 @@ import {timestamp2time} from "@/utils/tools";
 import VueApexCharts from "vue3-apexcharts"
 import {onMounted, ref, watch} from 'vue';
 
+
 // 时间范围选项
 const timeRanges = [
   {title: '最近1小时', value: 120},
@@ -106,6 +108,8 @@ const playerStatisticsResult = ref({
   timestamp: 0,
   dataVolume: 0,
 });
+
+const chartRef = ref()
 
 const series = ref([
   {
@@ -219,6 +223,7 @@ const handleRefreshPlayer = () => {
 onMounted(() => {
   getInfo();
 });
+
 </script>
 
 <style scoped>

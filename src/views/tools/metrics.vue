@@ -64,21 +64,10 @@ const cpuOption = ref({
     type: 'area',
     height: 350,
     zoom: {
-      enabled: true,
-      type: 'x',
-      autoScaleYaxis: true
+      enabled: false
     },
     toolbar: {
-      show: true,
-      tools: {
-        download: true,
-        selection: true,
-        zoom: true,
-        zoomin: true,
-        zoomout: true,
-        pan: true,
-        reset: true
-      }
+      show: false,
     }
   },
   dataLabels: {
@@ -90,13 +79,7 @@ const cpuOption = ref({
     colors: ['#409EFF']  // CPU蓝色
   },
   markers: {
-    size: 3,
-    colors: ['#fff'],
-    strokeColors: '#409EFF',
-    strokeWidth: 2,
-    hover: {
-      size: 6
-    }
+    size: 0
   },
   fill: {
     type: 'gradient',
@@ -131,12 +114,6 @@ const cpuOption = ref({
       fontWeight: 600
     }
   },
-  grid: {
-    row: {
-      colors: ['#f3f3f3', 'transparent'],
-      opacity: 0.5
-    }
-  },
   xaxis: {
     type: 'datetime',
     labels: {
@@ -148,6 +125,9 @@ const cpuOption = ref({
       },
       datetimeUTC: false,
       format: 'HH:mm'
+    },
+    tooltip: {
+      enabled: false
     }
   },
   yaxis: {
@@ -173,21 +153,10 @@ const memoryOption = ref({
     type: 'area',
     height: 350,
     zoom: {
-      enabled: true,
-      type: 'x',
-      autoScaleYaxis: true
+      enabled: false
     },
     toolbar: {
-      show: true,
-      tools: {
-        download: true,
-        selection: true,
-        zoom: true,
-        zoomin: true,
-        zoomout: true,
-        pan: true,
-        reset: true
-      }
+      show: false,
     }
   },
   dataLabels: {
@@ -199,13 +168,7 @@ const memoryOption = ref({
     colors: ['#67C23A']  // 内存绿色
   },
   markers: {
-    size: 3,
-    colors: ['#fff'],
-    strokeColors: '#67C23A',
-    strokeWidth: 2,
-    hover: {
-      size: 6
-    }
+    size: 0
   },
   fill: {
     type: 'gradient',
@@ -240,12 +203,6 @@ const memoryOption = ref({
       fontWeight: 600
     }
   },
-  grid: {
-    row: {
-      colors: ['#f3f3f3', 'transparent'],
-      opacity: 0.5
-    }
-  },
   xaxis: {
     type: 'datetime',
     labels: {
@@ -257,6 +214,9 @@ const memoryOption = ref({
       },
       datetimeUTC: false,
       format: 'HH:mm'
+    },
+    tooltip: {
+      enabled: false
     }
   },
   yaxis: {
@@ -282,21 +242,10 @@ const netUplinkOption = ref({
     type: 'area',
     height: 350,
     zoom: {
-      enabled: true,
-      type: 'x',
-      autoScaleYaxis: true
+      enabled: false
     },
     toolbar: {
-      show: true,
-      tools: {
-        download: true,
-        selection: true,
-        zoom: true,
-        zoomin: true,
-        zoomout: true,
-        pan: true,
-        reset: true
-      }
+      show: false,
     }
   },
   dataLabels: {
@@ -308,13 +257,7 @@ const netUplinkOption = ref({
     colors: ['#E6A23C']  // 上行黄色
   },
   markers: {
-    size: 3,
-    colors: ['#fff'],
-    strokeColors: '#E6A23C',
-    strokeWidth: 2,
-    hover: {
-      size: 6
-    }
+    size: 0
   },
   fill: {
     type: 'gradient',
@@ -349,12 +292,6 @@ const netUplinkOption = ref({
       fontWeight: 600
     }
   },
-  grid: {
-    row: {
-      colors: ['#f3f3f3', 'transparent'],
-      opacity: 0.5
-    }
-  },
   xaxis: {
     type: 'datetime',
     labels: {
@@ -366,6 +303,9 @@ const netUplinkOption = ref({
       },
       datetimeUTC: false,
       format: 'HH:mm'
+    },
+    tooltip: {
+      enabled: false
     }
   },
   yaxis: {
@@ -391,21 +331,10 @@ const netDownlinkOption = ref({
     type: 'area',
     height: 350,
     zoom: {
-      enabled: true,
-      type: 'x',
-      autoScaleYaxis: true
+      enabled: false
     },
     toolbar: {
-      show: true,
-      tools: {
-        download: true,
-        selection: true,
-        zoom: true,
-        zoomin: true,
-        zoomout: true,
-        pan: true,
-        reset: true
-      }
+      show: false,
     }
   },
   dataLabels: {
@@ -417,13 +346,7 @@ const netDownlinkOption = ref({
     colors: ['#F56C6C']  // 下行红色
   },
   markers: {
-    size: 3,
-    colors: ['#fff'],
-    strokeColors: '#F56C6C',
-    strokeWidth: 2,
-    hover: {
-      size: 6
-    }
+    size: 0
   },
   fill: {
     type: 'gradient',
@@ -458,12 +381,6 @@ const netDownlinkOption = ref({
       fontWeight: 600
     }
   },
-  grid: {
-    row: {
-      colors: ['#f3f3f3', 'transparent'],
-      opacity: 0.5
-    }
-  },
   xaxis: {
     type: 'datetime',
     labels: {
@@ -475,6 +392,9 @@ const netDownlinkOption = ref({
       },
       datetimeUTC: false,
       format: 'HH:mm'
+    },
+    tooltip: {
+      enabled: false
     }
   },
   yaxis: {
