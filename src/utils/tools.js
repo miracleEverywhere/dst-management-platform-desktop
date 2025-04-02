@@ -38,8 +38,8 @@ export const validateIpv4 = (ip) => {
 };
 
 export const truncateString = (str) => {
-    if (str.length > 15) {
-        return str.slice(0, 15) + "...";
+    if (str.length > 12) {
+        return str.slice(0, 12) + "...";
     } else {
         return str;
     }
