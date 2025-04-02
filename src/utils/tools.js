@@ -37,9 +37,9 @@ export const validateIpv4 = (ip) => {
     }
 };
 
-export const truncateString = (str) => {
-    if (str.length > 12) {
-        return str.slice(0, 12) + "...";
+export const truncateString = (str, num) => {
+    if (str.length > num) {
+        return str.slice(0, num) + "...";
     } else {
         return str;
     }
