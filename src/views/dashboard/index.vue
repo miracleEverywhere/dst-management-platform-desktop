@@ -12,7 +12,7 @@
                 <span>房间名</span>
                 <v-btn v-copy="globalStore.name" variant="text"
                        append-icon="ri-file-copy-2-line"
-                >{{truncateString(globalStore.name)}}</v-btn>
+                >{{truncateString(globalStore.name, 12)}}</v-btn>
               </div>
             </v-col>
             <v-col cols="12" sm="5">
@@ -151,7 +151,7 @@
               <v-icon icon="ri-cpu-line"></v-icon>
               <span class="mr-2 ml-1">CPU</span>
               <v-progress-linear :model-value="sysInfo.cpu" rounded height="8"
-                                 :indeterminate="sysInfo.cpu===0"
+                                 :indeterminate="sysInfo.cpu===0" rounded-bar
                                  color="grey-lighten-2" class="w-33 ml-2"/>
               <span class="ml-2">{{sysInfo.cpu.toFixed(1)}}%</span>
             </div>
@@ -176,7 +176,7 @@
               <v-icon icon="ri-ram-line"></v-icon>
               <span class="mr-2 ml-1">内存</span>
               <v-progress-linear :model-value="sysInfo.memory" rounded height="8"
-                                 :indeterminate="sysInfo.memory===0"
+                                 :indeterminate="sysInfo.memory===0" rounded-bar
                                  color="grey-lighten-2" class="w-33 ml-2"/>
               <span class="ml-2">{{sysInfo.memory.toFixed(1)}}%</span>
             </div>
