@@ -66,7 +66,8 @@
             </v-progress-circular>
           </v-col>
         </v-row>
-        <VBtn block :disabled="sysInfo.master===0&&sysInfo.caves===0" style="margin-top: 25px" @click="handleGotoDashboard">
+        <VBtn block :disabled="sysInfo.master===-1&&sysInfo.caves===-1"
+              style="margin-top: 25px" @click="handleGotoDashboard">
           进入
         </VBtn>
       </v-card-text>
@@ -463,8 +464,8 @@ const handleDelete = async () => {
 const sysInfo = ref({
   cpu: 0,
   memory: 0,
-  master: 0,
-  caves: 0,
+  master: -1,
+  caves: -1,
 })
 const needContinue = ref(true)
 const getCpuMemStatus = () => {
