@@ -77,7 +77,9 @@
               </template>
               <!-- 文件大小 -->
               <template v-slot:item.size="{ item }">
-                {{ formatBytes(item.size) }}
+                <v-chip color="info" label>
+                  {{ formatBytes(item.size) }}
+                </v-chip>
               </template>
 
               <!-- 操作列 -->

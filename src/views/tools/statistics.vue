@@ -1,11 +1,11 @@
 <template>
   <v-row>
     <v-col cols="12" lg="12">
-      <v-card class="h-100">
+      <v-card height="600">
         <template #title>
           <div class="card-header">
             <div class="d-flex align-center gap-4">
-              <span class="font-weight-bold">玩家人数</span>
+              <span>玩家人数</span>
               <v-select
                 v-model="selectedTimeRange"
                 :items="timeRanges"
@@ -15,7 +15,7 @@
                 variant="outlined"
               />
             </div>
-            <v-btn size="small" variant="outlined" @click="handleRefreshPlayer">刷新</v-btn>
+            <v-btn @click="handleRefreshPlayer">刷新</v-btn>
           </div>
         </template>
         <template #text>
@@ -23,7 +23,7 @@
             ref="chartRef"
             :options="chartOptions"
             :series="series"
-            height="350"
+            height="450"
             type="area"
           />
         </template>
@@ -33,7 +33,7 @@
       <v-card class="h-100">
         <template #title>
           <div class="card-header">
-            <span class="font-weight-bold">玩家统计</span>
+            <span>玩家统计</span>
           </div>
         </template>
         <template #text>
@@ -51,7 +51,7 @@
       <v-card class="h-100">
         <template #title>
           <div class="card-header">
-            <span class="font-weight-bold">对应时间</span>
+            <span>对应时间</span>
           </div>
         </template>
         <template #text>
@@ -68,7 +68,7 @@
       <v-card class="h-100">
         <template #title>
           <div class="card-header">
-            <span class="font-weight-bold">数据量</span>
+            <span>数据量</span>
           </div>
         </template>
         <template #text>
