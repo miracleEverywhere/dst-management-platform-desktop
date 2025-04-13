@@ -42,11 +42,45 @@ const zhCurrentThemeNameMap = {
   dark: '黑暗'
 }
 
-const changeTheme = () => {
-  globalTheme.name.value = getNextThemeName()
-  globalStore.theme = globalTheme.name.value
-  ElectronApi.store.set('theme', globalTheme.name.value)
-}
+const changeTheme = async (event) => {
+  const { clientX: x, clientY: y } = event;
+  const { innerWidth, innerHeight } = window;
+
+  // 计算结束半径
+  const endRadius = Math.hypot(
+    Math.max(x, innerWidth - x),
+    Math.max(y, innerHeight - y)
+  );
+
+  // 定义主题切换逻辑
+  const updateTheme = () => {
+    const nextTheme = getNextThemeName();
+    globalTheme.name.value = nextTheme;
+    globalStore.theme = nextTheme;
+    ElectronApi.store.set('theme', nextTheme);
+  };
+
+  // 启动视图过渡
+  const transition = document.startViewTransition(updateTheme);
+
+  // 等待过渡准备就绪
+  await transition.ready;
+
+  // 执行动画
+  document.documentElement.animate(
+    {
+      clipPath: [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`
+      ]
+    },
+    {
+      duration: 300,
+      easing: "ease-in",
+      pseudoElement: "::view-transition-new(root)"
+    }
+  );
+};
 
 // Update icon if theme is changed from other sources
 watch(() => globalTheme.name.value, val => {
