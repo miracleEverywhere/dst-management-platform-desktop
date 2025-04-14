@@ -87,3 +87,59 @@ watch(() => globalTheme.name.value, val => {
   currentThemeName.value = val
 })
 </script>
+
+<style>
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 暗色主题时调整混合模式 */
+.v-theme--dark::view-transition-old(root) {
+  mix-blend-mode: lighten;
+}
+.v-theme--dark::view-transition-new(root) {
+  mix-blend-mode: darken;
+}
+
+/* 亮色主题时调整混合模式 */
+.v-theme--light::view-transition-old(root) {
+  mix-blend-mode: darken;
+}
+.v-theme--light::view-transition-new(root) {
+  mix-blend-mode: lighten;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 0px;
+  background: none;
+}
+
+::-webkit-scrollbar-track {
+  background: none;
+  border: none;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+}
+
+.v-theme--dark ::-webkit-scrollbar-thumb {
+  background-color: #28243d !important;
+}
+
+.v-theme--light ::-webkit-scrollbar-thumb {
+  background-color: #f4f5fa !important;
+}
+
+/* 防止闪烁 */
+::view-transition-group(root) {
+  animation: none;
+}
+
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+</style>
