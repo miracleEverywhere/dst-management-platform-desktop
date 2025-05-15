@@ -45,13 +45,11 @@ const zhCurrentThemeNameMap = {
 const changeTheme = async (event) => {
   const { clientX: x, clientY: y } = event;
   const { innerWidth, innerHeight } = window;
-
   // 计算结束半径
   const endRadius = Math.hypot(
     Math.max(x, innerWidth - x),
     Math.max(y, innerHeight - y)
   );
-
   // 定义主题切换逻辑
   const updateTheme = () => {
     const nextTheme = getNextThemeName();
@@ -59,13 +57,10 @@ const changeTheme = async (event) => {
     globalStore.theme = nextTheme;
     ElectronApi.store.set('theme', nextTheme);
   };
-
   // 启动视图过渡
   const transition = document.startViewTransition(updateTheme);
-
   // 等待过渡准备就绪
   await transition.ready;
-
   // 执行动画
   document.documentElement.animate(
     {
