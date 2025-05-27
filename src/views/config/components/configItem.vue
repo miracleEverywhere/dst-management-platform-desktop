@@ -129,7 +129,7 @@
                       <v-row>
                         <v-col cols="12" sm="9">
                           <v-text-field v-model="addForm.ip" :rules="addFormRules.ip"
-                                        label="IP" required clearable></v-text-field>
+                                        label="IP/域名" required clearable></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                           <v-text-field v-model.number="addForm.port" :rules="addFormRules.port"
@@ -266,9 +266,17 @@ const addFormRules = {
   ip: [
     value => {
       if (value) {
-        return validateIpv4(value)
+        if (/^\d/.test(value)) {
+          return validateIpv4(value)
+        } else {
+          if (/.+\..+/.test(value)) {
+            return true
+          } else {
+            return '请输入正确的域名'
+          }
+        }
       }
-      return '请输入IP'
+      return '请输入IP/域名'
     },
   ],
   port: [
