@@ -1,9 +1,9 @@
 <template>
   <v-card style="width: 500px; min-height: 259px;">
-    <template v-if="configItem.name">
+    <template v-if="configItem.ip">
       <v-card-item>
         <v-card-title>
-          {{ configItem.name }}
+          {{ configItem.ip }}
         </v-card-title>
         <v-card-subtitle>
           {{ configItem.remark }}
@@ -38,35 +38,40 @@
                 http://{{ configItem.ip }}:{{ configItem.port }}
               </v-chip>
               <div style="margin-top: 10px">
-                <v-chip v-if="configItem.type==='master'||configItem.type==='both'"
-                        :color="sysInfo.master===1?'primary':'error'" style="margin-right: 5px">
-                  地面
-                  <v-icon v-if="sysInfo.master===1" icon="ri-check-line" end/>
-                  <v-icon v-if="sysInfo.master===0" icon="ri-close-line" end/>
+
+                <v-chip v-if="clustersStat.cluster!==-1" color="primary" style="margin-right: 5px">
+                  <v-icon icon="ri-apps-2-fill"/>
+                  集群 {{clustersStat.cluster}} 个
                 </v-chip>
-                <v-chip v-if="configItem.type==='cave'||configItem.type==='both'"
-                        :color="sysInfo.master===1?'success':'error'">
-                  洞穴
-                  <v-icon v-if="sysInfo.caves===1" icon="ri-check-line" end/>
-                  <v-icon v-if="sysInfo.caves===0" icon="ri-close-line" end/>
+                <v-chip v-if="clustersStat.cluster===-1" color="warning" style="margin-right: 5px">
+                  <v-icon icon="ri-apps-2-fill"/>
+                  获取中
+                </v-chip>
+                <v-chip v-if="clustersStat.world!==-1" color="success">
+                  <v-icon icon="ri-apps-2-fill"/>
+                  世界 {{clustersStat.world}} 个
+                </v-chip>
+                <v-chip v-if="clustersStat.world===-1" color="warning">
+                  <v-icon icon="ri-apps-2-fill"/>
+                  获取中
                 </v-chip>
               </div>
             </div>
           </v-col>
           <v-col cols="12" sm="5">
             <v-progress-circular :size="60" :width="5" color="primary"
-                                 :indeterminate="sysInfo.cpu===0"
+                                 :indeterminate="sysInfo.cpu===-1"
                                  :model-value="sysInfo.cpu">
               CPU
             </v-progress-circular>
             <v-progress-circular :size="60" :width="5" color="warning"
-                                 :indeterminate="sysInfo.memory===0"
+                                 :indeterminate="sysInfo.memory===-1"
                                  :model-value="sysInfo.memory" style="margin-left: 20px">
               内存
             </v-progress-circular>
           </v-col>
         </v-row>
-        <VBtn block :disabled="sysInfo.master===-1&&sysInfo.caves===-1"
+        <VBtn block
               style="margin-top: 25px" @click="handleGotoDashboard">
           进入
         </VBtn>
@@ -75,7 +80,7 @@
           v-model="dialogEdit"
           width="auto"
       >
-        <v-card title="新建">
+        <v-card title="编辑">
           <v-card-text>
             <v-form fast-fail @submit.prevent="handleUpdate">
               <v-container max-width="500">
@@ -169,8 +174,8 @@
 import ElectronApi from "@/utils/electronApi"
 import useGlobalStore from '@/plugins/pinia/global'
 import useConfigStore from '@/plugins/pinia/config'
-import configApi from '@/api/config'
-import {sleep, uuid4, validateIpv4} from "@/utils/tools";
+import settingApi from '@/api/setting'
+import {parseJwt, sleep, uuid4, validateIpv4} from "@/utils/tools";
 import {DB_KEY} from "@/config";
 import {showSnackbar} from '@/utils/snackbar';
 import homeApi from "@/api/home"
@@ -178,6 +183,7 @@ import homeApi from "@/api/home"
 
 onMounted(() => {
   configStore.inConfig = true
+  getClusters()
   startRequests()
 })
 
@@ -207,11 +213,28 @@ const configItem = computed(() => {
 
 const loading = ref(false)
 
-const roomInfo = ref({
-  name: undefined,
-  cpu: undefined,
-  mem: undefined,
+const clustersStat = ref({
+  cluster: -1,
+  world: -1
 })
+const getClusters = () => {
+  configStore.url = `http://${configItem.value.ip}:${configItem.value.port}/v1`
+  configStore.token = configItem.value.token
+  settingApi.clusters.get().then(response => {
+    let clusterNum = 0
+    let worldNum = 0
+    for (let cluster of response.data) {
+      clusterNum ++
+      if (cluster.worlds !== null) {
+        for (let world of cluster.worlds) {
+          worldNum ++
+        }
+      }
+    }
+    clustersStat.value.cluster = clusterNum
+    clustersStat.value.world = worldNum
+  })
+}
 
 const handleGotoDashboard = () => {
   globalStore.setConfigInfo(configItem.value)
@@ -335,53 +358,38 @@ const handleAdd = async (event) => {
     loading.value = false
     return
   }
+
+  const parsedToken = parseJwt(addForm.value.token)
+  if (parsedToken === null) {
+    showSnackbar('令牌解析失败，请输入正确的令牌', 'error')
+    loading.value = false
+    return
+  }
+
+  const role = parsedToken.payload.role
+  if (role !== 'admin') {
+    showSnackbar('仅支持管理员创建的令牌', 'error')
+    loading.value = false
+    return
+  }
+
   configStore.inConfig = true
   configStore.url = `http://${addForm.value.ip}:${addForm.value.port}/v1`
   configStore.token = addForm.value.token
   const newConfig = {
     id: uuid4(),
-    name: undefined,
-    type: undefined, // 1 master; 2 cave; 3 both;
     ip: addForm.value.ip,
     port: addForm.value.port,
     token: addForm.value.token,
     remark: addForm.value.remark
   }
-  configApi.baseInfo.get().then(async baseInfoResponse => {
-    if (baseInfoResponse.data.base.name) {
-      newConfig.name = baseInfoResponse.data.base.name
-      configApi.multiHost.get().then(async multiHostResponse => {
-        if (multiHostResponse.data) {
-          if (baseInfoResponse.data.ground) {
-            newConfig.type = 'master'
-          } else if (baseInfoResponse.data.cave) {
-            newConfig.type = 'cave'
-          } else {
-            newConfig.type = 'none'
-          }
-        } else {
-          newConfig.type = 'both'
-        }
-
-        ElectronApi.store.append(DB_KEY.configs, newConfig)
-        showSnackbar('新建成功', 'success')
-        dialog.value = false
-        await sleep(2000)
-        location.reload()
-      })
-    } else {
-      newConfig.name = "未发现存档"
-      newConfig.type = 'none'
-      ElectronApi.store.append(DB_KEY.configs, newConfig)
-      showSnackbar('新建成功', 'success')
-      dialog.value = false
-      await sleep(2000)
-      location.reload()
-    }
-  }).finally(() => {
-    loading.value = false
-  })
-
+  ElectronApi.store.append(DB_KEY.configs, newConfig)
+  showSnackbar('新建成功', 'success')
+  dialog.value = false
+  loading.value = false
+  await sleep(2000)
+  location.reload()
+  needContinue.value = true
 }
 const handleUpdate = async (event) => {
   loading.value = true
@@ -394,63 +402,27 @@ const handleUpdate = async (event) => {
   configStore.token = addForm.value.token
   const newConfig = {
     id: configItem.value.id,
-    name: configItem.value.name,
-    type: configItem.value.type, // 1 master; 2 cave; 3 both;
     ip: addForm.value.ip,
     port: addForm.value.port,
     token: addForm.value.token,
     remark: addForm.value.remark
   }
-  configApi.baseInfo.get().then(async baseInfoResponse => {
-    if (baseInfoResponse.data.base.name) {
-      newConfig.name = baseInfoResponse.data.base.name
-      configApi.multiHost.get().then(async multiHostResponse => {
-        if (multiHostResponse.data) {
-          if (baseInfoResponse.data.ground) {
-            newConfig.type = 'master'
-          } else if (baseInfoResponse.data.cave) {
-            newConfig.type = 'cave'
-          } else {
-            newConfig.type = 'none'
-          }
-        } else {
-          newConfig.type = 'both'
-        }
-        const dbValue = ElectronApi.store.get(DB_KEY.configs)
-        // 1. 找到目标对象的索引
-        const targetIndex = dbValue.findIndex(item => item.id === newConfig.id);
-        console.log(dbValue)
-        if (targetIndex !== -1) {
-          // 2. 直接修改数组中对应索引的对象
-          dbValue[targetIndex] = {...dbValue[targetIndex], ...newConfig}
-          console.log(dbValue)
-        }
-        ElectronApi.store.set(DB_KEY.configs, dbValue)
-        showSnackbar('更新成功', 'success')
-        dialogEdit.value = false
-        await sleep(2000)
-        location.reload()
-      })
-    } else {
-      newConfig.name = "未发现存档"
-      newConfig.type = 'none'
-      const dbValue = ElectronApi.store.get(DB_KEY.configs)
-      // 1. 找到目标对象的索引
-      const targetIndex = dbValue.findIndex(item => item.id === newConfig.id);
-
-      if (targetIndex !== -1) {
-        // 2. 直接修改数组中对应索引的对象
-        dbValue[targetIndex] = {...dbValue[targetIndex], ...newConfig}; // 使用展开运算符合并对象
-      }
-      ElectronApi.store.set(DB_KEY.configs, dbValue)
-      showSnackbar('更新成功', 'success')
-      dialogEdit.value = false
-      await sleep(2000)
-      location.reload()
-    }
-  }).finally(() => {
-    loading.value = false
-  })
+  const dbValue = ElectronApi.store.get(DB_KEY.configs)
+  // 1. 找到目标对象的索引
+  const targetIndex = dbValue.findIndex(item => item.id === newConfig.id);
+  console.log(dbValue)
+  if (targetIndex !== -1) {
+    // 2. 直接修改数组中对应索引的对象
+    dbValue[targetIndex] = {...dbValue[targetIndex], ...newConfig}
+    console.log(dbValue)
+  }
+  ElectronApi.store.set(DB_KEY.configs, dbValue)
+  showSnackbar('更新成功', 'success')
+  dialogEdit.value = false
+  await sleep(2000)
+  location.reload()
+  loading.value = false
+  needContinue.value = true
 }
 
 const handleDelete = async () => {
@@ -470,10 +442,8 @@ const handleDelete = async () => {
 }
 
 const sysInfo = ref({
-  cpu: 0,
-  memory: 0,
-  master: -1,
-  caves: -1,
+  cpu: -1,
+  memory: -1,
 })
 const needContinue = ref(true)
 const getCpuMemStatus = () => {
@@ -489,7 +459,7 @@ const getCpuMemStatus = () => {
 let intervalId = null
 const startRequests = () => {
   intervalId = setInterval(() => {
-    if (configItem.value.name && needContinue.value) {
+    if (needContinue.value) {
       getCpuMemStatus()
     }
   }, 2000)
