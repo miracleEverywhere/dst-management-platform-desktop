@@ -56,8 +56,8 @@
       >
         <!-- LOGO -->
         <v-img
-          width="3em"
-          height="1.9em"
+          width="4em"
+          height="4em"
           src="src/assets/images/logo.svg"
         ></v-img>
         <!-- 标题 -->

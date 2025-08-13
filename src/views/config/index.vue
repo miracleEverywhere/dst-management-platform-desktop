@@ -2,10 +2,10 @@
   <VerticalNavLayout>
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
-        <div class="d-flex">
+        <div class="d-flex align-center">
           <v-img
-            width="3em"
-            height="1.9em"
+            width="4em"
+            height="4em"
             src="src/assets/images/logo.svg"
           ></v-img>
           <h1 class="font-weight-medium leading-normal text-xl text-uppercase ml-3">
