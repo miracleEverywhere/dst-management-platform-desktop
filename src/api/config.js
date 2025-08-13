@@ -2,16 +2,16 @@ import http from '@/utils/axios'
 
 
 export default {
-    baseInfo: {
-        url: `/setting/room`,
-        get: async function (data) {
-            return await http.get(this.url, data);
-        }
+  clusters: {
+    url: `/setting/clusters`,
+    get: async function(data){
+      return await http.get(this.url, data);
     },
-    multiHost: {
-        url: `/setting/room/multihost`,
-        get: async function (data) {
-            return await http.get(this.url, data);
-        }
-    }
+    all: {
+      url: `/setting/clusters/all`,
+      get: async function(data){
+        return await http.get(this.url, data);
+      },
+    },
+  },
 }
