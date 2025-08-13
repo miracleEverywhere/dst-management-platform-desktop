@@ -55,10 +55,11 @@
         to="/"
       >
         <!-- LOGO -->
-        <div
-          class="d-flex"
-          v-html="logo"
-        />
+        <v-img
+          width="3em"
+          height="1.9em"
+          src="src/assets/images/logo.svg"
+        ></v-img>
         <!-- 标题 -->
         <h1 class="font-weight-medium leading-normal text-xl text-uppercase">
           {{ title }}

@@ -2,10 +2,16 @@
   <VerticalNavLayout>
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
-        <div class="d-flex" v-html="logo"/>
-        <h1 class="font-weight-medium leading-normal text-xl text-uppercase ml-3">
-          {{title}}
-        </h1>
+        <div class="d-flex">
+          <v-img
+            width="3em"
+            height="1.9em"
+            src="src/assets/images/logo.svg"
+          ></v-img>
+          <h1 class="font-weight-medium leading-normal text-xl text-uppercase ml-3">
+            {{title}}
+          </h1>
+        </div>
         <VSpacer />
         <IconBtn
             href="https://github.com/miracleEverywhere/dst-management-platform-desktop"
