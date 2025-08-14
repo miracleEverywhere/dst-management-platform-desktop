@@ -196,11 +196,10 @@ const props = defineProps({
     type: Object,
     default: () => ({
       id: undefined,
-      name: undefined,
-      type: undefined, // 1 master; 2 cave; 3 both;
       ip: undefined,
       port: undefined,
       token: undefined,
+      remark: undefined,
     })
   }
 })
@@ -239,6 +238,7 @@ const getClusters = () => {
 const handleGotoDashboard = () => {
   globalStore.setConfigInfo(configItem.value)
   configStore.inConfig = false
+  needContinue.value = false
   ElectronApi.window.dashboard()
 }
 

@@ -356,6 +356,10 @@ import {showSnackbar} from "@/utils/snackbar";
 
 
 onMounted(() => {
+  console.log(configStore.inConfig)
+  if (configStore.inConfig === false) {
+
+  }
   initTheme()
   getConnectionCode()
   getRoomInfo()
