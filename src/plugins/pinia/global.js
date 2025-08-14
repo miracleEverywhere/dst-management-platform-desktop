@@ -4,47 +4,47 @@ import {PINIA_PREFIX} from "@/config/index.js"
 
 // defineStore方法执行会返回一个函数，函数的作用就是让组件可以获取到仓库数据
 const globalStore = defineStore("global", {
-    // 开启数据持久化
-    persist: {
-        // enabled: true, // true 表示开启持久化保存
-        key: PINIA_PREFIX + "global", // 默认会以 store 的 id 作为 key
-        storage: localStorage
+  // 开启数据持久化
+  persist: {
+    // enabled: true, // true 表示开启持久化保存
+    key: PINIA_PREFIX + "global", // 默认会以 store 的 id 作为 key
+    storage: localStorage
+  },
+  // 存储数据state
+  state: () => {
+    return {
+      id: '',
+      ip: '',
+      port: undefined,
+      url: '',
+      token: '',
+      type: '',
+      remark: '',
+      theme: '',
+      selectedDstCluster: null,
+      dstClusters: null,
+    };
+  },
+  actions: {
+    setConfigInfo(info) {
+      this.id = info.id
+      this.ip = info.ip
+      this.port = info.port
+      this.url = `http://${info.ip}:${info.port}/v1`
+      this.token = info.token
+      this.remark = info.remark
     },
-    // 存储数据state
-    state: () => {
-        return {
-            name: '',
-            ip: '',
-            port: undefined,
-            url: '',
-            token: '',
-            type: '',
-            remark: '',
-            theme: '',
-        };
-    },
-    actions: {
-        setConfigInfo(info) {
-            this.name = info.name
-            this.ip = info.ip
-            this.port = info.port
-            this.url = `http://${info.ip}:${info.port}/v1`
-            this.token = info.token
-            this.type = info.type
-            this.remark = info.remark
-        },
-        clearStore() {
-            this.name = ''
-            this.ip = ''
-            this.port = undefined
-            this.url = ''
-            this.token = ''
-            this.type = ''
-            this.remark = ''
-        }
-    },
-    // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值
-    getters: {}
+    clearStore() {
+      this.id = ''
+      this.ip = ''
+      this.port = undefined
+      this.url = ''
+      this.token = ''
+      this.remark = ''
+    }
+  },
+  // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值
+  getters: {}
 });
 
 // 对外暴露方法

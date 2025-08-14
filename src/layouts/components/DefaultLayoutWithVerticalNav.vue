@@ -12,14 +12,44 @@
         </IconBtn>
 
         <div
-          class="d-flex align-center"
-          style="user-select: none;"
+          class="d-flex align-center w-25"
         >
-          <span class="d-none d-md-flex align-center text-disabled">
-            <v-icon icon="ri-bookmark-3-line"></v-icon>
-            <span class="me-3 ml-1">{{ globalStore.name }}</span>
-          </span>
+          <v-select v-model="globalStore.selectedDstCluster"
+                    v-model:menu="selectOpen"
+                    :items="globalStore.dstClusters"
+                    item-title="clusterDisplayName"
+                    item-value="clusterName"
+                    density="compact"
+                    @update:model-value="handleSelectedClusterChange"
+          >
+            <template #append-item>
+              <v-list-item @click="handleOpenCreateDialog">
+                <v-list-item-title>
+                  新建集群
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-select>
+
         </div>
+
+        <v-dialog v-model="clusterCreateDialogVisible" width="60%">
+          <v-card>
+            <v-card-text>
+              <div class="mt-16">
+                你好
+              </div>
+              <div class="mt-16">
+                你好
+              </div>
+              <div class="mt-16">
+                你好
+              </div><div class="mt-16">
+              你好
+            </div>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
 
         <VSpacer/>
 
@@ -83,12 +113,18 @@
 
 <script setup>
 import NavItems from '@/layouts/components/NavItems.vue'
-import logo from '@images/logo.svg?raw'
+import settingApi from '@/api/setting'
 import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import useGlobalStore from "@/plugins/pinia/global";
 import useConfigStore from '@/plugins/pinia/config'
 import ElectronApi from "@/utils/electronApi";
+import {DB_KEY} from "@/config";
+
+
+onMounted(async () => {
+  getClusters()
+})
 
 const router = useRouter()
 const globalStore = useGlobalStore()
@@ -116,6 +152,30 @@ const needDisabled = () => {
 
   return false
 }
+
+const getClusters = () => {
+  settingApi.clusters.get().then(response => {
+    globalStore.dstClusters = response.data
+    const selectedDstCluster = ElectronApi.store.get(DB_KEY.selectedDstCluster + globalStore.id) || null
+    if (globalStore.selectedDstCluster === null && globalStore.dstClusters !== null && selectedDstCluster === null) {
+      ElectronApi.store.set(DB_KEY.selectedDstCluster + globalStore.id, globalStore.dstClusters[0].clusterName)
+      globalStore.selectedDstCluster = globalStore.dstClusters[0].clusterName
+    }
+  })
+}
+
+const handleSelectedClusterChange = () => {
+  ElectronApi.store.set(DB_KEY.selectedDstCluster + globalStore.id, globalStore.selectedDstCluster)
+}
+
+const selectOpen = ref(false)
+const clusterCreateDialogVisible = ref(false)
+const handleOpenCreateDialog = () => {
+  globalStore.selectedDstCluster = null
+  selectOpen.value = false
+  clusterCreateDialogVisible.value = true
+}
+
 </script>
 
 <style lang="scss" scoped>
