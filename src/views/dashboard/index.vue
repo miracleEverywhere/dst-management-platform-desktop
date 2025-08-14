@@ -348,289 +348,289 @@
 
 </template>
 
-<script setup>
-import {onMounted, onBeforeUnmount} from "vue";
-import {formatBytes, initTheme, truncateString} from "@/utils/tools";
-import useGlobalStore from "@/plugins/pinia/global";
-import useConfigStore from "@/plugins/pinia/config";
-import externalApi from "@/api/externalApi";
-import homeApi from "@/api/home";
-import {showSnackbar} from "@/utils/snackbar";
+<!--<script setup>-->
+<!--import {onMounted, onBeforeUnmount} from "vue";-->
+<!--import {formatBytes, initTheme, truncateString} from "@/utils/tools";-->
+<!--import useGlobalStore from "@/plugins/pinia/global";-->
+<!--import useConfigStore from "@/plugins/pinia/config";-->
+<!--import externalApi from "@/api/externalApi";-->
+<!--import homeApi from "@/api/home";-->
+<!--import {showSnackbar} from "@/utils/snackbar";-->
 
 
-onMounted(() => {
-  console.log(configStore.inConfig)
-  if (configStore.inConfig === false) {
+<!--onMounted(() => {-->
+<!--  console.log(configStore.inConfig)-->
+<!--  if (configStore.inConfig === false) {-->
 
-  }
-  initTheme()
-  getConnectionCode()
-  getRoomInfo()
-  getVersion()
-  startRequests()
-})
+<!--  }-->
+<!--  initTheme()-->
+<!--  getConnectionCode()-->
+<!--  getRoomInfo()-->
+<!--  getVersion()-->
+<!--  startRequests()-->
+<!--})-->
 
-const globalStore = useGlobalStore()
-const configStore = useConfigStore()
+<!--const globalStore = useGlobalStore()-->
+<!--const configStore = useConfigStore()-->
 
-const connectionCode = ref('')
-const connectionCodeLoading = ref(false)
-const getConnectionCode = () => {
-  connectionCodeLoading.value = true
-  externalApi.connectionCode.get().then(response => {
-    connectionCode.value = response.data
-  }).finally(() => {
-    connectionCodeLoading.value = false
-  })
-}
+<!--const connectionCode = ref('')-->
+<!--const connectionCodeLoading = ref(false)-->
+<!--const getConnectionCode = () => {-->
+<!--  connectionCodeLoading.value = true-->
+<!--  externalApi.connectionCode.get().then(response => {-->
+<!--    connectionCode.value = response.data-->
+<!--  }).finally(() => {-->
+<!--    connectionCodeLoading.value = false-->
+<!--  })-->
+<!--}-->
 
-const sysInfo = ref({
-  cpu: 0,
-  memory: 0,
-  master: 0,
-  caves: 0,
-})
+<!--const sysInfo = ref({-->
+<!--  cpu: 0,-->
+<!--  memory: 0,-->
+<!--  master: 0,-->
+<!--  caves: 0,-->
+<!--})-->
 
-const cpuList = ref(Array(60).fill(0)) 
-const memoryList = ref(Array(60).fill(0))
+<!--const cpuList = ref(Array(60).fill(0)) -->
+<!--const memoryList = ref(Array(60).fill(0))-->
 
-const getSysInfo = () => {
-  homeApi.sysInfo.get().then(response => {
-    if (!response.data) return; 
-    
-    const cpu = Number(response.data.cpu) || 0;
-    const memory = Number(response.data.memory) || 0;
-    
-    sysInfo.value = {
-      ...response.data,
-      cpu,
-      memory
-    }
-    
-    cpuList.value = [...cpuList.value.slice(1), cpu];
-    memoryList.value = [...memoryList.value.slice(1), memory];
-  }).catch(() => {
-    needContinue.value = false
-  })
-}
-const needContinue = ref(true)
+<!--const getSysInfo = () => {-->
+<!--  homeApi.sysInfo.get().then(response => {-->
+<!--    if (!response.data) return; -->
+<!--    -->
+<!--    const cpu = Number(response.data.cpu) || 0;-->
+<!--    const memory = Number(response.data.memory) || 0;-->
+<!--    -->
+<!--    sysInfo.value = {-->
+<!--      ...response.data,-->
+<!--      cpu,-->
+<!--      memory-->
+<!--    }-->
+<!--    -->
+<!--    cpuList.value = [...cpuList.value.slice(1), cpu];-->
+<!--    memoryList.value = [...memoryList.value.slice(1), memory];-->
+<!--  }).catch(() => {-->
+<!--    needContinue.value = false-->
+<!--  })-->
+<!--}-->
+<!--const needContinue = ref(true)-->
 
-const gradients = ['#f72047', '#ffd200', '#1feaea']
+<!--const gradients = ['#f72047', '#ffd200', '#1feaea']-->
 
-const roomInfo = ref({
-  roomSettingBase: {},
-  seasonInfo: {
-    season: {},
-    cycles: 0,
-    elapsedDays: 0,
-    seasonLength: {
-      summer: 15,
-      autumn: 20,
-      spring: 20,
-      winter: 15
-    },
-    phase: {}
-  },
-  modsCount: 0,
-  playerNum: 0,
-})
-const getRoomInfo = () => {
-  homeApi.roomInfo.get().then(response => {
-    roomInfo.value = response.data
-  })
-}
+<!--const roomInfo = ref({-->
+<!--  roomSettingBase: {},-->
+<!--  seasonInfo: {-->
+<!--    season: {},-->
+<!--    cycles: 0,-->
+<!--    elapsedDays: 0,-->
+<!--    seasonLength: {-->
+<!--      summer: 15,-->
+<!--      autumn: 20,-->
+<!--      spring: 20,-->
+<!--      winter: 15-->
+<!--    },-->
+<!--    phase: {}-->
+<!--  },-->
+<!--  modsCount: 0,-->
+<!--  playerNum: 0,-->
+<!--})-->
+<!--const getRoomInfo = () => {-->
+<!--  homeApi.roomInfo.get().then(response => {-->
+<!--    roomInfo.value = response.data-->
+<!--  })-->
+<!--}-->
 
-const getSeasonDays = (season) => {
-  if (roomInfo.value.seasonInfo.cycles > -1) {
-    return `(${roomInfo.value.seasonInfo.elapsedDays}/${roomInfo.value.seasonInfo.seasonLength[season]})`
-  } else {
-    return ''
-  }
-}
+<!--const getSeasonDays = (season) => {-->
+<!--  if (roomInfo.value.seasonInfo.cycles > -1) {-->
+<!--    return `(${roomInfo.value.seasonInfo.elapsedDays}/${roomInfo.value.seasonInfo.seasonLength[season]})`-->
+<!--  } else {-->
+<!--    return ''-->
+<!--  }-->
+<!--}-->
 
-const version = ref({
-  server: 0,
-  local: 0
-})
+<!--const version = ref({-->
+<!--  server: 0,-->
+<!--  local: 0-->
+<!--})-->
 
-const versionLoading = ref(false)
-const getVersion = () => {
-  versionLoading.value = true
-  externalApi.dstVersion.get().then(response => {
-    version.value = response.data
-  }).finally(() => {
-    versionLoading.value = false
-  })
-}
+<!--const versionLoading = ref(false)-->
+<!--const getVersion = () => {-->
+<!--  versionLoading.value = true-->
+<!--  externalApi.dstVersion.get().then(response => {-->
+<!--    version.value = response.data-->
+<!--  }).finally(() => {-->
+<!--    versionLoading.value = false-->
+<!--  })-->
+<!--}-->
 
-const dialogMod = ref(false)
+<!--const dialogMod = ref(false)-->
 
-const modInfoList = ref([])
-const modInfoLoading = ref(false)
-const handleGetModInfo = () => {
-  modInfoLoading.value = true
-  externalApi.modInfo.get().then(response => {
-    modInfoList.value = response.data
-    modInfoTableRows.value = modInfoList.value.length
-  }).finally(() => {
-    modInfoLoading.value = false
-  })
-}
-const modInfoTableHeaders = ref([
-  { title: "名称", value: "name"},
-  { title: "预览", value: "preview_url" },
-  { title: "大小", value: "size" },
-  { title: "ID", value: "id" },
-  { title: "标签", value: "tags" },
-])
-const modInfoTablePage = ref(1)
-const modInfoTableRows = ref(0)
+<!--const modInfoList = ref([])-->
+<!--const modInfoLoading = ref(false)-->
+<!--const handleGetModInfo = () => {-->
+<!--  modInfoLoading.value = true-->
+<!--  externalApi.modInfo.get().then(response => {-->
+<!--    modInfoList.value = response.data-->
+<!--    modInfoTableRows.value = modInfoList.value.length-->
+<!--  }).finally(() => {-->
+<!--    modInfoLoading.value = false-->
+<!--  })-->
+<!--}-->
+<!--const modInfoTableHeaders = ref([-->
+<!--  { title: "名称", value: "name"},-->
+<!--  { title: "预览", value: "preview_url" },-->
+<!--  { title: "大小", value: "size" },-->
+<!--  { title: "ID", value: "id" },-->
+<!--  { title: "标签", value: "tags" },-->
+<!--])-->
+<!--const modInfoTablePage = ref(1)-->
+<!--const modInfoTableRows = ref(0)-->
 
-const computedSwitchMaster = computed({
-  get: () => sysInfo.value.master === 1,
-  set: (newValue) => {
-    sysInfo.value.master = newValue ? 1 : 0;
-  },
-})
-const computedSwitchCaves = computed({
-  get: () => sysInfo.value.caves === 1,
-  set: (newValue) => {
-    sysInfo.value.caves = newValue ? 1 : 0;
-  },
-})
-const masterLoading = ref(false)
-const cavesLoading = ref(false)
-const masterCavesChange = (world) => {
-  needContinue.value = false
-  const reqForm = {
-    type: 'masterSwitch',
-    info: sysInfo.value.master
-  }
-  if (world === 'master') {
-    const reqForm = {
-      type: 'masterSwitch',
-      info: sysInfo.value.master
-    }
-    masterLoading.value = true
-    homeApi.exec.post(reqForm).finally(() => {
-      masterLoading.value = false
-      needContinue.value = true
-    })
-  } else {
-    const reqForm = {
-      type: 'cavesSwitch',
-      info: sysInfo.value.caves
-    }
-    cavesLoading.value = true
-    homeApi.exec.post(reqForm).finally(() => {
-      cavesLoading.value = false
-      needContinue.value = true
-    })
-  }
-}
+<!--const computedSwitchMaster = computed({-->
+<!--  get: () => sysInfo.value.master === 1,-->
+<!--  set: (newValue) => {-->
+<!--    sysInfo.value.master = newValue ? 1 : 0;-->
+<!--  },-->
+<!--})-->
+<!--const computedSwitchCaves = computed({-->
+<!--  get: () => sysInfo.value.caves === 1,-->
+<!--  set: (newValue) => {-->
+<!--    sysInfo.value.caves = newValue ? 1 : 0;-->
+<!--  },-->
+<!--})-->
+<!--const masterLoading = ref(false)-->
+<!--const cavesLoading = ref(false)-->
+<!--const masterCavesChange = (world) => {-->
+<!--  needContinue.value = false-->
+<!--  const reqForm = {-->
+<!--    type: 'masterSwitch',-->
+<!--    info: sysInfo.value.master-->
+<!--  }-->
+<!--  if (world === 'master') {-->
+<!--    const reqForm = {-->
+<!--      type: 'masterSwitch',-->
+<!--      info: sysInfo.value.master-->
+<!--    }-->
+<!--    masterLoading.value = true-->
+<!--    homeApi.exec.post(reqForm).finally(() => {-->
+<!--      masterLoading.value = false-->
+<!--      needContinue.value = true-->
+<!--    })-->
+<!--  } else {-->
+<!--    const reqForm = {-->
+<!--      type: 'cavesSwitch',-->
+<!--      info: sysInfo.value.caves-->
+<!--    }-->
+<!--    cavesLoading.value = true-->
+<!--    homeApi.exec.post(reqForm).finally(() => {-->
+<!--      cavesLoading.value = false-->
+<!--      needContinue.value = true-->
+<!--    })-->
+<!--  }-->
+<!--}-->
 
-const execDialogConfirmButtonLoading = ref(false)
-const handleExec = async (type, info) => {
-  execDialogConfirmButtonLoading.value = true
-  const reqForm = {
-    type: type,
-    info: info
-  }
-  try {
-    const response = await homeApi.exec.post(reqForm)
-    showSnackbar(response.message)
-  } finally {
-    execDialogConfirmButtonLoading.value = false
-  }
+<!--const execDialogConfirmButtonLoading = ref(false)-->
+<!--const handleExec = async (type, info) => {-->
+<!--  execDialogConfirmButtonLoading.value = true-->
+<!--  const reqForm = {-->
+<!--    type: type,-->
+<!--    info: info-->
+<!--  }-->
+<!--  try {-->
+<!--    const response = await homeApi.exec.post(reqForm)-->
+<!--    showSnackbar(response.message)-->
+<!--  } finally {-->
+<!--    execDialogConfirmButtonLoading.value = false-->
+<!--  }-->
 
-}
-const buttonMap = {
-  startup: {name: '启动游戏', color: 'success'},
-  restart: {name: '重启游戏', color: 'info'},
-  update: {name: '更新游戏', color: 'warning'},
-  shutdown: {name: '关闭游戏', color: 'secondary'},
-  reset: {name: '重置世界', color: 'error'},
-  delete: {name: '删除世界', color: 'primary'},
-}
+<!--}-->
+<!--const buttonMap = {-->
+<!--  startup: {name: '启动游戏', color: 'success'},-->
+<!--  restart: {name: '重启游戏', color: 'info'},-->
+<!--  update: {name: '更新游戏', color: 'warning'},-->
+<!--  shutdown: {name: '关闭游戏', color: 'secondary'},-->
+<!--  reset: {name: '重置世界', color: 'error'},-->
+<!--  delete: {name: '删除世界', color: 'primary'},-->
+<!--}-->
 
-const consoleExecMap = ref([
-  {title: '地面', value: 'master'},
-  {title: '洞穴', value: 'caves'},
-])
+<!--const consoleExecMap = ref([-->
+<!--  {title: '地面', value: 'master'},-->
+<!--  {title: '洞穴', value: 'caves'},-->
+<!--])-->
 
-const announceLoading = ref(false)
-const announceForm = ref({
-  message: ''
-})
-const handleAnnounce = () => {
-  if (announceForm.value.message === '') {
-    showSnackbar('请输入要宣告的内容', 'error')
-    return
-  }
-  announceLoading.value = true
-  homeApi.interface.announce.post(announceForm.value).then(response => {
-    showSnackbar(response.message)
-    announceForm.value.message = ''
-  }).finally(() => {
-    announceLoading.value = false
-  })
-}
+<!--const announceLoading = ref(false)-->
+<!--const announceForm = ref({-->
+<!--  message: ''-->
+<!--})-->
+<!--const handleAnnounce = () => {-->
+<!--  if (announceForm.value.message === '') {-->
+<!--    showSnackbar('请输入要宣告的内容', 'error')-->
+<!--    return-->
+<!--  }-->
+<!--  announceLoading.value = true-->
+<!--  homeApi.interface.announce.post(announceForm.value).then(response => {-->
+<!--    showSnackbar(response.message)-->
+<!--    announceForm.value.message = ''-->
+<!--  }).finally(() => {-->
+<!--    announceLoading.value = false-->
+<!--  })-->
+<!--}-->
 
-const consoleLoading = ref(false)
-const consoleForm = ref({
-  cmd: '',
-  world: ''
-})
-const handleConsole = () => {
-  if (consoleForm.value.world === '') {
-    showSnackbar('请选择地面或洞穴', 'error')
-    return
-  }
-  if (consoleForm.value.cmd === '') {
-    showSnackbar('请输入要执行的命令', 'error')
-    return
-  }
-  consoleLoading.value = true
-  homeApi.interface.console.post(consoleForm.value).then(response => {
-    showSnackbar(response.message)
-    consoleForm.value.cmd = ''
-  }).finally(() => {
-    consoleLoading.value = false
-  })
-}
-const setItemProps = (item) => {
-  let disabled, icon
-  if (item.title === '地面') {
-    icon = 'ri-sun-fill'
-    disabled = sysInfo.value.master !== 1;
-  } else {
-    icon = 'ri-typhoon-fill'
-    disabled = sysInfo.value.caves !== 1;
-  }
+<!--const consoleLoading = ref(false)-->
+<!--const consoleForm = ref({-->
+<!--  cmd: '',-->
+<!--  world: ''-->
+<!--})-->
+<!--const handleConsole = () => {-->
+<!--  if (consoleForm.value.world === '') {-->
+<!--    showSnackbar('请选择地面或洞穴', 'error')-->
+<!--    return-->
+<!--  }-->
+<!--  if (consoleForm.value.cmd === '') {-->
+<!--    showSnackbar('请输入要执行的命令', 'error')-->
+<!--    return-->
+<!--  }-->
+<!--  consoleLoading.value = true-->
+<!--  homeApi.interface.console.post(consoleForm.value).then(response => {-->
+<!--    showSnackbar(response.message)-->
+<!--    consoleForm.value.cmd = ''-->
+<!--  }).finally(() => {-->
+<!--    consoleLoading.value = false-->
+<!--  })-->
+<!--}-->
+<!--const setItemProps = (item) => {-->
+<!--  let disabled, icon-->
+<!--  if (item.title === '地面') {-->
+<!--    icon = 'ri-sun-fill'-->
+<!--    disabled = sysInfo.value.master !== 1;-->
+<!--  } else {-->
+<!--    icon = 'ri-typhoon-fill'-->
+<!--    disabled = sysInfo.value.caves !== 1;-->
+<!--  }-->
 
-  return {
-    disabled: disabled,
-    prependIcon: icon
-  }
-};
+<!--  return {-->
+<!--    disabled: disabled,-->
+<!--    prependIcon: icon-->
+<!--  }-->
+<!--};-->
 
-let intervalId = null
-const startRequests = () => {
-  intervalId = setInterval(() => {
-    if (needContinue.value) {
-      getSysInfo()
-    }
-  }, 2000)
-}
-const cancelRequests = () => {
-  if (intervalId) {
-    clearInterval(intervalId)
-    intervalId = null
-  }
-}
+<!--let intervalId = null-->
+<!--const startRequests = () => {-->
+<!--  intervalId = setInterval(() => {-->
+<!--    if (needContinue.value) {-->
+<!--      getSysInfo()-->
+<!--    }-->
+<!--  }, 2000)-->
+<!--}-->
+<!--const cancelRequests = () => {-->
+<!--  if (intervalId) {-->
+<!--    clearInterval(intervalId)-->
+<!--    intervalId = null-->
+<!--  }-->
+<!--}-->
 
-onBeforeUnmount(() => {
-  cancelRequests();
-  window.removeEventListener('beforeunload', cancelRequests);
-})
-</script>
+<!--onBeforeUnmount(() => {-->
+<!--  cancelRequests();-->
+<!--  window.removeEventListener('beforeunload', cancelRequests);-->
+<!--})-->
+<!--</script>-->

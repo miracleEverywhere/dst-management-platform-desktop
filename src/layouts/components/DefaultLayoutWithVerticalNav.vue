@@ -33,21 +33,27 @@
 
         </div>
 
-        <v-dialog v-model="clusterCreateDialogVisible" width="60%">
+        <v-dialog v-model="clusterCreateDialogVisible" persistent width="60%">
           <v-card>
+            <v-card-title>
+              集群创建
+            </v-card-title>
             <v-card-text>
-              <div class="mt-16">
-                你好
-              </div>
-              <div class="mt-16">
-                你好
-              </div>
-              <div class="mt-16">
-                你好
-              </div><div class="mt-16">
-              你好
-            </div>
+              <v-form class="my-8" @submit.prevent="handleCreate">
+                <v-text-field v-model="clusterForm.clusterName"
+                              :rules="clusterFormRules"
+                              label="集群名"
+                              class="mb-4"
+                ></v-text-field>
+                <v-text-field v-model="clusterForm.clusterDisplayName"
+                              label="集群昵称"
+                ></v-text-field>
+              </v-form>
             </v-card-text>
+            <v-card-actions>
+              <v-btn @click="clusterCreateDialogVisible=false">取消</v-btn>
+              <v-btn :loading="createLoading" type="submit">创建</v-btn>
+            </v-card-actions>
           </v-card>
         </v-dialog>
 
@@ -120,6 +126,7 @@ import useGlobalStore from "@/plugins/pinia/global";
 import useConfigStore from '@/plugins/pinia/config'
 import ElectronApi from "@/utils/electronApi";
 import {DB_KEY} from "@/config";
+import {showSnackbar} from "@/utils/snackbar";
 
 
 onMounted(async () => {
@@ -171,9 +178,52 @@ const handleSelectedClusterChange = () => {
 const selectOpen = ref(false)
 const clusterCreateDialogVisible = ref(false)
 const handleOpenCreateDialog = () => {
-  globalStore.selectedDstCluster = null
   selectOpen.value = false
   clusterCreateDialogVisible.value = true
+}
+const clusterForm = ref({
+  clusterName: "",
+  clusterDisplayName: "",
+})
+const clusterFormRules = ref([
+  value => {
+    if (!value) {
+      return "请输入集群名"
+    }
+    if (!/^[a-zA-Z]/.test(value)) {
+      return '第一个字符必须是字母'
+    }
+    if (!/^[a-zA-Z0-9]+$/.test(value)) {
+      return '只能包含字母和数字'
+    }
+
+    return true
+  }
+])
+const createLoading = ref(false)
+const handleCreate = async (event) => {
+  createLoading.value = true
+  const results = await event
+  if (!results.valid) {
+    createLoading.value = false
+    return
+  }
+
+  console.log(1)
+
+  const reqForm = {
+    clusterName: clusterForm.value.clusterName,
+    clusterDisplayName: clusterForm.value.clusterDisplayName?clusterForm.value.clusterDisplayName:clusterForm.value.clusterName
+  }
+  createLoading.value = true
+  settingApi.cluster.post(reqForm).then(async response => {
+    clusterCreateDialogVisible.value = false
+    showSnackbar(response.message)
+    await getClusters()
+    globalStore.selectedDstCluster = clusterForm.value.clusterName
+  }).finally(() => {
+    createLoading.value = false
+  })
 }
 
 </script>
