@@ -16,7 +16,7 @@
         >
           <v-select v-model="globalStore.selectedDstCluster"
                     v-model:menu="selectOpen"
-                    :items="globalStore.dstClusters"
+                    :items="globalStore.dstClusters===null?[]:globalStore.dstClusters"
                     item-title="clusterDisplayName"
                     item-value="clusterName"
                     density="compact"
@@ -47,13 +47,16 @@
                 ></v-text-field>
                 <v-text-field v-model="clusterForm.clusterDisplayName"
                               label="集群昵称"
+                              class="mb-8"
                 ></v-text-field>
+                <div class="d-flex justify-end" style="margin-bottom: -32px">
+                  <v-btn @click="clusterCreateDialogVisible=false" class="mr-4" color="grey">取消</v-btn>
+                  <v-btn :loading="createLoading" type="submit">创建</v-btn>
+                </div>
+
               </v-form>
             </v-card-text>
-            <v-card-actions>
-              <v-btn @click="clusterCreateDialogVisible=false">取消</v-btn>
-              <v-btn :loading="createLoading" type="submit">创建</v-btn>
-            </v-card-actions>
+
           </v-card>
         </v-dialog>
 
@@ -202,14 +205,13 @@ const clusterFormRules = ref([
 ])
 const createLoading = ref(false)
 const handleCreate = async (event) => {
+  console.log(1)
   createLoading.value = true
   const results = await event
   if (!results.valid) {
     createLoading.value = false
     return
   }
-
-  console.log(1)
 
   const reqForm = {
     clusterName: clusterForm.value.clusterName,
