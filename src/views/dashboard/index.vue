@@ -349,10 +349,10 @@
 import {onMounted, onBeforeUnmount} from "vue";
 import {formatBytes, initTheme, truncateString} from "@/utils/tools";
 import useGlobalStore from "@/plugins/pinia/global";
+import useConfigStore from "@/plugins/pinia/config";
 import externalApi from "@/api/externalApi";
 import homeApi from "@/api/home";
 import {showSnackbar} from "@/utils/snackbar";
-import {sleep} from "@antfu/utils";
 
 
 onMounted(() => {
@@ -364,6 +364,7 @@ onMounted(() => {
 })
 
 const globalStore = useGlobalStore()
+const configStore = useConfigStore()
 
 const connectionCode = ref('')
 const connectionCodeLoading = ref(false)

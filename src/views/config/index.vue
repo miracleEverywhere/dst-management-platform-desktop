@@ -46,7 +46,6 @@
 import config from '@/views/config/components/configItem.vue'
 import VerticalNavLayout from "@layouts/components/VerticalNavLayout.vue";
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
-import logo from '@images/logo.svg?raw'
 import {useTheme} from "vuetify";
 import {onMounted} from "vue";
 import useGlobalStore from "@/plugins/pinia/global";
