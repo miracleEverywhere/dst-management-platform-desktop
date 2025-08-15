@@ -61,6 +61,7 @@
                 <v-dialog v-model="dialogMod" max-width="1000" @after-enter="handleGetModInfo">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn variant="tonal" size="small" color="success"
+                           :disabled="roomInfo.modsCount===0"
                            v-bind="activatorProps" class="ml-4">
                       {{ roomInfo.modsCount }}
                     </v-btn>
@@ -301,28 +302,36 @@
           命令执行
         </v-card-title>
         <v-card-text>
-          <v-row no-gutters class="mb-4 mt-4">
+          <v-row no-gutters class="mb-4 mt-6">
             <v-text-field v-model="announceForm.message"
                           append-inner-icon="ri-send-plane-fill"
                           @click:append-inner="handleAnnounce"
                           :loading="announceLoading"
+                          :disabled="worldInfo===null"
                           class="w-100"
                           label="公告内容" clearable>
             </v-text-field>
           </v-row>
-          <v-row no-gutters class="mb-4" style="margin-top: 100px">
+          <v-row no-gutters class="mb-4 mt-16" style="margin-top: 100px">
             <v-col cols="3">
-              <v-select v-model="consoleForm.world" density="compact" label="世界" :items="consoleExecMap"
-                        :item-props="setItemProps" variant="underlined">
+              <v-select v-model="consoleForm.world"
+                        density="compact" label="世界"
+                        class="mr-1"
+                        item-title="world"
+                        item-value="world"
+                        :items="worldInfo"
+                        :disabled="worldInfo===null"
+                        :item-props="worldInfoProps">
               </v-select>
             </v-col>
             <v-col>
-              <v-text-field v-model="consoleForm.cmd" density="compact" label="命令内容" variant="underlined" clearable>
+              <v-text-field v-model="consoleForm.cmd" density="compact"
+                            append-inner-icon="ri-send-plane-fill"
+                            @click:append-inner="handleConsole"
+                            :loading="consoleLoading"
+                            :disabled="worldInfo===null"
+                            label="命令内容" clearable>
               </v-text-field>
-            </v-col>
-            <v-col cols="2">
-              <v-btn color="black" variant="text" :loading="consoleLoading"
-                     @click="handleConsole">执行</v-btn>
             </v-col>
           </v-row>
         </v-card-text>
@@ -331,8 +340,67 @@
   </v-row>
   <v-row>
     <v-col cols="12">
-      <v-card height="280">
-
+      <v-card height="250">
+        <v-card-title>
+          <div class="d-flex justify-space-between">
+            <span>世界信息</span>
+            <v-btn variant="text">检查世界</v-btn>
+          </div>
+        </v-card-title>
+        <v-data-table
+          :headers="worldInfoHeaders"
+          :items="worldInfo"
+          hide-default-footer
+        >
+          <template v-slot:item.id="{item}">
+            <v-chip label>
+              {{item.id}}
+            </v-chip>
+          </template>
+          <template v-slot:item.world="{item}">
+            <v-chip label color="info">
+              {{item.world}}
+            </v-chip>
+          </template>
+          <template v-slot:item.type="{item}">
+            <v-chip v-if="item.type==='forest'" label color="success">
+              地面
+            </v-chip>
+            <v-chip v-else label color="warning">
+              洞穴
+            </v-chip>
+          </template>
+          <template v-slot:item.isMaster="{item}">
+            <v-chip v-if="item.isMaster" label color="info">
+              是
+            </v-chip>
+            <v-chip v-else label>
+              否
+            </v-chip>
+          </template>
+          <template v-slot:item.cpu="{item}">
+            <v-chip label>
+              {{item.cpu.toFixed(2)}}%
+            </v-chip>
+          </template>
+          <template v-slot:item.mem="{item}">
+            <v-chip label>
+              {{item.memSize.toFixed(0)}} [{{item.mem.toFixed(0)}}%]
+            </v-chip>
+          </template>
+          <template v-slot:item.diskUsed="{item}">
+            <v-chip label>
+              {{formatBytes(item.diskUsed, 0)}}
+            </v-chip>
+          </template>
+          <template v-slot:item.stat="{item}">
+            <v-switch
+              v-model="item.stat"
+              color="info"
+              hide-details
+            ></v-switch>
+          </template>
+        </v-data-table>
       </v-card>
     </v-col>
   </v-row>
@@ -349,14 +417,15 @@ import {showSnackbar} from "@/utils/snackbar";
 
 
 onMounted(() => {
-  console.log(configStore.inConfig)
   if (configStore.inConfig === false) {
 
   }
   initTheme()
+  getWorldInfo()
   getConnectionCode()
   getRoomInfo()
   getVersion()
+  handleGetUpdating()
   startRequests()
 })
 
@@ -599,7 +668,7 @@ const consoleForm = ref({
 })
 const handleConsole = () => {
   if (consoleForm.value.world === '') {
-    showSnackbar('请选择地面或洞穴', 'error')
+    showSnackbar('请选择一个世界', 'error')
     return
   }
   if (consoleForm.value.cmd === '') {
@@ -607,42 +676,102 @@ const handleConsole = () => {
     return
   }
   consoleLoading.value = true
-  homeApi.interface.console.post(consoleForm.value).then(response => {
+  const reqForm = {
+    type: 'console',
+    extraData: consoleForm.value.cmd,
+    clusterName: globalStore.selectedDstCluster,
+    worldName: consoleForm.value.world,
+  }
+  homeApi.exec.post(reqForm).then(response => {
     showSnackbar(response.message)
     consoleForm.value.cmd = ''
   }).finally(() => {
     consoleLoading.value = false
   })
 }
-const setItemProps = (item) => {
-  let disabled, icon
-  if (item.title === '地面') {
-    icon = 'ri-sun-fill'
-    disabled = sysInfo.value.master !== 1;
-  } else {
-    icon = 'ri-typhoon-fill'
-    disabled = sysInfo.value.caves !== 1;
-  }
 
+
+const worldInfoProps = (item) => {
+  let disabled, icon
+  disabled = !item.stat
+  if (item.type === 'forest') {
+    icon = 'ri-sun-fill'
+  } else if (item.type === 'cave') {
+    icon = 'ri-typhoon-fill'
+  } else {
+    return {
+      disabled: true,
+      prependIcon: 'ri-error-warning-fill',
+      title: '请选择世界',
+      value: null,
+    }
+  }
   return {
     disabled: disabled,
     prependIcon: icon
   }
+
 };
 
-let intervalId = null
+let intervalSysId = null
+let intervalWorldId = null
 const startRequests = () => {
-  intervalId = setInterval(() => {
-    if (needContinue.value) {
-      getSysInfo()
-    }
+  intervalSysId = setInterval(() => {
+    getSysInfo()
   }, 2000)
+  intervalWorldId = setInterval(() => {
+    if (globalStore.selectedDstCluster) {
+      getWorldInfo()
+      handleGetUpdating()
+    }
+  }, 10000)
 }
 const cancelRequests = () => {
-  if (intervalId) {
-    clearInterval(intervalId)
-    intervalId = null
+  if (intervalSysId) {
+    clearInterval(intervalSysId)
+    clearInterval(intervalWorldId)
+    intervalSysId = null
+    intervalWorldId = null
   }
+}
+
+const worldInfo = ref([{
+  id: '',
+  stat: false,
+  world: '',
+  type: '',
+  cpu: 0,
+  mem: 0,
+  memSize: 0,
+  diskUsed: 0,
+}])
+
+const worldInfoHeaders = ref([
+  { title: "ID", value: 'id' },
+  { title: "世界名", value: 'world' },
+  { title: "类型", value: 'type' },
+  { title: "主节点", value: 'isMaster' },
+  { title: "CPU", value: 'cpu' },
+  { title: "内存(MiB)", value: 'mem' },
+  { title: "磁盘", value: 'diskUsed' },
+  { title: "状态", value: 'stat' },
+])
+
+const getWorldInfo = async (force = true) => {
+  if (roomInfo.value.clusterSetting.name === '') {
+    return
+  }
+  if (!force) {
+    if (!globalStore.selectedDstCluster) {
+      await sleep(1000)
+    }
+  }
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+  }
+  homeApi.worldInfo.get(reqForm).then(response => {
+    worldInfo.value = response.data
+  })
 }
 
 onBeforeUnmount(() => {

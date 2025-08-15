@@ -171,7 +171,10 @@ const getClusters = () => {
 }
 
 const handleSelectedClusterChange = () => {
-  ElectronApi.store.set(DB_KEY.selectedDstCluster + globalStore.id, globalStore.selectedDstCluster)
+  if (globalStore.selectedDstCluster) {
+    ElectronApi.store.set(DB_KEY.selectedDstCluster + globalStore.id, globalStore.selectedDstCluster)
+    handleReload()
+  }
 }
 
 const selectOpen = ref(false)

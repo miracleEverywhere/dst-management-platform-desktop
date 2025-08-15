@@ -48,11 +48,11 @@
                   获取中
                 </v-chip>
                 <v-chip v-if="clustersStat.world!==-1" color="success">
-                  <v-icon icon="ri-apps-2-fill"/>
+                  <v-icon icon="ri-earth-fill"/>
                   世界 {{clustersStat.world}} 个
                 </v-chip>
                 <v-chip v-if="clustersStat.world===-1" color="warning">
-                  <v-icon icon="ri-apps-2-fill"/>
+                  <v-icon icon="ri-earth-fill"/>
                   获取中
                 </v-chip>
               </div>
