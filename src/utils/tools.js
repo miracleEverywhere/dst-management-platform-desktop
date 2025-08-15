@@ -38,6 +38,7 @@ export const validateIpv4 = (ip) => {
 };
 
 export const truncateString = (str, num) => {
+  str = String(str)
     if (str.length > num) {
         return str.slice(0, num) + "...";
     } else {
@@ -115,7 +116,6 @@ export const timestamp2time = (timestamp) => {
         year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds
     );
 };
-
 
 export const timestamp2timeWithoutDate = (timestamp) => {
     const date = new Date(timestamp);

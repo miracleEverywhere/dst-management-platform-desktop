@@ -156,11 +156,7 @@ const needDisabled = () => {
   if (router.currentRoute.value.fullPath === '/tools/statistics') {
     return true
   }
-  if (router.currentRoute.value.fullPath === '/tools/metrics') {
-    return true
-  }
-
-  return false
+  return router.currentRoute.value.fullPath === '/tools/metrics';
 }
 
 const getClusters = () => {
