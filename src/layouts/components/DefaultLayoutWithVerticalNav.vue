@@ -133,7 +133,8 @@ import {showSnackbar} from "@/utils/snackbar";
 
 
 onMounted(async () => {
-  getClusters()
+  await getClusters()
+  await getDefaultCluster()
 })
 
 const router = useRouter()
@@ -141,6 +142,10 @@ const globalStore = useGlobalStore()
 const configStore = useConfigStore()
 
 const title = import.meta.env.VITE_TITLE
+
+const getDefaultCluster = async () => {
+  globalStore.selectedDstCluster = await ElectronApi.store.get(DB_KEY.selectedDstCluster + globalStore.id) || null
+}
 
 const handleOut = () => {
   configStore.inConfig = true

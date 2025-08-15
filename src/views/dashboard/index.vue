@@ -416,14 +416,12 @@ import homeApi from "@/api/home";
 import {showSnackbar} from "@/utils/snackbar";
 
 
-onMounted(() => {
-  if (configStore.inConfig === false) {
-
-  }
+onMounted(async () => {
   initTheme()
-  getWorldInfo()
-  getConnectionCode()
-  getRoomInfo()
+  await sleep(100)
+  await getWorldInfo()
+  await getConnectionCode()
+  await getRoomInfo()
   getVersion()
   handleGetUpdating()
   startRequests()
