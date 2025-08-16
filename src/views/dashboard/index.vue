@@ -136,11 +136,11 @@
           </v-row>
         </v-card-text>
         <v-card-text v-else>
-          <v-alert type="warning" title="没有发现存档">
-            请前往 设置-房间 进行创建，创建前请确认游戏已经安装成功，可以显示游戏版本
+          <v-alert type="warning" prominent>
+            请前往 设置-房间 进行存档创建，创建前请确认游戏已经安装成功，可以显示游戏版本
           </v-alert>
-          <v-alert type="info" title="温馨提示" class="mt-3">
-            本平台需要游戏安装完成后才能正常运行，请建议安装游戏后再进行操作，如果游戏安装失败或安装进度缓慢，请执行手动安装脚本
+          <v-alert type="error" prominent class="mt-3">
+            本平台需要游戏安装完成后才能正常运行，请安装游戏后再进行操作，如果游戏安装失败或安装进度缓慢，请执行手动安装脚本
           </v-alert>
         </v-card-text>
       </v-card>
@@ -217,6 +217,7 @@
                 <v-dialog max-width="500">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" color="info" :text="day+'天'"
+                           :disabled="roomInfo.clusterSetting.name===''"
                            variant="text" size="large"
                     ></v-btn>
                   </template>
@@ -245,6 +246,7 @@
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
                            size="large" class="mr-6" variant="tonal"
+                           :disabled="roomInfo.clusterSetting.name===''"
                            :loading="v.name==='更新游戏'&&isUpdating"
                     ></v-btn>
                   </template>
@@ -272,6 +274,7 @@
                 <v-dialog persistent max-width="500" class="flex-wrap">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn v-bind="activatorProps" :color="v.color" :text="v.name"
+                           :disabled="roomInfo.clusterSetting.name===''"
                            size="large" class="mr-6" variant="tonal"
                     ></v-btn>
                   </template>
@@ -307,7 +310,7 @@
                           append-inner-icon="ri-send-plane-fill"
                           @click:append-inner="handleAnnounce"
                           :loading="announceLoading"
-                          :disabled="worldInfo===null"
+                          :disabled="roomInfo.clusterSetting.name===''"
                           class="w-100"
                           label="公告内容" clearable>
             </v-text-field>
@@ -320,7 +323,7 @@
                         item-title="world"
                         item-value="world"
                         :items="worldInfo"
-                        :disabled="worldInfo===null"
+                        :disabled="roomInfo.clusterSetting.name===''"
                         :item-props="worldInfoProps">
               </v-select>
             </v-col>
@@ -329,7 +332,7 @@
                             append-inner-icon="ri-send-plane-fill"
                             @click:append-inner="handleConsole"
                             :loading="consoleLoading"
-                            :disabled="worldInfo===null"
+                            :disabled="roomInfo.clusterSetting.name===''"
                             label="命令内容" clearable>
               </v-text-field>
             </v-col>
@@ -347,60 +350,76 @@
             <v-btn variant="text">检查世界</v-btn>
           </div>
         </v-card-title>
-        <v-data-table
-          :headers="worldInfoHeaders"
-          :items="worldInfo"
-          hide-default-footer
-        >
-          <template v-slot:item.id="{item}">
-            <v-chip label>
-              {{item.id}}
-            </v-chip>
+        <v-card-text>
+          <template v-if="roomInfo.clusterSetting.name!==''">
+            <v-data-table
+              :headers="worldInfoHeaders"
+              :items="worldInfo"
+              hide-default-footer
+            >
+              <template v-slot:item.id="{item}">
+                <v-chip label>
+                  {{item.id}}
+                </v-chip>
+              </template>
+              <template v-slot:item.world="{item}">
+                <v-chip label color="info">
+                  {{item.world}}
+                </v-chip>
+              </template>
+              <template v-slot:item.type="{item}">
+                <v-chip v-if="item.type==='forest'" label color="success">
+                  地面
+                </v-chip>
+                <v-chip v-else label color="warning">
+                  洞穴
+                </v-chip>
+              </template>
+              <template v-slot:item.isMaster="{item}">
+                <v-chip v-if="item.isMaster" label color="info">
+                  是
+                </v-chip>
+                <v-chip v-else label>
+                  否
+                </v-chip>
+              </template>
+              <template v-slot:item.cpu="{item}">
+                <v-chip label>
+                  {{item.cpu.toFixed(2)}}%
+                </v-chip>
+              </template>
+              <template v-slot:item.mem="{item}">
+                <v-chip label>
+                  {{item.memSize.toFixed(0)}} [{{item.mem.toFixed(0)}}%]
+                </v-chip>
+              </template>
+              <template v-slot:item.diskUsed="{item}">
+                <v-chip label>
+                  {{formatBytes(item.diskUsed, 0)}}
+                </v-chip>
+              </template>
+              <template v-slot:item.stat="{item}">
+                <v-switch
+                  v-model="item.stat"
+                  :loading="worldSwitchLoading"
+                  @update:modelValue="handleWorldSwitch(item.world)"
+                  color="info"
+                  hide-details
+                ></v-switch>
+              </template>
+            </v-data-table>
           </template>
-          <template v-slot:item.world="{item}">
-            <v-chip label color="info">
-              {{item.world}}
-            </v-chip>
+          <template v-else>
+            <v-alert
+              type="info"
+              prominent
+              title="没有发现世界"
+            >
+              请前往 设置-房间 进行创建，创建前请确认游戏已经安装成功，可以显示游戏版本
+            </v-alert>
           </template>
-          <template v-slot:item.type="{item}">
-            <v-chip v-if="item.type==='forest'" label color="success">
-              地面
-            </v-chip>
-            <v-chip v-else label color="warning">
-              洞穴
-            </v-chip>
-          </template>
-          <template v-slot:item.isMaster="{item}">
-            <v-chip v-if="item.isMaster" label color="info">
-              是
-            </v-chip>
-            <v-chip v-else label>
-              否
-            </v-chip>
-          </template>
-          <template v-slot:item.cpu="{item}">
-            <v-chip label>
-              {{item.cpu.toFixed(2)}}%
-            </v-chip>
-          </template>
-          <template v-slot:item.mem="{item}">
-            <v-chip label>
-              {{item.memSize.toFixed(0)}} [{{item.mem.toFixed(0)}}%]
-            </v-chip>
-          </template>
-          <template v-slot:item.diskUsed="{item}">
-            <v-chip label>
-              {{formatBytes(item.diskUsed, 0)}}
-            </v-chip>
-          </template>
-          <template v-slot:item.stat="{item}">
-            <v-switch
-              v-model="item.stat"
-              color="info"
-              hide-details
-            ></v-switch>
-          </template>
-        </v-data-table>
+        </v-card-text>
+
       </v-card>
     </v-col>
   </v-row>
@@ -769,6 +788,22 @@ const getWorldInfo = async (force = true) => {
   }
   homeApi.worldInfo.get(reqForm).then(response => {
     worldInfo.value = response.data
+  })
+}
+
+const worldSwitchLoading = ref(false)
+const handleWorldSwitch = (world) => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    worldName: world,
+    type: 'switch',
+    extraData: "",
+  }
+  worldSwitchLoading.value = true
+  homeApi.exec.post(reqForm).finally(async () => {
+    await getWorldInfo()
+    await sleep(1500)
+    worldSwitchLoading.value = false
   })
 }
 
