@@ -347,67 +347,122 @@
         <v-card-title>
           <div class="d-flex justify-space-between">
             <span>世界信息</span>
-            <v-btn variant="text">检查世界</v-btn>
+            <v-dialog v-model="allScreensDialogVisible" max-width="1000" @after-enter="handleOpenAllScreensDialog">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn variant="text" v-bind="activatorProps" class="ml-4">
+                  检查世界
+                </v-btn>
+              </template>
+              <v-card title="正在运行的饥荒程序">
+                <v-card-text>
+                  <v-select v-model="selectRegions" item-value="value" item-title="label"
+                            :disabled="lobbyCheckLoading"
+                            @update:model-value="handleCheckLobby"
+                            :items="regions" multiple chips></v-select>
+
+                  <div class="mt-4">
+                    <v-alert v-if="lobbyCheckLoading" prominent
+                             density="compact" type="info">
+                      正在从饥荒大厅中查询结果，请稍后
+                    </v-alert>
+                    <v-alert v-if="lobbyCheckResult&&!lobbyCheckLoading" prominent
+                             density="compact" type="success">
+                      已在饥荒大厅中查询到对应房间，检查通过
+                    </v-alert>
+                    <v-alert v-if="!lobbyCheckResult&&!lobbyCheckLoading" prominent
+                             density="compact" type="error">
+                      未在饥荒大厅中查询到对应房间，检查未通过，请在上面的下拉菜单中增加查询地区或检查主世界是否启动成功
+                    </v-alert>
+                  </div>
+
+                  <v-alert prominent density="compact" type="warning" variant="outlined" class="mt-4">
+                    由于无法预知的异常情况(房间设置中删除世界后，平台未能成功关闭对应的饥荒程序等)，可能会存在异常运行的进程，导致额外资源占用，平台提供该页面进行手动停止
+                  </v-alert>
+                  <v-alert prominent density="compact" type="info" variant="outlined" class="mt-4">
+                    名称格式为：DST_集群名_世界ID
+                  </v-alert>
+
+                  <v-sheet border rounded class="my-4">
+                    <v-data-table :items="allScreens" hide-default-footer :headers="screenHeaders" :loading="allScreensLoading">
+                      <template #loading>
+                        <v-skeleton-loader type="table-row@2"></v-skeleton-loader>
+                      </template>
+
+                      <template #item.screenName="{item}">
+                        <v-chip label>{{item.screenName}}</v-chip>
+                      </template>
+
+                      <template #item.actions="{item}">
+                        <v-btn color="error" variant="text" @click="handleKillScreen(item.screenName)">删除</v-btn>
+                      </template>
+
+                    </v-data-table>
+                  </v-sheet>
+                </v-card-text>
+              </v-card>
+            </v-dialog>
           </div>
         </v-card-title>
         <v-card-text>
           <template v-if="roomInfo.clusterSetting.name!==''">
-            <v-data-table
-              :headers="worldInfoHeaders"
-              :items="worldInfo"
-              hide-default-footer
-            >
-              <template v-slot:item.id="{item}">
-                <v-chip label>
-                  {{item.id}}
-                </v-chip>
-              </template>
-              <template v-slot:item.world="{item}">
-                <v-chip label color="info">
-                  {{item.world}}
-                </v-chip>
-              </template>
-              <template v-slot:item.type="{item}">
-                <v-chip v-if="item.type==='forest'" label color="success">
-                  地面
-                </v-chip>
-                <v-chip v-else label color="warning">
-                  洞穴
-                </v-chip>
-              </template>
-              <template v-slot:item.isMaster="{item}">
-                <v-chip v-if="item.isMaster" label color="info">
-                  是
-                </v-chip>
-                <v-chip v-else label>
-                  否
-                </v-chip>
-              </template>
-              <template v-slot:item.cpu="{item}">
-                <v-chip label>
-                  {{item.cpu.toFixed(2)}}%
-                </v-chip>
-              </template>
-              <template v-slot:item.mem="{item}">
-                <v-chip label>
-                  {{item.memSize.toFixed(0)}} [{{item.mem.toFixed(0)}}%]
-                </v-chip>
-              </template>
-              <template v-slot:item.diskUsed="{item}">
-                <v-chip label>
-                  {{formatBytes(item.diskUsed, 0)}}
-                </v-chip>
-              </template>
-              <template v-slot:item.stat="{item}">
-                <v-switch
-                  v-model="item.stat"
-                  :loading="worldSwitchLoading"
-                  @update:modelValue="handleWorldSwitch(item.world)"
-                  color="info"
-                  hide-details
-                ></v-switch>
-              </template>
-            </v-data-table>
+            <v-sheet border rounded>
+              <v-data-table
+                :headers="worldInfoHeaders"
+                :items="worldInfo"
+                hide-default-footer
+              >
+                <template v-slot:item.id="{item}">
+                  <v-chip label>
+                    {{item.id}}
+                  </v-chip>
+                </template>
+                <template v-slot:item.world="{item}">
+                  <v-chip label color="info">
+                    {{item.world}}
+                  </v-chip>
+                </template>
+                <template v-slot:item.type="{item}">
+                  <v-chip v-if="item.type==='forest'" label color="success">
+                    地面
+                  </v-chip>
+                  <v-chip v-else label color="warning">
+                    洞穴
+                  </v-chip>
+                </template>
+                <template v-slot:item.isMaster="{item}">
+                  <v-chip v-if="item.isMaster" label color="info">
+                    是
+                  </v-chip>
+                  <v-chip v-else label>
+                    否
+                  </v-chip>
+                </template>
+                <template v-slot:item.cpu="{item}">
+                  <v-chip label>
+                    {{item.cpu.toFixed(2)}}%
+                  </v-chip>
+                </template>
+                <template v-slot:item.mem="{item}">
+                  <v-chip label>
+                    {{item.memSize.toFixed(0)}} [{{item.mem.toFixed(0)}}%]
+                  </v-chip>
+                </template>
+                <template v-slot:item.diskUsed="{item}">
+                  <v-chip label>
+                    {{formatBytes(item.diskUsed, 0)}}
+                  </v-chip>
+                </template>
+                <template v-slot:item.stat="{item}">
+                  <v-switch
+                    v-model="item.stat"
+                    :loading="worldSwitchLoading"
+                    @update:modelValue="handleWorldSwitch(item.world)"
+                    color="info"
+                    hide-details
+                  ></v-switch>
+                </template>
+              </v-data-table>
+            </v-sheet>
           </template>
           <template v-else>
             <v-alert
@@ -419,7 +474,6 @@
             </v-alert>
           </template>
         </v-card-text>
-
       </v-card>
     </v-col>
   </v-row>
@@ -804,6 +858,76 @@ const handleWorldSwitch = (world) => {
     await getWorldInfo()
     await sleep(1500)
     worldSwitchLoading.value = false
+  })
+}
+
+const allScreensLoading = ref(false)
+const allScreens = ref([])
+const allScreensDialogVisible = ref(false)
+const handleOpenAllScreensDialog = () => {
+  allScreensDialogVisible.value = true
+  allScreensLoading.value = true
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+  }
+  homeApi.allScreens.get(reqForm).then(response => {
+    allScreens.value = response.data
+  }).finally(() => {
+    allScreensLoading.value = false
+  })
+  handleCheckLobby()
+}
+const screenKillLoading = ref(false)
+const handleKillScreen = (screenName) => {
+  const reqForm = {
+    screenName: screenName
+  }
+  screenKillLoading.value = true
+  homeApi.screenKill.post(reqForm).then(response => {
+    showSnackbar(response.message)
+    handleOpenAllScreensDialog()
+  }).catch(() => {
+  }).finally(() => {
+    screenKillLoading.value = false
+  })
+}
+
+const regions = [
+  {
+    label: 'ap-southeast-1',
+    value: 'ap-southeast-1',
+  },
+  {
+    label: 'ap-east-1',
+    value: 'ap-east-1',
+  },
+  {
+    label: 'us-east-1',
+    value: 'us-east-1',
+  },
+  {
+    label: 'eu-central-1',
+    value: 'eu-central-1',
+  },
+]
+const selectRegions = ref(['ap-southeast-1', 'ap-east-1'])
+const lobbyCheckResult = ref(false)
+const lobbyCheckLoading = ref(false)
+const screenHeaders = ref([
+  { title: "名称", key: 'screenName', value: 'screenName' },
+  { title: "操作", key: 'actions' },
+])
+
+const handleCheckLobby = () => {
+  lobbyCheckLoading.value = true
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    regions: selectRegions.value
+  }
+  externalApi.checkLobby.post(reqForm).then(response => {
+    lobbyCheckResult.value = response.data
+  }).finally(() => {
+    lobbyCheckLoading.value = false
   })
 }
 
