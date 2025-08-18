@@ -77,6 +77,10 @@ export const routes = [
         component: () => import('@/views/logs/clean.vue'),
       },
       {
+        path: 'clusters',
+        component: () => import('@/views/clusters/index.vue'),
+      },
+      {
         path: 'help',
         component: () => import('@/views/help/index.vue'),
       },
