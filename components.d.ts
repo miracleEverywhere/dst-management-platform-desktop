@@ -11,8 +11,6 @@ declare module 'vue' {
     CardStatisticsHorizontal: typeof import('./src/@core/components/cards/CardStatisticsHorizontal.vue')['default']
     CardStatisticsVertical: typeof import('./src/@core/components/cards/CardStatisticsVertical.vue')['default']
     CardStatisticsWithImages: typeof import('./src/@core/components/cards/CardStatisticsWithImages.vue')['default']
-    ComfirmBox: typeof import('./src/components/comfirmBox.vue')['default']
-    ConfirmBox: typeof import('./src/components/ConfirmBox.vue')['default']
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
     PreciseRating: typeof import('./src/components/PreciseRating.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
