@@ -157,6 +157,14 @@
       }"
     />
   </VerticalNavGroup>
+  <VerticalNavLink
+    :item="{
+      title: '集群管理',
+      icon: 'ri-apps-2-fill',
+      to: '/clusters',
+    }"
+    @click="handleCloseAll"
+  />
   <!-- 👉 帮助 -->
   <VerticalNavLink
     :item="{
