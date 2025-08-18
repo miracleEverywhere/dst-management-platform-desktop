@@ -116,16 +116,9 @@
   >
     <VerticalNavLink
       :item="{
-        title: '地面日志',
+        title: '世界日志',
         icon: 'ri-sun-line',
-        to: '/logs/ground',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: '洞穴日志',
-        icon: 'ri-typhoon-line',
-        to: '/logs/cave',
+        to: '/logs/world',
       }"
     />
     <VerticalNavLink
@@ -135,27 +128,27 @@
         to: '/logs/chat',
       }"
     />
-    <VerticalNavLink
-      :item="{
-        title: '请求日志',
-        icon: 'ri-code-box-line',
-        to: '/logs/dmp',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: '运行日志',
-        icon: 'ri-cpu-line',
-        to: '/logs/runtime',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: '清理日志',
-        icon: 'ri-file-shred-line',
-        to: '/logs/clean',
-      }"
-    />
+<!--    <VerticalNavLink-->
+<!--      :item="{-->
+<!--        title: '请求日志',-->
+<!--        icon: 'ri-code-box-line',-->
+<!--        to: '/logs/dmp',-->
+<!--      }"-->
+<!--    />-->
+<!--    <VerticalNavLink-->
+<!--      :item="{-->
+<!--        title: '运行日志',-->
+<!--        icon: 'ri-cpu-line',-->
+<!--        to: '/logs/runtime',-->
+<!--      }"-->
+<!--    />-->
+<!--    <VerticalNavLink-->
+<!--      :item="{-->
+<!--        title: '清理日志',-->
+<!--        icon: 'ri-file-shred-line',-->
+<!--        to: '/logs/clean',-->
+<!--      }"-->
+<!--    />-->
   </VerticalNavGroup>
   <VerticalNavLink
     :item="{
