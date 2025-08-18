@@ -1,11 +1,6 @@
 <template>
   <DefaultLayoutWithVerticalNav>
-    <router-view v-slot="{ Component}">
-      <transition appear mode="out-in" name="fade-default">
-        <component :is="Component" v-if="isRouterShow"/>
-      </transition>
-    </router-view>
-<!--    <RouterView/>-->
+    <RouterView/>
   </DefaultLayoutWithVerticalNav>
 </template>
 
@@ -20,5 +15,4 @@ provide("refresh", refreshCurrentPage);
 <style lang="scss">
 // As we are using `layouts` plugin we need its styles to be imported
 @use "@layouts/styles/default-layout";
-@import "../@layouts/styles/transition";
 </style>
