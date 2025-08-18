@@ -1,27 +1,35 @@
 <template>
   <v-card height="820" class="mt-4">
     <v-card-title>
-      <v-row>
-        <v-col cols="8">日志查看</v-col>
-        <v-col cols="4" v-if="props.historical">
-          <v-select v-model="selectedFile" density="compact"
-                    label="选择历史日志" @update:modelValue="getFileConnect"
-                    :items="fileList" :item-props="setItemProps" variant="underlined">
+      <v-row v-if="props.type==='world'||props.type==='chat'">
+        <v-col cols="6">日志查看</v-col>
+        <v-spacer/>
+        <v-col cols="3">
+          <v-select v-model="historicalLogsForm.worldName" density="compact"
+                    label="世界选择" @update:modelValue="historicalWorldChange"
+                    :items="globalStore.dstClusters.find(cluster => cluster.clusterName === globalStore.selectedDstCluster).worlds"
+                    variant="outlined">
           </v-select>
-
         </v-col>
         <v-spacer/>
         <v-col v-if="!props.historical" cols="2">
           <div class="d-flex align-center ml-12">
             <span>自动拉取</span>
-            <v-switch v-model="autoPull" class="ml-4"/>
+            <v-switch v-model="autoPull" :true-value="1" :false-value="0" class="ml-4"/>
           </div>
+        </v-col>
+        <v-col v-else cols="3">
+          <v-select v-model="selectedFile" density="compact"
+                    label="日志文件" @update:modelValue="getFileConnect"
+                    :items="fileList"
+                    variant="outlined">
+          </v-select>
         </v-col>
       </v-row>
     </v-card-title>
     <v-card-text>
-      <MdPreview :modelValue="logsValue" :theme="editorTheme" previewTheme="github" style="height: 686px;"/>
-      <div class="d-flex align-center justify-end" style="width: 100%">
+      <MdPreview :modelValue="logsValue" :theme="editorTheme" previewTheme="github" style="height: 686px; overflow-y: auto;"/>
+      <div v-if="!props.historical" class="d-flex align-center justify-end" style="width: 100%">
         <div class="d-flex align-center" style="width: 210px">
           <v-text-field v-model="logsForm.line" density="compact" class="mr-2">
             <template #append-inner>
@@ -31,10 +39,7 @@
           <v-btn variant="elevated" text="手动拉取" @click="handlePullLogs"></v-btn>
         </div>
       </div>
-
-
     </v-card-text>
-
   </v-card>
 </template>
 
@@ -56,28 +61,45 @@ const props = defineProps({
 
 onMounted(() => {
   if (props.historical) {
-    handleGetLogFile()
+    handleGetLogFile();
   } else {
-    startRequests()
+    init();
+    startRequests();
   }
 })
 
-const autoPull = ref(true)
+const init = () => {
+  if (!globalStore.dstClusters || !globalStore.selectedDstCluster) return;
+
+  logsForm.value.worldName =
+    globalStore.dstClusters.find(cluster => cluster.clusterName === globalStore.selectedDstCluster)?.worlds?.[0] ??
+    null;
+}
+
+const autoPull = ref(1);
 const logsForm = ref({
   line: 25,
-  type: props.type
-})
+  type: props.type,
+  clusterName: globalStore.selectedDstCluster,
+  worldName: null, // 先设为 null，init() 会更新
+});
 const logsValue = ref('')
+
 const handlePullLogs = () => {
+  if (!logsForm.value.worldName && (logsForm.value.type !== 'runtime' && logsForm.value.type !== 'access')) {
+    return
+  }
   logsApi.logValue.get(logsForm.value).then(response => {
-    logsValue.value = createMdEditorValue(response.data.join("\n"), 'text', 'open')
+    if (response.data !== null) {
+      logsValue.value = createMdEditorValue(response.data.join("\n"), 'text', 'open')
+    }
   })
 }
 
 let intervalId = null
 const startRequests = () => {
   intervalId = setInterval(() => {
-    if (autoPull.value) {
+    if (autoPull.value === 1) {
       handlePullLogs()
     }
   }, 2000)
@@ -91,11 +113,16 @@ const cancelRequests = () => {
 
 const fileList = ref([])
 const selectedFile = ref('')
+const historicalLogsForm = ref({
+  clusterName: globalStore.selectedDstCluster,
+  worldName: globalStore.dstClusters?.find(cluster => cluster.clusterName === globalStore.selectedDstCluster)?.worlds?.[0] ?? null,
+  type: props.type
+})
 const handleGetLogFile = () => {
   const reqForm = {
     type: props.type
   }
-  logsApi.historical.logFile.get(reqForm).then(response => {
+  logsApi.historical.logFile.get(historicalLogsForm.value).then(response => {
     fileList.value = []
     if (response.data.length) {
       for (let i of response.data) {
@@ -108,6 +135,11 @@ const handleGetLogFile = () => {
   })
 }
 const historicalLogLoading = ref(false)
+const historicalWorldChange = () => {
+  handleGetLogFile()
+  selectedFile.value = ''
+}
+
 const getFileConnect = () => {
   historicalLogLoading.value = true
   const reqForm = {
