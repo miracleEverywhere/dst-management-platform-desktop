@@ -53,12 +53,8 @@ export const routes = [
         component: () => import('@/views/tools/metrics.vue'),
       },
       {
-        path: 'logs/ground',
-        component: () => import('@/views/logs/ground.vue'),
-      },
-      {
-        path: 'logs/cave',
-        component: () => import('@/views/logs/cave.vue'),
+        path: 'logs/world',
+        component: () => import('@/views/logs/world.vue'),
       },
       {
         path: 'logs/chat',
