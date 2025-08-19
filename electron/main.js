@@ -1,5 +1,6 @@
-const {app, ipcMain, BrowserWindow, Menu, Tray, shell, dialog} = require('electron')
+const {app, ipcMain, BrowserWindow, Menu, Tray, shell, dialog, net} = require('electron')
 const {join} = require('path')
+const path = require('path')
 const fs = require('fs')
 const Store = require('electron-store')
 
@@ -290,3 +291,68 @@ ipcMain.on('open-dev-tool', () => {
 ipcMain.on('reload-window', () => {
   if (needShownWin) needShownWin.reload()
 })
+
+ipcMain.handle('download-file', async (event, { url, fileName }) => {
+  return new Promise((resolve, reject) => {
+    const downloadsPath = app.getPath('downloads');
+
+    // 处理文件名
+    const finalFileName = fileName || path.basename(url);
+    const filePath = path.join(downloadsPath, finalFileName);
+
+    const request = net.request(url);
+    let receivedBytes = 0;
+    let totalBytes = 0;
+
+    request.on('response', (response) => {
+      totalBytes = parseInt(response.headers['content-length'], 10) || 0;
+      const fileStream = fs.createWriteStream(filePath);
+
+      // 发送进度更新
+      const sendProgress = () => {
+        event.sender.send('download-progress', {
+          receivedBytes,
+          totalBytes,
+          progress: totalBytes > 0 ? (receivedBytes / totalBytes) : 0
+        });
+      };
+
+      // 定时发送进度 (每秒最多4次)
+      const progressInterval = setInterval(sendProgress, 250);
+
+      response.on('data', (chunk) => {
+        receivedBytes += chunk.length;
+        fileStream.write(chunk);
+      });
+
+      response.on('end', () => {
+        clearInterval(progressInterval);
+        fileStream.end();
+        resolve({ filePath, status: 'completed' });
+      });
+
+      response.on('error', (error) => {
+        clearInterval(progressInterval);
+        fileStream.end();
+        reject({ error: error.message, status: 'failed' });
+      });
+    });
+
+    request.on('error', (error) => {
+      reject({ error: error.message, status: 'failed' });
+    });
+
+    request.end();
+  });
+})
+
+ipcMain.handle('show-save-dialog', async (event, options) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    title: options.title || '保存文件',
+    defaultPath: options.defaultPath,
+    properties: ['createDirectory']
+  });
+
+  return { canceled, filePath };
+})
+
