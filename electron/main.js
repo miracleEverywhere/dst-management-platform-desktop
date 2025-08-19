@@ -297,8 +297,11 @@ ipcMain.handle('download-file', async (event, { url, fileName }) => {
     const downloadsPath = app.getPath('downloads');
 
     // 处理文件名
-    const finalFileName = fileName || path.basename(url);
-    const filePath = path.join(downloadsPath, finalFileName);
+    // const finalFileName = fileName || path.basename(url);
+    // const filePath = path.join(downloadsPath, finalFileName);
+    const filePath = fileName
+
+    console.log(filePath)
 
     const request = net.request(url);
     let receivedBytes = 0;
@@ -310,11 +313,7 @@ ipcMain.handle('download-file', async (event, { url, fileName }) => {
 
       // 发送进度更新
       const sendProgress = () => {
-        event.sender.send('download-progress', {
-          receivedBytes,
-          totalBytes,
-          progress: totalBytes > 0 ? (receivedBytes / totalBytes) : 0
-        });
+        needShownWin.setProgressBar(totalBytes > 0 ? (receivedBytes / totalBytes) : 0)
       };
 
       // 定时发送进度 (每秒最多4次)
@@ -328,6 +327,7 @@ ipcMain.handle('download-file', async (event, { url, fileName }) => {
       response.on('end', () => {
         clearInterval(progressInterval);
         fileStream.end();
+        needShownWin.setProgressBar(-1)
         resolve({ filePath, status: 'completed' });
       });
 
