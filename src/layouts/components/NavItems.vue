@@ -64,14 +64,7 @@
   >
     <VerticalNavLink
       :item="{
-        title: '定时更新',
-        icon: 'ri-download-cloud-line',
-        to: '/tools/update',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: '定时备份',
+        title: '备份管理',
         icon: 'ri-save-2-line',
         to: '/tools/backup',
       }"
@@ -117,7 +110,7 @@
     <VerticalNavLink
       :item="{
         title: '世界日志',
-        icon: 'ri-earth-fill',
+        icon: 'ri-earth-line',
         to: '/logs/world',
       }"
     />
@@ -145,7 +138,7 @@
     <VerticalNavLink
       :item="{
         title: 'Steam日志',
-        icon: 'ri-steam-fill',
+        icon: 'ri-steam-line',
         to: '/logs/steam',
       }"
     />
@@ -160,7 +153,7 @@
   <VerticalNavLink
     :item="{
       title: '集群管理',
-      icon: 'ri-apps-2-fill',
+      icon: 'ri-apps-line',
       to: '/clusters',
     }"
     @click="handleCloseAll"
