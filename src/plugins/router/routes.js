@@ -61,12 +61,16 @@ export const routes = [
         component: () => import('@/views/logs/chat.vue'),
       },
       {
-        path: 'logs/dmp',
-        component: () => import('@/views/logs/dmp.vue'),
+        path: 'logs/access',
+        component: () => import('@/views/logs/access.vue'),
       },
       {
         path: 'logs/runtime',
         component: () => import('@/views/logs/runtime.vue'),
+      },
+      {
+        path: 'logs/steam',
+        component: () => import('@/views/logs/steam.vue'),
       },
       {
         path: 'logs/clean',
