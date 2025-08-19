@@ -40,7 +40,7 @@
               <div style="margin-top: 10px">
 
                 <v-chip v-if="clustersStat.cluster!==-1" color="primary" style="margin-right: 5px">
-                  <v-icon icon="ri-apps-2-fill"/>
+                  <v-icon icon="ri-apps-fill"/>
                   集群 {{clustersStat.cluster}} 个
                 </v-chip>
                 <v-chip v-if="clustersStat.cluster===-1" color="warning" style="margin-right: 5px">
