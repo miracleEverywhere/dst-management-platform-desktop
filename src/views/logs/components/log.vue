@@ -26,6 +26,16 @@
           </v-select>
         </v-col>
       </v-row>
+      <v-row v-else>
+        <v-col cols="6">日志查看</v-col>
+        <v-spacer/>
+        <v-col v-if="!props.historical" cols="2">
+        <div class="d-flex align-center ml-12">
+          <span>自动拉取</span>
+          <v-switch v-model="autoPull" :true-value="1" :false-value="0" class="ml-4"/>
+        </div>
+      </v-col>
+      </v-row>
     </v-card-title>
     <v-card-text>
       <MdPreview :modelValue="logsValue" :theme="editorTheme" previewTheme="github" style="height: 686px; overflow-y: auto;"/>
