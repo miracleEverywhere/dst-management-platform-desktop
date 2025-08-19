@@ -9,10 +9,11 @@
                  append-icon="ri-question-fill">
             导入备份
           </v-btn>
-          <v-btn color="info" class="mr-2" density="comfortable">
+          <v-btn color="info" class="mr-2" density="comfortable" :loading="manualBackupLoading" @click="handleManualBackup">
             立即备份
           </v-btn>
-          <v-btn color="error" class="mr-2" density="comfortable">
+          <v-btn color="error" class="mr-2" density="comfortable"
+                 :loading="multipleDeleteLoading" @click="handleMultiDelete">
             批量删除
           </v-btn>
         </div>
@@ -25,7 +26,8 @@
       </v-progress-linear>
 
       <v-sheet border rounded class="mt-6">
-        <v-data-table :items="backupFiles" :loading="getInfoLoading" :headers="headers">
+        <v-data-table v-model="multipleSelection" :items="backupFiles"
+                      :loading="getInfoLoading" :headers="headers">
           <template #loading>
             <v-skeleton-loader type="table-row@10"></v-skeleton-loader>
           </template>
@@ -63,7 +65,7 @@
                         </v-card-text>
                         <v-card-actions>
                           <v-btn @click="isActive.value = false">取消</v-btn>
-                          <v-btn @click="handleClusterDeactivate(item)" :loading="confirmBoxButtonLoading">确定</v-btn>
+                          <v-btn @click="handleRestore(item)" :loading="restoreLoading">确定</v-btn>
                         </v-card-actions>
                       </v-card>
                     </template>
@@ -83,7 +85,7 @@
                         </v-card-text>
                         <v-card-actions>
                           <v-btn @click="isActive.value = false">取消</v-btn>
-                          <v-btn @click="handleClusterDelete(item)" :loading="confirmBoxButtonLoading">确定</v-btn>
+                          <v-btn @click="handleDelete(item)" :loading="deleteLoading">确定</v-btn>
                         </v-card-actions>
                       </v-card>
                     </template>
@@ -141,6 +143,72 @@ const handleDownload = (row) => {
   let url = `${globalStore.url}/download/backup/${globalStore.selectedDstCluster}/${row.name}?authorization=${globalStore.token}&&clusterName=${globalStore.selectedDstCluster}&&lang=zh`
   console.log(url)
   ElectronApi.download.file(url, row.name)
+}
+
+const restoreLoading = ref(false)
+const handleRestore = (row) => {
+  restoreLoading.value = true
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    name: row.name
+  }
+  toolsApi.backupRestore.post(reqForm).then(response => {
+    showSnackbar(response.message)
+  }).catch(() => {
+  }).finally(() => {
+    restoreLoading.value = false
+    getInfo()
+  })
+}
+
+const deleteLoading = ref(false)
+const handleDelete = (row) => {
+  deleteLoading.value = true
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    name: row.name
+  }
+  toolsApi.backup.delete(reqForm).then(response => {
+    showSnackbar(response.message)
+  }).catch(() => {
+  }).finally(() => {
+    deleteLoading.value = false
+    getInfo()
+  })
+}
+
+const multipleSelection = ref([])
+const multipleDeleteLoading = ref(false)
+const handleMultiDelete = () => {
+  multipleDeleteLoading.value = true
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    names: []
+  }
+  for (let file of multipleSelection.value) {
+    reqForm.names.push(file.name)
+  }
+  toolsApi.multiDelete.delete(reqForm).then(response => {
+    showSnackbar(response.message)
+  }).catch(() => {
+  }).finally(() => {
+    multipleDeleteLoading.value = false
+    getInfo()
+  })
+}
+
+const manualBackupLoading = ref(false)
+const handleManualBackup = () => {
+  manualBackupLoading.value = true
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster
+  }
+  toolsApi.backup.post(reqForm).then(response => {
+    showSnackbar(response.message)
+  }).finally(() => {
+    manualBackupLoading.value = false
+    getInfo()
+  })
 }
 
 </script>
