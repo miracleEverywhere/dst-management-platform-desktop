@@ -20,4 +20,43 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onNavigate: (callback) => {
     ipcRenderer.on('force-navigate', (event, path) => callback(path))
   },
+
+  downloadFile: async (url, fileName) => {
+    try {
+      // 可选：让用户选择保存位置
+      const { filePath } = await ipcRenderer.invoke('show-save-dialog', {
+        title: '保存文件',
+        defaultPath: fileName
+      });
+
+      if (!filePath) return; // 用户取消了
+
+      // 开始下载
+      ipcRenderer.send('download-started', { url, filePath });
+
+      // 监听进度
+      ipcRenderer.on('download-progress', (event, progress) => {
+        console.log(`下载进度: ${(progress.progress * 100).toFixed(1)}%`);
+        // 更新UI进度条
+        document.getElementById('progress-bar').value = progress.progress;
+      });
+
+      // 等待下载完成
+      const result = await ipcRenderer.invoke('download-file', {
+        url,
+        fileName
+      });
+
+      console.log('文件已保存到:', result.filePath);
+      alert('下载完成!');
+
+    } catch (error) {
+      console.error('下载失败:', error);
+      alert(`下载失败: ${error.error || error.message}`);
+    } finally {
+      // 清理监听器
+      ipcRenderer.removeAllListeners('download-progress');
+    }
+  }
+
 });
