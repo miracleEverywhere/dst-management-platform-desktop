@@ -34,17 +34,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
       // 开始下载
       ipcRenderer.send('download-started', { url, filePath });
 
-      // 监听进度
-      ipcRenderer.on('download-progress', (event, progress) => {
-        console.log(`下载进度: ${(progress.progress * 100).toFixed(1)}%`);
-        // 更新UI进度条
-        document.getElementById('progress-bar').value = progress.progress;
-      });
-
       // 等待下载完成
       const result = await ipcRenderer.invoke('download-file', {
-        url,
-        fileName
+        url: url,
+        fileName: filePath
       });
 
       console.log('文件已保存到:', result.filePath);
@@ -53,9 +46,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     } catch (error) {
       console.error('下载失败:', error);
       alert(`下载失败: ${error.error || error.message}`);
-    } finally {
-      // 清理监听器
-      ipcRenderer.removeAllListeners('download-progress');
     }
   }
 
