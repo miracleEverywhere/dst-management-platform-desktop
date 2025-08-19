@@ -29,10 +29,6 @@ export const routes = [
         component: () => import('@/views/settings/system.vue'),
       },
       {
-        path: 'tools/update',
-        component: () => import('@/views/tools/update.vue'),
-      },
-      {
         path: 'tools/backup',
         component: () => import('@/views/tools/backup.vue'),
       },
