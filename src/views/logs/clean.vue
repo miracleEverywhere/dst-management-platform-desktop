@@ -66,10 +66,14 @@
 import {showSnackbar} from "@/utils/snackbar";
 import logsApi from "@/api/logs"
 import {formatBytes} from "@/utils/tools.js";
+import useGlobalStore from "@/plugins/pinia/global";
+
 
 onMounted(() => {
   handleGetLogsInfo()
 })
+
+const globalStore = useGlobalStore()
 
 const logsInfo = ref([])
 const handleGetLogsInfo = (tip=false) => {
@@ -77,24 +81,23 @@ const handleGetLogsInfo = (tip=false) => {
     showSnackbar('刷新成功', 'success')
   }
   logsInfoLoading.value = true
-  logsApi.clean.status.get().then(response => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster
+  }
+  logsApi.clean.status.get(reqForm).then(response => {
     logsInfo.value = response.data
   }).finally(() => {
     logsInfoLoading.value = false
   })
 }
 
-const logFileTypes = ref(['Ground', 'Cave', 'Chat', 'Access', 'Runtime'])
+const logFileTypes = ref(['World', 'Chat', 'Access', 'Runtime'])
 const cleanLogFileTypes = ref([])
 
 const logFileTypeMap = {
-  Ground: {
-    zh: '地面日志',
-    en: 'Ground',
-  },
-  Cave: {
-    zh: '洞穴日志',
-    en: 'Cave',
+  World: {
+    zh: '世界日志',
+    en: 'World',
   },
   Chat: {
     zh: '聊天日志',
@@ -118,6 +121,7 @@ const handleCleanLogs = () => {
   }
   cleanButtonLoading.value = true
   const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
     logTypes: cleanLogFileTypes.value
   }
   logsApi.clean.clean.post(reqForm).then(response => {
