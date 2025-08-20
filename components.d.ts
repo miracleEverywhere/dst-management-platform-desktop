@@ -16,7 +16,10 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScCodeEditor: typeof import('./src/components/ScCodeEditor.vue')['default']
+    ScEcharts: typeof import('./src/components/scEcharts/index.vue')['default']
     ScLoading: typeof import('./src/components/ScLoading.vue')['default']
+    ScPasswordStrength: typeof import('./src/components/scPasswordStrength/index.vue')['default']
     ThemeSwitcher: typeof import('./src/@core/components/ThemeSwitcher.vue')['default']
+    VueApexCharts: typeof import('vue3-apexcharts')['default']
   }
 }
