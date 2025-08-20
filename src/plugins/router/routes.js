@@ -77,8 +77,8 @@ export const routes = [
         component: () => import('@/views/clusters/index.vue'),
       },
       {
-        path: 'help',
-        component: () => import('@/views/help/index.vue'),
+        path: 'users',
+        component: () => import('@/views/users/index.vue'),
       },
     ],
   },
