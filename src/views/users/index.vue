@@ -152,7 +152,7 @@
 <script setup>
 import useGlobalStore from "@/plugins/pinia/global";
 import systemApi from "@/api/system";
-import {deepCopy, SHA512} from "@/utils/tools.js";
+import {SHA512} from "@/utils/tools.js";
 import {showSnackbar} from "@/utils/snackbar";
 import colors from "vuetify/util/colors";
 
