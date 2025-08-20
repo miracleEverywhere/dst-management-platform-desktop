@@ -3,6 +3,7 @@ import {useTheme} from "vuetify";
 import {v4} from "uuid";
 import {DB_KEY} from "@/config";
 import useGlobalStore from "@/plugins/pinia/global";
+import CryptoJS from 'crypto-js';
 
 export const initTheme = () => {
   // const {name: themeName, global: globalTheme} = useTheme();
@@ -18,6 +19,10 @@ export const initTheme = () => {
     ElectronApi.store.set(DB_KEY.theme, "light");
   }
 };
+
+export const SHA512 = (data) => {
+  return CryptoJS.SHA512(data).toString()
+}
 
 export const uuid4 = () => {
   return v4();
