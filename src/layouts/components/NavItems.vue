@@ -152,6 +152,14 @@
   </VerticalNavGroup>
   <VerticalNavLink
     :item="{
+      title: '用户管理',
+      icon: 'ri-user-settings-line',
+      to: '/users',
+    }"
+    @click="handleCloseAll"
+  />
+  <VerticalNavLink
+    :item="{
       title: '集群管理',
       icon: 'ri-apps-line',
       to: '/clusters',
@@ -163,7 +171,8 @@
     :item="{
       title: '帮助',
       icon: 'ri-heart-2-line',
-      to: '/help',
+      href: 'https://miraclesses.top',
+      target: '_blank',
     }"
     @click="handleCloseAll"
   />
