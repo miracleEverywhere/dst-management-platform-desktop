@@ -56,7 +56,6 @@
 
               </v-form>
             </v-card-text>
-
           </v-card>
         </v-dialog>
 
@@ -209,7 +208,6 @@ const clusterFormRules = ref([
 ])
 const createLoading = ref(false)
 const handleCreate = async (event) => {
-  console.log(1)
   createLoading.value = true
   const results = await event
   if (!results.valid) {
