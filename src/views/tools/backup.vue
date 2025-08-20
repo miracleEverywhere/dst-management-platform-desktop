@@ -2,13 +2,33 @@
   <v-card>
     <v-card-title>
       <div class="d-flex justify-space-between align-center">
-        <span>日志管理</span>
+        <span>备份管理</span>
         <div>
-          <v-btn color="warning" class="mr-2" density="comfortable"
-                 v-tooltip:top="'请导入由饥荒管理平台创建的备份，并且集群名要相同，否则会恢复失败(不推荐使用此功能，建议解压后重新打包并导入)'"
-                 append-icon="ri-question-fill">
-            导入备份
-          </v-btn>
+          <v-dialog v-model="uploadDialogVisible" :persistent="uploadLoading" class="flex-wrap" max-width="65%">
+            <template v-slot:activator="{ props: activatorProps }">
+              <v-btn class="mr-2" color="warning" density="comfortable"
+                     v-bind="activatorProps" append-icon="ri-question-fill">
+                导入备份
+              </v-btn>
+            </template>
+            <template v-slot:default="{ isActive }">
+              <v-card title="导入备份" min-height="500">
+                <v-card-text>
+                  <template v-if="!uploadLoading">
+                    <v-alert color="warning" density="compact" class="mt-2 mb-2">
+                      请上传由饥荒管理平台生成的.tgz备份文件，并且集群名必须一致
+                    </v-alert>
+                    <v-file-upload density="default" icon="ri-upload-cloud-2-line"
+                                   @update:modelValue="handleUpload">
+                    </v-file-upload>
+                  </template>
+                  <template v-else>
+                    <sc-loading>上传中，请稍后</sc-loading>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-dialog>
           <v-btn color="info" class="mr-2" density="comfortable" :loading="manualBackupLoading" @click="handleManualBackup">
             立即备份
           </v-btn>
@@ -27,6 +47,7 @@
 
       <v-sheet border rounded class="mt-6">
         <v-data-table v-model="multipleSelection" :items="backupFiles"
+                      return-object show-select
                       :loading="getInfoLoading" :headers="headers">
           <template #loading>
             <v-skeleton-loader type="table-row@10"></v-skeleton-loader>
@@ -98,6 +119,8 @@
       </v-sheet>
     </v-card-text>
   </v-card>
+
+
 </template>
 
 <script setup>
@@ -107,6 +130,7 @@ import toolsApi from '@/api/tools'
 import {deepCopy, formatBytes} from "@/utils/tools";
 import colors from "vuetify/util/colors";
 import ElectronApi from "@/utils/electronApi";
+import settingApi from "@/api/setting";
 
 onMounted(() => {
   getInfo()
@@ -180,16 +204,21 @@ const handleDelete = (row) => {
 const multipleSelection = ref([])
 const multipleDeleteLoading = ref(false)
 const handleMultiDelete = () => {
-  multipleDeleteLoading.value = true
   const reqForm = {
     clusterName: globalStore.selectedDstCluster,
     names: []
   }
+  if (multipleSelection.value.length === 0) {
+    showSnackbar('请选择要删除的备份文件', 'error')
+    return
+  }
+  multipleDeleteLoading.value = true
   for (let file of multipleSelection.value) {
     reqForm.names.push(file.name)
   }
   toolsApi.multiDelete.delete(reqForm).then(response => {
     showSnackbar(response.message)
+    multipleSelection.value = []
   }).catch(() => {
   }).finally(() => {
     multipleDeleteLoading.value = false
@@ -208,6 +237,32 @@ const handleManualBackup = () => {
   }).finally(() => {
     manualBackupLoading.value = false
     getInfo()
+  })
+}
+
+const uploadLoading = ref(false)
+const uploadDialogVisible = ref(false)
+const uploadRef = ref()
+const checkUploadFile = (param) => {
+  const zipPattern = /\.tgz$/i;
+  return zipPattern.test(param.name);
+}
+const handleUpload = (file) => {
+  if (!checkUploadFile(file)) {
+    showSnackbar('请上传tgz文件', 'error')
+    uploadDialogVisible.value = false
+    return
+  }
+  uploadLoading.value = true
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('clusterName', globalStore.selectedDstCluster)
+  toolsApi.backupImport.post(formData).then(response => {
+    getInfo()
+    showSnackbar(response.message)
+  }).finally(() => {
+    uploadDialogVisible.value = false
+    uploadLoading.value = false
   })
 }
 
