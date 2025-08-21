@@ -70,9 +70,9 @@
       </div>
     </v-card-title>
     <v-card-text>
-      <v-container height="700" style="overflow-y: auto">
+      <v-container height="750" style="overflow-y: auto">
         <v-alert color="info" density="compact" class="mt-2">
-          上传过程中会自动备份存档，上传完成后请手动启动服务器
+          上传完成后请手动启动服务器
         </v-alert>
         <v-alert color="warning" density="compact" class="mt-2">
           请上传压缩文件(例如：my_cluster.zip)，压缩文件的内容如下，<v-icon icon="ri-pushpin-fill" color="error"></v-icon>文件为必须，会自动进行检测，如缺失会导致导入失败
@@ -148,7 +148,7 @@ const getClusters = () => {
 
 const activeTabName = ref('win')
 
-const open = shallowRef(['public'])
+const open = shallowRef([1, 14])
 const files = shallowRef({
   ini: 'ri-file-settings-line',
   lua: 'ri-file-code-line',
@@ -159,7 +159,6 @@ const items = [
   {
     id: 1,
     title: '压缩文件名xxx.zip',
-    subtitle: '点击打开我',
     children: [
       {
         id: 2,
