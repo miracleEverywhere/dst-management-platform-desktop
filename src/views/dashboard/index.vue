@@ -177,7 +177,7 @@
           </div>
           <div>
             <div class="d-flex align-center justify-center">
-              <v-icon icon="ri-ram-line"></v-icon>
+              <v-icon icon="ri-ram-2-line"></v-icon>
               <span class="mr-2 ml-1">内存</span>
               <v-progress-linear :model-value="sysInfo.memory" rounded height="8"
                                  :indeterminate="sysInfo.memory===0" rounded-bar
