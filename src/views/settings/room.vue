@@ -28,6 +28,7 @@
         </template>
       </v-stepper-item>
     </v-stepper-header>
+
     <v-stepper-window v-model="step">
       <v-stepper-window-item :value="0">
         <v-container height="700" style="overflow-y: auto">
@@ -121,31 +122,122 @@
               />
             </v-row>
           </v-form>
-
         </v-container>
       </v-stepper-window-item>
-      <v-stepper-actions>
-        <template #prev>
-          <v-btn :disabled="step===0" color="grey-lighten-3" variant="elevated" @click="handlePrev">上一步</v-btn>
-        </template>
-        <template #next>
-          <v-btn v-if="step!==3" color="primary" variant="elevated" @click="handleNext">下一步</v-btn>
-          <v-menu open-on-hover>
-            <template v-slot:activator="{ props }">
-              <v-btn v-if="step===3" :disabled="false" color="success" prepend-icon="ri-list-unordered"
-                     variant="elevated" v-bind="props">
-                操作
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item title="保存"/>
-              <v-list-item title="保存并重启"/>
-              <v-list-item title="生成新世界"/>
-            </v-list>
-          </v-menu>
-        </template>
-      </v-stepper-actions>
+      <v-stepper-window-item :value="1">
+        <v-tabs v-model="worldTabName">
+          <v-tab v-for="world in worldForm" :key="world.name" :value="world.name">
+            {{world.name}}
+            <v-btn icon="ri-delete-bin-5-line" variant="text"
+                   @click="handleWorldTabsEdit(world.name, 'remove')"
+                   class="ml-4" style="margin-right: -12px"></v-btn>
+          </v-tab>
+          <v-btn icon="ri-add-line" variant="text"
+                 @click="handleWorldTabsEdit('', 'add')"></v-btn>
+        </v-tabs>
+        <v-tabs-window v-model="worldTabName" class="mx-8">
+          <v-tabs-window-item v-for="world in worldForm" :key="world.name" :value="world.name">
+            <v-form :ref="(el) => (dynamicWorldRefs[world.name] = el)">
+              <v-row class="mt-4">
+                <v-col>
+                  <v-switch v-model="world.isMaster">
+                    <template #prepend>
+                      主世界
+                    </template>
+                  </v-switch>
+                </v-col>
+                <v-col>
+                  <v-switch v-model="world.encodeUserPath">
+                    <template #prepend>
+                      用户路径编码
+                    </template>
+                  </v-switch>
+                </v-col>
+                <v-col>
+                  <v-number-input v-model.number="world.id" :disabled="world.saved"
+                                  :rules="rules.require"
+                                  control-variant="hidden" inset label="世界ID"
+                                  density="compact" variant="outlined">
+                  </v-number-input>
+                </v-col>
+                <v-col>
+                  <v-number-input v-model.number="world.serverPort"
+                                  :rules="rules.require"
+                                  control-variant="hidden" inset label="游戏端口"
+                                  density="compact" variant="outlined">
+                  </v-number-input>
+                </v-col>
+              </v-row>
+              <v-row class="mt-2">
+                <v-col>
+                  <v-number-input v-model.number="world.shardMasterPort"
+                                  :rules="rules.require"
+                                  control-variant="hidden" inset label="主节点端口"
+                                  density="compact" variant="outlined">
+                  </v-number-input>
+                </v-col>
+                <v-col>
+                  <v-number-input v-model.number="world.steamMasterPort"
+                                  :rules="rules.require"
+                                  control-variant="hidden" inset label="Steam连接端口"
+                                  density="compact" variant="outlined">
+                  </v-number-input>
+                </v-col>
+                <v-col>
+                  <v-number-input v-model.number="world.steamAuthenticationPort"
+                                  :rules="rules.require"
+                                  control-variant="hidden" inset label="Steam认证端口"
+                                  density="compact" variant="outlined">
+                  </v-number-input>
+                </v-col>
+                <v-col>
+                  <v-text-field v-model="world.shardMasterIp" :disabled="world.isMaster"
+                                :rules="rules.require"
+                                density="compact" label="主世界IP">
+                  </v-text-field>
+                </v-col>
+              </v-row>
+             <v-row class="mt-2">
+               <v-col cols="3">
+                 <v-text-field
+                   v-model="world.clusterKey"
+                   :rules="rules.require"
+                   :append-inner-icon="isClusterKeyVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                   :type="isClusterKeyVisible ? 'text' : 'password'"
+                   autocomplete="password"
+                   label="游戏令牌" density="compact"
+                   @click:append-inner="isClusterKeyVisible = !isClusterKeyVisible"
+                 />
+               </v-col>
+               <v-spacer/>
+             </v-row>
+            </v-form>
+          </v-tabs-window-item>
+        </v-tabs-window>
+      </v-stepper-window-item>
+
     </v-stepper-window>
+    <v-stepper-actions class="mx-8">
+      <template #prev>
+        <v-btn :disabled="step===0" color="grey-lighten-3" variant="elevated" @click="handlePrev">上一步</v-btn>
+      </template>
+      <template #next>
+        <v-btn v-if="step!==3" color="primary" variant="elevated" @click="handleNext">下一步</v-btn>
+        <v-menu open-on-hover>
+          <template v-slot:activator="{ props }">
+            <v-btn v-if="step===3" :disabled="false" color="success" prepend-icon="ri-list-unordered"
+                   variant="elevated" v-bind="props">
+              操作
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item title="保存"/>
+            <v-list-item title="保存并重启"/>
+            <v-list-item title="生成新世界"/>
+          </v-list>
+        </v-menu>
+      </template>
+    </v-stepper-actions>
   </v-stepper>
 </template>
 
@@ -168,6 +260,7 @@ onMounted(async () => {
 })
 
 
+
 const globalStore = useGlobalStore()
 const worldPortFactor = computed(() => {
   const clusters = allClusters.value || []
@@ -179,6 +272,7 @@ const router = useRouter();
 const loading = ref(false)
 const isPasswordVisible = ref(false)
 const isTokenVisible = ref(false)
+const isClusterKeyVisible = ref(false)
 
 
 const debounce = (fn, delay) => {
@@ -613,16 +707,16 @@ const handleWorldTabsEdit = (targetName, action) => {
       return
     }
     const tabs = worldForm.value
-    let activeName = worldTabName.value
-    tabs.forEach((tab, index) => {
-      if (tab.name === targetName) {
-        const nextTab = tabs[index + 1] || tabs[index - 1]
-        if (nextTab) {
-          activeName = nextTab.name
-        }
-      }
-    })
-    worldTabName.value = activeName
+    // let activeName = worldTabName.value
+    // tabs.forEach((tab, index) => {
+    //   if (tab.name === targetName) {
+    //     const nextTab = tabs[index + 1] || tabs[index - 1]
+    //     if (nextTab) {
+    //       activeName = nextTab.name
+    //     }
+    //   }
+    // })
+    // worldTabName.value = activeName
     worldForm.value = tabs.filter((tab) => tab.name !== targetName)
     delete dynamicWorldRefs[targetName]
   }
@@ -760,5 +854,11 @@ const getClustersWorldPort = () => {
     clustersWorldPort.value = response.data
   })
 }
+
+watch(worldTabName, (v) => {
+  if (!v) {
+    worldTabName.value = worldForm.value[worldForm.value.length - 1].name
+  }
+})
 
 </script>
