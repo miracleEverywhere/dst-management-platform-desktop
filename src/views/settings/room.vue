@@ -17,26 +17,116 @@
 
       <v-stepper-item :color="step > 2 ? 'success' : ''" :complete="step > 2" :value="2" title="模组设置">
         <template #icon>
-          <v-icon icon="ri-number-4" size="12"></v-icon>
+          <v-icon icon="ri-number-3" size="12"></v-icon>
         </template>
       </v-stepper-item>
       <v-divider></v-divider>
 
       <v-stepper-item :color="step > 3 ? 'success' : ''" :complete="step > 3" :value="3" title="设置完成">
         <template #icon>
-          <v-icon icon="ri-number-5" size="12"></v-icon>
+          <v-icon icon="ri-number-4" size="12"></v-icon>
         </template>
       </v-stepper-item>
     </v-stepper-header>
     <v-stepper-window v-model="step">
       <v-stepper-window-item :value="0">
         <v-container height="700" style="overflow-y: auto">
+          <v-form ref="clusterSettingFormRef">
+            <v-row class="mt-4">
+              <v-text-field v-model="clusterSettingForm.name" :rules="rules.require" label="房间名"></v-text-field>
+            </v-row>
+            <v-row class="mt-10">
+              <v-text-field v-model="clusterSettingForm.description" label="房间描述"></v-text-field>
+            </v-row>
+            <v-row class="mt-10">
+              <v-radio-group v-model="clusterSettingForm.gameMode" inline>
+                <template #prepend>
+                  <span>
+                    游戏模式
+                  </span>
+                </template>
+                <v-radio label="无尽" value="endless" class="mr-4"></v-radio>
+                <v-radio label="生存" value="survival" class="mr-4"></v-radio>
+                <v-radio label="熔炉" value="lavaarena" class="mr-4"></v-radio>
+                <v-radio label="暴食" value="quagmire" class="mr-4"></v-radio>
+              </v-radio-group>
+            </v-row>
+            <v-row class="mt-10">
+              <v-radio-group v-model="clusterSettingForm.pvp" inline>
+                <template #prepend>
+                  <span>
+                    玩家对战
+                  </span>
+                </template>
+                <v-radio label="开启" :value="true" class="mr-4"></v-radio>
+                <v-radio label="关闭" :value="false" class="mr-4"></v-radio>
+              </v-radio-group>
+            </v-row>
+            <v-row class="mt-10">
+              <v-radio-group v-model="clusterSettingForm.vote" inline>
+                <template #prepend>
+                  <span>
+                    玩家投票
+                  </span>
+                </template>
+                <v-radio label="开启" :value="true" class="mr-4"></v-radio>
+                <v-radio label="关闭" :value="false" class="mr-4"></v-radio>
+              </v-radio-group>
+            </v-row>
+            <v-row class="mt-10">
+              <v-slider v-model="clusterSettingForm.playerNum" :max="100" :min="2" class="align-center" hide-details
+                        step="1" style="margin-left: -1px">
+                <template #label>
+                  <span>玩家数量</span>
+                </template>
+                <template v-slot:append>
+                  <v-chip label>
+                    {{ clusterSettingForm.playerNum }}
+                  </v-chip>
+                </template>
+              </v-slider>
+            </v-row>
+            <v-row class="mt-10">
+              <v-slider v-model="clusterSettingForm.backDays" :max="50" :min="5" class="align-center" hide-details
+                        step="1" style="margin-left: -1px">
+                <template #label>
+                  <span>回档天数</span>
+                </template>
+                <template v-slot:append>
+                  <v-chip label>
+                    {{ clusterSettingForm.backDays }}
+                  </v-chip>
+                </template>
+              </v-slider>
+            </v-row>
+            <v-row class="mt-10">
+              <v-text-field
+                v-model="clusterSettingForm.password"
+                :append-inner-icon="isPasswordVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                :type="isPasswordVisible ? 'text' : 'password'"
+                autocomplete="password"
+                label="房间密码"
+                @click:append-inner="isPasswordVisible = !isPasswordVisible"
+              />
+            </v-row>
+            <v-row class="mt-10">
+              <v-text-field
+                v-model="clusterSettingForm.token"
+                :rules="rules.require"
+                :append-inner-icon="isTokenVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                :type="isTokenVisible ? 'text' : 'password'"
+                autocomplete="password"
+                label="游戏令牌"
+                @click:append-inner="isTokenVisible = !isTokenVisible"
+              />
+            </v-row>
+          </v-form>
 
         </v-container>
       </v-stepper-window-item>
       <v-stepper-actions>
         <template #prev>
-          <v-btn color="grey-lighten-3" variant="tonal" >上一步</v-btn>
+          <v-btn :disabled="step===0" color="grey-lighten-3" variant="elevated" @click="handlePrev">上一步</v-btn>
         </template>
         <template #next>
           <v-btn v-if="step!==3" color="primary" variant="elevated" @click="handleNext">下一步</v-btn>
@@ -87,6 +177,8 @@ const worldPortFactor = computed(() => {
 const route = useRoute();
 const router = useRouter();
 const loading = ref(false)
+const isPasswordVisible = ref(false)
+const isTokenVisible = ref(false)
 
 
 const debounce = (fn, delay) => {
@@ -142,29 +234,29 @@ const handlePrev = () => {
 }
 const handleNext = async () => {
   if (step.value === 0) {
-    clusterSettingFormRef.value.validate(async valid => {
-      if (valid) {
-        if (!hasWorlds.value) {
-          worldTabIndex.value = 1
-          worldTabName.value = 'World1'
-          worldForm.value = [{
-            id: 101,
-            name: 'World1',
-            isMaster: true,
-            levelData: '',
-            serverPort: 11001 + worldPortFactor.value * 10,
-            shardMasterPort: 10888 + worldPortFactor.value * 10,
-            steamMasterPort: 27018 + worldPortFactor.value * 10,
-            steamAuthenticationPort: 8768 + worldPortFactor.value * 10,
-            shardMasterIp: '127.0.0.1',
-            clusterKey: 'supersecretkey',
-            encodeUserPath: true,
-            saved: false
-          }]
-        }
-        step.value++
+    const {valid} = await clusterSettingFormRef.value.validate();
+    if (valid) {
+      if (!hasWorlds.value) {
+        worldTabIndex.value = 1
+        worldTabName.value = 'World1'
+        worldForm.value = [{
+          id: 101,
+          name: 'World1',
+          isMaster: true,
+          levelData: '',
+          serverPort: 11001 + worldPortFactor.value * 10,
+          shardMasterPort: 10888 + worldPortFactor.value * 10,
+          steamMasterPort: 27018 + worldPortFactor.value * 10,
+          steamAuthenticationPort: 8768 + worldPortFactor.value * 10,
+          shardMasterIp: '127.0.0.1',
+          clusterKey: 'supersecretkey',
+          encodeUserPath: true,
+          saved: false
+        }]
       }
-    })
+      step.value++
+      return
+    }
   }
   if (step.value === 1) {
     const worldPortKeys = ['serverPort', 'shardMasterPort', 'steamMasterPort', 'steamAuthenticationPort']
@@ -235,6 +327,14 @@ const clusterSettingForm = ref({
   consoleEnabled: true,
   password: '',
   token: '',
+})
+const rules = ref({
+  require: [
+    value => {
+      if (!value) return '此项为必填项'
+      return true
+    }
+  ],
 })
 
 const clusterModForm = ref({
