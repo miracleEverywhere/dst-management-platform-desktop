@@ -101,7 +101,12 @@ const handlePullLogs = () => {
   }
   logsApi.logValue.get(logsForm.value).then(response => {
     if (response.data !== null) {
-      logsValue.value = createMdEditorValue(response.data.join("\n"), 'text', 'open')
+      if (props.type==='runtime') {
+        logsValue.value = createMdEditorValue(response.data.join("\n"), 'json', 'open')
+      } else {
+        logsValue.value = createMdEditorValue(response.data.join("\n"), 'text', 'open')
+      }
+
     }
   })
 }

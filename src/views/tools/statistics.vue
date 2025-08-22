@@ -332,16 +332,16 @@ const handleRefreshPlayer = () => {
 
 <style scoped>
 .card-header {
-  display: flex
-  justify-content: space-between
-  align-items: center
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .time-range-select {
-  width: 150px
+  width: 150px;
 }
 
 .gap-4 {
-  gap: 1rem
+  gap: 1rem;
 }
 </style>
