@@ -19,6 +19,7 @@ instance.interceptors.request.use(
     config.baseURL = configStore.inConfig ? configStore.url : globalStore.url
     const token = configStore.inConfig ? configStore.token : globalStore.token
     config.headers["X-I18n-Lang"] = 'zh'
+
     // 如果 token 存在，将其添加到请求头中
     if (token) {
       config.headers.Authorization = token
@@ -51,8 +52,9 @@ instance.interceptors.response.use(
     if (error.data.message) {
       showSnackbar(error.status + " " + error.data.message, 'error')
     } else {
-      error.data.message = "连接到服务器失败"
-      showSnackbar(error.data.message, 'error')
+      if (error != "TypeError: Failed to construct 'URL': Invalid URL") {
+        showSnackbar("连接到服务器失败", 'error')
+      }
     }
     return Promise.reject(error) // 将错误返回给 try{} catch(){} 中进行捕获，就算不进行捕获，上方 res.data.status != 200也会抛出提示。
   }
