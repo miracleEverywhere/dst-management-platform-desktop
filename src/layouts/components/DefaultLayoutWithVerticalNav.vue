@@ -148,6 +148,7 @@ const getDefaultCluster = async () => {
 
 const handleOut = () => {
   configStore.inConfig = true
+  globalStore.inDashboard = false
   globalStore.clearStore()
   ElectronApi.window.config()
 }
