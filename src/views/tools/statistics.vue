@@ -1,5 +1,6 @@
 <template>
-  <v-tabs v-model="tab" @update:model-value="handleTabClick">
+  <v-tabs v-model="tab" @update:model-value="handleTabClick"
+          align-tabs="start" color="primary" show-arrows class="v-tabs-pill">
     <v-tab value="statistics">
       玩家人数
     </v-tab>
@@ -92,7 +93,7 @@
               </div>
             </v-card-title>
             <v-card-text>
-              <div style="display: flex width: fit-content padding-bottom: 30px">
+              <div style="display: flex; width: fit-content; padding-bottom: 30px">
                 <g-gantt-chart
                   :chart-end="lastTime"
                   :chart-start="firstTime"
