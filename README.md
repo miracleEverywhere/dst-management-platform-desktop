@@ -1,3 +1,15 @@
+## 饥荒管理平台App
+
+实现同时管理多个DMP的桌面软件
+
+### 界面展示
+
+![多平台管理](docs/images/config.png)
+
+![主页](docs/images/dashboard.png)
+
+![设置](docs/images/setting.png)
+
 ### MacOS 如果遇到 xxx 已损坏，解决方法：
 打开终端，输入以下代码，需要输入开机密码
 ```shell

@@ -134,6 +134,27 @@
             </v-tab>
             <v-btn icon="ri-add-line" variant="text"
                    @click="handleWorldTabsEdit('', 'add')"></v-btn>
+            <v-menu open-on-click>
+              <template v-slot:activator="{ props }">
+                <v-btn variant="text" :disabled="worldLevelDataTabName!=='Code'" v-bind="props">
+                  一键带入
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item title="无尽-地面"
+                             :disabled="clusterSettingForm.gameMode!=='endless'"
+                             @click="handleCreateWorld({clusterType: 'endless', worldType: 'ground'})" />
+                <v-list-item title="无尽-洞穴"
+                             :disabled="clusterSettingForm.gameMode!=='endless'"
+                             @click="handleCreateWorld({clusterType: 'endless', worldType: 'cave'})" />
+                <v-list-item title="生存-地面"
+                             :disabled="clusterSettingForm.gameMode!=='survival'"
+                             @click="handleCreateWorld({clusterType: 'survival', worldType: 'ground'})" />
+                <v-list-item title="生存-洞穴"
+                             :disabled="clusterSettingForm.gameMode!=='survival'"
+                             @click="handleCreateWorld({clusterType: 'survival', worldType: 'cave'})" />
+              </v-list>
+            </v-menu>
           </v-tabs>
           <v-tabs-window v-model="worldTabName" class="mx-8">
             <v-tabs-window-item v-for="world in worldForm" :key="world.name" :value="world.name">
