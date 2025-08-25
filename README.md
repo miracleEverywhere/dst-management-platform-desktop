@@ -1,6 +1,13 @@
 ## 饥荒管理平台App
 
-实现同时管理多个DMP的桌面软件
+![GitHub Release](https://img.shields.io/github/v/release/miracleEverywhere/dst-management-platform-desktop)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/miracleEverywhere/dst-management-platform-desktop/total)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/miracleEverywhere/dst-management-platform-desktop)
+![GitHub License](https://img.shields.io/github/license/miracleEverywhere/dst-management-platform-desktop)
+<div>
+    <img src="public/dmp.svg" height="200" alt="DMP"/>
+    <h3>:star2: 实现同时管理多个DMP的桌面软件 :star2:</h3>
+</div>
 
 ### 界面展示
 
