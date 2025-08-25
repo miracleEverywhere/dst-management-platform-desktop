@@ -655,69 +655,67 @@
       <v-stepper-window-item :value="2">
         <v-container height="700" style="overflow-y: auto">
           <v-alert border="start" border-color="info" density="compact">
-            <template #title>
-              <span>如果世界个数大于2，请点击右侧按钮加入多层世界模组；如世界个数小于等于2，则无需修改</span>
-              <v-dialog v-model="multiWorldModAddDialog" width="900" @after-enter="openMultiWorldModAddDialog">
-                <template v-slot:activator="{ props: activatorProps }">
-                  <v-btn v-bind="activatorProps" color="primary" density="compact" class="ml-2">多层世界</v-btn>
-                </template>
-                <v-card>
-                  <v-card-title>
-                    请输入世界对应的名字和对应的最大玩家数(将会在游戏中显示)
-                  </v-card-title>
-                  <v-card-text>
-                    <v-alert color="warning" density="compact">
-                      注意，多层世界模组为复杂模组，启用该模组会导致 "设置-模组" 页面不可用
-                    </v-alert>
-                    <v-form class="mt-4">
-                      <template v-for="world in multiWorldModForm">
-                        <v-row>
-                          <v-col cols="3">
-                            <v-number-input v-model="world.ID"
-                                            :rules="rules.require"
-                                            control-variant="hidden" inset label="世界ID"
-                                            placeholder="请输入世界ID"
-                                            density="compact" variant="outlined">
-                            </v-number-input>
-                          </v-col>
-                          <v-col cols="6">
-                            <v-text-field v-model="world.name" :rules="rules.require"
-                                          placeholder="请输入世界名，如：米奇妙妙屋"
-                                          label="世界名"
-                                          density="compact" variant="outlined">
-
-                            </v-text-field>
-                          </v-col>
-                          <v-col cols="3">
-                            <v-number-input v-model="world.maxPlayers"
-                                            :rules="rules.require"
-                                            control-variant="hidden" inset label="最大玩家数"
-                                            placeholder="请输入该世界的最大玩家数"
-                                            density="compact" variant="outlined">
-                            </v-number-input>
-                          </v-col>
-                        </v-row>
-                      </template>
-                      <MdPreview ref="threeCodeOneRef"
-                                 v-if="multiWorldModContent"
-                                 :modelValue="multiWorldModContent"
-                                 :theme="globalStore.theme === 'dark'?'dark':'light'"
-                                 previewTheme="github"/>
+            <span>如果世界个数大于2，请点击右侧按钮加入多层世界模组；如世界个数小于等于2，则无需修改</span>
+            <v-dialog v-model="multiWorldModAddDialog" width="900" @after-enter="openMultiWorldModAddDialog">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn v-bind="activatorProps" color="primary" density="compact" class="ml-2">多层世界</v-btn>
+              </template>
+              <v-card>
+                <v-card-title>
+                  请输入世界对应的名字和对应的最大玩家数(将会在游戏中显示)
+                </v-card-title>
+                <v-card-text>
+                  <v-alert color="warning" density="compact">
+                    注意，多层世界模组为复杂模组，启用该模组会导致 "设置-模组" 页面不可用
+                  </v-alert>
+                  <v-form class="mt-4">
+                    <template v-for="world in multiWorldModForm">
                       <v-row>
-                        <v-spacer/>
-                        <v-col cols="4" class="d-flex justify-end">
-                          <div class="d-flex">
-                            <v-btn @click="multiWorldModForm.push({ID:undefined,name:'',maxPlayers:undefined})"
-                                   class="mr-4" color="success">新增一条</v-btn>
-                            <v-btn @click="handleGenerateModSetting">生成配置</v-btn>
-                          </div>
+                        <v-col cols="3">
+                          <v-number-input v-model="world.ID"
+                                          :rules="rules.require"
+                                          control-variant="hidden" inset label="世界ID"
+                                          placeholder="请输入世界ID"
+                                          density="compact" variant="outlined">
+                          </v-number-input>
+                        </v-col>
+                        <v-col cols="6">
+                          <v-text-field v-model="world.name" :rules="rules.require"
+                                        placeholder="请输入世界名，如：米奇妙妙屋"
+                                        label="世界名"
+                                        density="compact" variant="outlined">
+
+                          </v-text-field>
+                        </v-col>
+                        <v-col cols="3">
+                          <v-number-input v-model="world.maxPlayers"
+                                          :rules="rules.require"
+                                          control-variant="hidden" inset label="最大玩家数"
+                                          placeholder="请输入该世界的最大玩家数"
+                                          density="compact" variant="outlined">
+                          </v-number-input>
                         </v-col>
                       </v-row>
-                    </v-form>
-                  </v-card-text>
-                </v-card>
-              </v-dialog>
-            </template>
+                    </template>
+                    <MdPreview ref="threeCodeOneRef"
+                               v-if="multiWorldModContent"
+                               :modelValue="multiWorldModContent"
+                               :theme="globalStore.theme === 'dark'?'dark':'light'"
+                               previewTheme="github"/>
+                    <v-row>
+                      <v-spacer/>
+                      <v-col cols="4" class="d-flex justify-end">
+                        <div class="d-flex">
+                          <v-btn @click="multiWorldModForm.push({ID:undefined,name:'',maxPlayers:undefined})"
+                                 class="mr-4" color="success">新增一条</v-btn>
+                          <v-btn @click="handleGenerateModSetting">生成配置</v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-card-text>
+              </v-card>
+            </v-dialog>
           </v-alert>
           <sc-code-editor v-model="clusterModForm.mod" :height="600"
                           ::theme="globalStore.theme === 'dark' ? 'darcula' : 'idea'"
