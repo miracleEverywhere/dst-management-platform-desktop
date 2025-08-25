@@ -7,16 +7,17 @@
 
   <v-tabs-window v-model="tab">
     <v-tabs-window-item value="current">
-      <log ref="logRef" type="caves"/>
+      <log ref="logRef" type="world"/>
     </v-tabs-window-item>
     <v-tabs-window-item value="historical">
-      <log ref="HistoricalLogRef" :historical="true" type="caves"/>
+      <log ref="HistoricalLogRef" :historical="true" type="world"/>
     </v-tabs-window-item>
   </v-tabs-window>
 </template>
 
 <script setup>
 import log from '@/views/logs/components/log.vue'
+
 
 const tab = ref()
 const logRef = ref()

@@ -28,8 +28,17 @@ export default {
     post: async function(data){
       return await http.post(this.url, data);
     },
+    put: async function(data){
+      return await http.put(this.url, data);
+    },
     delete: async function(data){
       return await http.delete(this.url, data);
+    },
+    status: {
+      url: `/setting/cluster/status`,
+      put: async function(data){
+        return await http.put(this.url, data);
+      },
     },
     save : {
       url: `/setting/cluster/save`,
@@ -114,8 +123,8 @@ export default {
         return await http.post(this.url, data);
       }
     },
-    kick: {
-      url: `/setting/player/kick`,
+    action: {
+      url: `/setting/player/action`,
       post: async function (data) {
         return await http.post(this.url, data);
       }
@@ -146,6 +155,12 @@ export default {
       url: `/setting/mod/download`,
       post: async function (data) {
         return await http.post(this.url, data);
+      }
+    },
+    downloadProcess: {
+      url: `/setting/mod/download/process`,
+      get: async function (data) {
+        return await http.get(this.url, data);
       }
     },
     sync: {

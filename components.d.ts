@@ -16,6 +16,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScCodeEditor: typeof import('./src/components/ScCodeEditor.vue')['default']
+    ScEcharts: typeof import('./src/components/scEcharts/index.vue')['default']
     ScLoading: typeof import('./src/components/ScLoading.vue')['default']
     ThemeSwitcher: typeof import('./src/@core/components/ThemeSwitcher.vue')['default']
   }

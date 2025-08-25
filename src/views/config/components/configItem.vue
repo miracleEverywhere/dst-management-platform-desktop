@@ -40,19 +40,19 @@
               <div style="margin-top: 10px">
 
                 <v-chip v-if="clustersStat.cluster!==-1" color="primary" style="margin-right: 5px">
-                  <v-icon icon="ri-apps-2-fill"/>
+                  <v-icon icon="ri-apps-fill"/>
                   集群 {{clustersStat.cluster}} 个
                 </v-chip>
-                <v-chip v-if="clustersStat.cluster===-1" color="warning" style="margin-right: 5px">
+                <v-chip v-else color="warning" style="margin-right: 5px">
                   <v-icon icon="ri-apps-2-fill"/>
                   获取中
                 </v-chip>
                 <v-chip v-if="clustersStat.world!==-1" color="success">
-                  <v-icon icon="ri-apps-2-fill"/>
+                  <v-icon icon="ri-earth-fill"/>
                   世界 {{clustersStat.world}} 个
                 </v-chip>
-                <v-chip v-if="clustersStat.world===-1" color="warning">
-                  <v-icon icon="ri-apps-2-fill"/>
+                <v-chip v-else color="warning">
+                  <v-icon icon="ri-earth-fill"/>
                   获取中
                 </v-chip>
               </div>
@@ -196,11 +196,10 @@ const props = defineProps({
     type: Object,
     default: () => ({
       id: undefined,
-      name: undefined,
-      type: undefined, // 1 master; 2 cave; 3 both;
       ip: undefined,
       port: undefined,
       token: undefined,
+      remark: undefined,
     })
   }
 })
@@ -238,7 +237,9 @@ const getClusters = () => {
 
 const handleGotoDashboard = () => {
   globalStore.setConfigInfo(configItem.value)
+  globalStore.inDashboard = true
   configStore.inConfig = false
+  needContinue.value = false
   ElectronApi.window.dashboard()
 }
 

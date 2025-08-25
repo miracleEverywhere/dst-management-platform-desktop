@@ -3,18 +3,37 @@
     <v-img :src="getImageUrl(props.image)" fit="fill" style="width: 75px; height: 75px"/>
     <div style="width: 140px">
       <div class="fcc">
-        <v-chip size="large" :color="modelValue===defaultModelValue?'primary':'warning'"
-                density="compact"
-        >
-          {{props.i18n.zh}}
-        </v-chip>
+        <!--配置文件没有，平台有-->
+        <template v-if="modelValue==='undefined'&&image!=='undefined.png'">
+          <v-chip :color="modelValue===defaultModelValue?'primary':'warning'"
+                  density="compact" append-icon="ri-question-fill">
+            {{props.i18n.zh}}
+          </v-chip>
+        </template>
+        <template v-else>
+          <v-chip :color="modelValue===defaultModelValue?'primary':'warning'"
+                  density="compact">
+            {{props.i18n.zh}}
+          </v-chip>
+        </template>
+      </div>
+      <div class="fcc">
+
       </div>
       <div style="margin: 5px 0" class="fcc">
-        <icon-btn icon="ri-arrow-left-s-line" :disabled="leftClickDisabled" @click="leftClick"></icon-btn>
-        <v-chip label density="compact" style="margin: 0 5px;">
+        <icon-btn icon="ri-arrow-left-s-line"
+                  :disabled="leftClickDisabled||image==='undefined.png'||modelValue==='undefined'"
+                  @click="leftClick"></icon-btn>
+        <v-chip v-if="image==='undefined.png'||modelValue==='undefined'" color="error"
+                label density="compact" style="margin: 0 5px;">
+          未配置
+        </v-chip>
+        <v-chip v-else label density="compact" style="margin: 0 5px;">
           {{getDisplayTagValue()}}
         </v-chip>
-        <icon-btn icon="ri-arrow-right-s-line" :disabled="rightClickDisabled" @click="rightClick"></icon-btn>
+        <icon-btn icon="ri-arrow-right-s-line"
+                  :disabled="rightClickDisabled||image==='undefined.png'||modelValue==='undefined'"
+                  @click="rightClick"></icon-btn>
       </div>
     </div>
 
@@ -26,13 +45,13 @@ import {ref, watch, onMounted} from "vue";
 import {configsMap} from "@/views/settings/components/levelDataMap.js"
 
 const props = defineProps({
-  configs: {type: Array, default: []},
-  modelValue: {type: String, default: 'default'},
-  image: {type: String, default: ''},
-  i18n: {type: Object, default: {zh: '', en: ''}},
-  name: {type: String, default: ''},
+  configs: {type: Array, default: ['undefined']},
+  modelValue: {type: String, default: 'undefined'},
+  image: {type: String, default: 'undefined.png'},
+  i18n: {type: Object, default: {zh: '平台未识别', en: 'undefined'}},
+  name: {type: String, default: 'undefined'},
   customConfigsValue: {type: Object, default: {}},
-  defaultModelValue: {type: String, default: 'default'},
+  defaultModelValue: {type: String, default: 'undefined'},
 })
 
 const emit = defineEmits(['changeModelValue']);
@@ -95,16 +114,21 @@ const getDisplayTagValue = () => {
   } else {
     tagValue = configsMap[setting.value]
   }
-  // console.log(props.name)
-  if (language.value === 'zh') {
-    try {
-      return tagValue.zh
-    } catch {
-      console.log(props)
+  try {
+    // console.log(props)
+    if (language.value === 'zh') {
+      return tagValue['zh']
+    } else {
+      return tagValue['en']
     }
-  } else {
-    return tagValue.en
+  } catch {
+    if (language.value === 'zh') {
+      return '未识别'
+    } else {
+      return 'Undefined'
+    }
   }
+
 }
 
 const handleSettingChange = () => {

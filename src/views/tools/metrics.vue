@@ -1,43 +1,38 @@
 <template>
-
   <v-card>
-    <template #title>
+    <v-card-title>
       <div class="card-header d-flex align-center justify-space-between">
         <span class="font-weight-bold">系统信息</span>
         <div class="d-flex align-center">
           <v-select v-model="timeRange" :items="selectOptions" item-title="label" item-value="value" density="compact"
-            @update:model-value="getMetrics"></v-select>
+                    @update:model-value="getMetrics"></v-select>
           <v-btn class="ms-4" @click="getMetrics(timeRange, true)">刷新</v-btn>
         </div>
       </div>
-    </template>
-    <template #text>
-      <v-card-text>
-        <v-row>
-          <v-col cols="12">
-            <VueApexCharts type="area" height="350" :options="cpuOption" :series="cpuOption.series" />
-          </v-col>
-          <v-col cols="12">
-            <VueApexCharts type="area" height="350" :options="memoryOption" :series="memoryOption.series" />
-          </v-col>
-          <v-col cols="12">
-            <VueApexCharts type="area" height="350" :options="netUplinkOption" :series="netUplinkOption.series" />
-          </v-col>
-          <v-col cols="12">
-            <VueApexCharts type="area" height="350" :options="netDownlinkOption" :series="netDownlinkOption.series" />
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </template>
+    </v-card-title>
+    <v-card-text>
+      <sc-echarts ref="cpuChartRef" :option="cpuOption" height="25vh"></sc-echarts>
+      <sc-echarts ref="memoryChartRef" :option="memoryOption" height="25vh" style="margin-top: 20px"></sc-echarts>
+      <sc-echarts ref="netUplinkChartRef" :option="netUplinkOption" height="25vh" style="margin-top: 20px"></sc-echarts>
+      <sc-echarts ref="netDownlinkChartRef" :option="netDownlinkOption" height="25vh" style="margin-top: 20px"></sc-echarts>
+    </v-card-text>
   </v-card>
 </template>
 
 <script setup>
 import toolsApi from "@/api/tools"
-import VueApexCharts from 'vue3-apexcharts'
-import { showSnackbar } from "@/utils/snackbar";
+import useGlobalStore from "@/plugins/pinia/global";
+import ScEcharts from "@/components/scEcharts/index.vue";
+import {timestamp2timeWithoutDate} from "@/utils/tools.js";
+import {showSnackbar} from "@/utils/snackbar";
 
+
+const globalStore = useGlobalStore();
 const timeRange = ref(30)
+
+onMounted(() => {
+  getMetrics(timeRange.value, false)
+})
 
 const selectOptions = [
   {
@@ -58,386 +53,239 @@ const selectOptions = [
   },
 ]
 
-
-const cpuOption = ref({
-  chart: {
-    type: 'area',
-    height: 350,
-    zoom: {
-      enabled: false
-    },
-    toolbar: {
-      show: false,
-    }
-  },
-  dataLabels: {
-    enabled: false
-  },
-  stroke: {
-    curve: 'smooth',
-    width: 2,
-    colors: ['#409EFF']  // CPU蓝色
-  },
-  markers: {
-    size: 0
-  },
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shade: 'light',
-      type: 'vertical',
-      shadeIntensity: 0.5,
-      gradientToColors: undefined,
-      inverseColors: false,
-      opacityFrom: 0.7,
-      opacityTo: 0.2,
-      stops: [0, 100],
-      colorStops: [
-        {
-          offset: 0,
-          color: '#409EFF',
-          opacity: 0.7
-        },
-        {
-          offset: 100,
-          color: '#409EFF',
-          opacity: 0.1
-        }
-      ]
-    },
-  },
-  title: {
-    text: 'CPU 使用率',
-    align: 'left',
-    style: {
-      fontSize: '16px',
-      fontWeight: 600
-    }
-  },
-  xaxis: {
-    type: 'datetime',
-    labels: {
-      datetimeFormatter: {
-        year: 'yyyy',
-        month: 'MM',
-        day: 'dd',
-        hour: 'HH:mm'
-      },
-      datetimeUTC: false,
-      format: 'HH:mm'
-    },
-    tooltip: {
-      enabled: false
-    }
-  },
-  yaxis: {
-    labels: {
-      formatter: function (val) {
-        return val.toFixed(2) + '%'
-      }
-    }
-  },
-  tooltip: {
-    x: {
-      format: 'yyyy-MM-dd HH:mm:ss'
-    }
-  },
-  series: [{
-    name: 'CPU Usage',
-    data: []
-  }]
-})
-
-const memoryOption = ref({
-  chart: {
-    type: 'area',
-    height: 350,
-    zoom: {
-      enabled: false
-    },
-    toolbar: {
-      show: false,
-    }
-  },
-  dataLabels: {
-    enabled: false
-  },
-  stroke: {
-    curve: 'smooth',
-    width: 2,
-    colors: ['#67C23A']  // 内存绿色
-  },
-  markers: {
-    size: 0
-  },
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shade: 'light',
-      type: 'vertical',
-      shadeIntensity: 0.5,
-      gradientToColors: undefined,
-      inverseColors: false,
-      opacityFrom: 0.7,
-      opacityTo: 0.2,
-      stops: [0, 100],
-      colorStops: [
-        {
-          offset: 0,
-          color: '#67C23A',
-          opacity: 0.7
-        },
-        {
-          offset: 100,
-          color: '#67C23A',
-          opacity: 0.1
-        }
-      ]
-    },
-  },
-  title: {
-    text: '内存使用率',
-    align: 'left',
-    style: {
-      fontSize: '16px',
-      fontWeight: 600
-    }
-  },
-  xaxis: {
-    type: 'datetime',
-    labels: {
-      datetimeFormatter: {
-        year: 'yyyy',
-        month: 'MM',
-        day: 'dd',
-        hour: 'HH:mm'
-      },
-      datetimeUTC: false,
-      format: 'HH:mm'
-    },
-    tooltip: {
-      enabled: false
-    }
-  },
-  yaxis: {
-    labels: {
-      formatter: function (val) {
-        return val.toFixed(2) + '%'
-      }
-    }
-  },
-  tooltip: {
-    x: {
-      format: 'yyyy-MM-dd HH:mm:ss'
-    }
-  },
-  series: [{
-    name: 'Memory Usage',
-    data: []
-  }]
-})
-
-const netUplinkOption = ref({
-  chart: {
-    type: 'area',
-    height: 350,
-    zoom: {
-      enabled: false
-    },
-    toolbar: {
-      show: false,
-    }
-  },
-  dataLabels: {
-    enabled: false
-  },
-  stroke: {
-    curve: 'smooth',
-    width: 2,
-    colors: ['#E6A23C']  // 上行黄色
-  },
-  markers: {
-    size: 0
-  },
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shade: 'light',
-      type: 'vertical',
-      shadeIntensity: 0.5,
-      gradientToColors: undefined,
-      inverseColors: false,
-      opacityFrom: 0.7,
-      opacityTo: 0.2,
-      stops: [0, 100],
-      colorStops: [
-        {
-          offset: 0,
-          color: '#E6A23C',
-          opacity: 0.7
-        },
-        {
-          offset: 100,
-          color: '#E6A23C',
-          opacity: 0.1
-        }
-      ]
-    },
-  },
-  title: {
-    text: '网络上行',
-    align: 'left',
-    style: {
-      fontSize: '16px',
-      fontWeight: 600
-    }
-  },
-  xaxis: {
-    type: 'datetime',
-    labels: {
-      datetimeFormatter: {
-        year: 'yyyy',
-        month: 'MM',
-        day: 'dd',
-        hour: 'HH:mm'
-      },
-      datetimeUTC: false,
-      format: 'HH:mm'
-    },
-    tooltip: {
-      enabled: false
-    }
-  },
-  yaxis: {
-    labels: {
-      formatter: function (val) {
-        return val.toFixed(2) + ' KiB/s'
-      }
-    }
-  },
-  tooltip: {
-    x: {
-      format: 'yyyy-MM-dd HH:mm:ss'
-    }
-  },
-  series: [{
-    name: 'Network Upload',
-    data: []
-  }]
-})
-
-const netDownlinkOption = ref({
-  chart: {
-    type: 'area',
-    height: 350,
-    zoom: {
-      enabled: false
-    },
-    toolbar: {
-      show: false,
-    }
-  },
-  dataLabels: {
-    enabled: false
-  },
-  stroke: {
-    curve: 'smooth',
-    width: 2,
-    colors: ['#F56C6C']  // 下行红色
-  },
-  markers: {
-    size: 0
-  },
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shade: 'light',
-      type: 'vertical',
-      shadeIntensity: 0.5,
-      gradientToColors: undefined,
-      inverseColors: false,
-      opacityFrom: 0.7,
-      opacityTo: 0.2,
-      stops: [0, 100],
-      colorStops: [
-        {
-          offset: 0,
-          color: '#F56C6C',
-          opacity: 0.7
-        },
-        {
-          offset: 100,
-          color: '#F56C6C',
-          opacity: 0.1
-        }
-      ]
-    },
-  },
-  title: {
-    text: '网络下行',
-    align: 'left',
-    style: {
-      fontSize: '16px',
-      fontWeight: 600
-    }
-  },
-  xaxis: {
-    type: 'datetime',
-    labels: {
-      datetimeFormatter: {
-        year: 'yyyy',
-        month: 'MM',
-        day: 'dd',
-        hour: 'HH:mm'
-      },
-      datetimeUTC: false,
-      format: 'HH:mm'
-    },
-    tooltip: {
-      enabled: false
-    }
-  },
-  yaxis: {
-    labels: {
-      formatter: function (val) {
-        return val.toFixed(2) + ' KiB/s'
-      }
-    }
-  },
-  tooltip: {
-    x: {
-      format: 'yyyy-MM-dd HH:mm:ss'
-    }
-  },
-  series: [{
-    name: 'Network Download',
-    data: []
-  }]
-})
-
 const getMetrics = (timeRange, tip) => {
   const reqForm = {
     timeRange: timeRange
   }
   toolsApi.metrics.get(reqForm).then(response => {
+    cpuOption.value.xAxis.data = []
+    memoryOption.value.xAxis.data = []
+    netUplinkOption.value.xAxis.data = []
+    netDownlinkOption.value.xAxis.data = []
     cpuOption.value.series[0].data = []
     memoryOption.value.series[0].data = []
     netUplinkOption.value.series[0].data = []
     netDownlinkOption.value.series[0].data = []
     for (let i of response.data) {
-      cpuOption.value.series[0].data.push([i.timestamp, i.cpu])
-      memoryOption.value.series[0].data.push([i.timestamp, i.memory])
-      netUplinkOption.value.series[0].data.push([i.timestamp, i.netUplink])
-      netDownlinkOption.value.series[0].data.push([i.timestamp, i.netDownlink])
+      cpuOption.value.xAxis.data.push(timestamp2timeWithoutDate(i.timestamp))
+      memoryOption.value.xAxis.data.push(timestamp2timeWithoutDate(i.timestamp))
+      netUplinkOption.value.xAxis.data.push(timestamp2timeWithoutDate(i.timestamp))
+      netDownlinkOption.value.xAxis.data.push(timestamp2timeWithoutDate(i.timestamp))
+
+      cpuOption.value.series[0].data.push(i.cpu.toFixed(2))
+      memoryOption.value.series[0].data.push(i.memory.toFixed(2))
+      netUplinkOption.value.series[0].data.push(i.netUplink.toFixed(2))
+      netDownlinkOption.value.series[0].data.push(i.netDownlink.toFixed(2))
     }
     if (tip) {
-      showSnackbar('刷新成功', 'success')
+      showSnackbar('刷新成功')
     }
   })
 }
 
-onMounted(() => {
-  getMetrics(timeRange.value, false)
+const cpuChartRef = ref()
+const memoryChartRef = ref()
+const netUplinkChartRef = ref()
+const netDownlinkChartRef = ref()
+
+const cpuOption = ref({
+  title: {
+    text: 'CPU',
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  xAxis: {
+    type: 'category',
+    data: []
+  },
+  yAxis: {
+    type: 'value',
+    axisLabel: {
+      formatter: '{value}%'
+    }
+  },
+  series: [
+    {
+      data: [],
+      type: 'line',
+      smooth: true,
+      itemStyle: {
+        normal: {
+          color: '#409EFF', // 改变折线点的颜色
+          lineStyle: {
+            color: '#409EFF' // 改变折线颜色
+          }
+        }
+      },
+      areaStyle: {
+        color: {
+          //线性渐变
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [{
+            offset: 0, color: '#409EFF', // 0% 处的颜色
+          }, {
+            offset: 1, color: '#ffffff00', // 100% 处的颜色
+          }],
+          global: false, // 缺省为 false
+        },
+      },
+    }
+  ]
+})
+
+const memoryOption = ref({
+  title: {
+    text: 'Memory',
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  xAxis: {
+    type: 'category',
+    data: []
+  },
+  yAxis: {
+    type: 'value',
+    axisLabel: {
+      formatter: '{value}%'
+    }
+  },
+  series: [
+    {
+      data: [],
+      type: 'line',
+      smooth: true,
+      itemStyle: {
+        normal: {
+          color: '#67C23A', // 改变折线点的颜色
+          lineStyle: {
+            color: '#67C23A' // 改变折线颜色
+          }
+        }
+      },
+      areaStyle: {
+        color: {
+          //线性渐变
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [{
+            offset: 0, color: '#67C23A', // 0% 处的颜色
+          }, {
+            offset: 1, color: '#ffffff00', // 100% 处的颜色
+          }],
+          global: false, // 缺省为 false
+        },
+      },
+    }
+  ]
+})
+
+const netUplinkOption = ref({
+  title: {
+    text: 'Net ↑',
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  xAxis: {
+    type: 'category',
+    data: []
+  },
+  yAxis: {
+    type: 'value',
+    axisLabel: {
+      formatter: '{value} KiB/s'
+    }
+  },
+  series: [
+    {
+      data: [],
+      type: 'line',
+      smooth: true,
+      itemStyle: {
+        normal: {
+          color: '#E6A23C', // 改变折线点的颜色
+          lineStyle: {
+            color: '#E6A23C' // 改变折线颜色
+          }
+        }
+      },
+      areaStyle: {
+        color: {
+          //线性渐变
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [{
+            offset: 0, color: '#E6A23C', // 0% 处的颜色
+          }, {
+            offset: 1, color: '#ffffff00', // 100% 处的颜色
+          }],
+          global: false, // 缺省为 false
+        },
+      },
+    }
+  ]
+})
+
+const netDownlinkOption = ref({
+  title: {
+    text: 'Net ↓',
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  xAxis: {
+    type: 'category',
+    data: []
+  },
+  yAxis: {
+    type: 'value',
+    axisLabel: {
+      formatter: '{value} KiB/s'
+    }
+  },
+  series: [
+    {
+      data: [],
+      type: 'line',
+      smooth: true,
+      itemStyle: {
+        normal: {
+          color: '#F56C6C', // 改变折线点的颜色
+          lineStyle: {
+            color: '#F56C6C' // 改变折线颜色
+          }
+        }
+      },
+      areaStyle: {
+        color: {
+          //线性渐变
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [{
+            offset: 0, color: '#F56C6C', // 0% 处的颜色
+          }, {
+            offset: 1, color: '#ffffff00', // 100% 处的颜色
+          }],
+          global: false, // 缺省为 false
+        },
+      },
+    }
+  ]
 })
 
 </script>

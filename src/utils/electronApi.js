@@ -29,5 +29,10 @@ export default class ElectronApi {
       window.electronAPI.reloadWindow()
     },
   }
+  static download = {
+    file(url, name) {
+      window.electronAPI.downloadFile(url, name)
+    }
+  }
   electronAPI;
 }

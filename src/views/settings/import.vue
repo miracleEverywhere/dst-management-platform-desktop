@@ -34,7 +34,9 @@
               <v-card title="压缩教程">
                 <v-card-text>
                   <v-alert color="error" density="compact" class="mt-2 mb-2">
-                    注意！注意！！注意！！！请仔细查看导入页面文件树，加粗为必须，缺少<v-icon icon="ri-pushpin-fill" color="xx"></v-icon>的文件会导致导入失败
+                    注意！注意！！注意！！！请仔细查看导入页面文件树，加粗为必须，缺少
+                    <v-icon icon="ri-pushpin-fill" color="xx"></v-icon>
+                    的文件会导致导入失败
                   </v-alert>
                   <v-tabs v-model="activeTabName" align-tabs="start"
                           class="v-tabs-pill" color="primary" show-arrows>
@@ -68,9 +70,9 @@
       </div>
     </v-card-title>
     <v-card-text>
-      <v-container height="700" style="overflow-y: auto">
+      <v-container height="750" style="overflow-y: auto">
         <v-alert color="info" density="compact" class="mt-2">
-          上传过程中会自动备份存档，上传完成后请手动启动服务器
+          上传完成后请手动启动服务器
         </v-alert>
         <v-alert color="warning" density="compact" class="mt-2">
           请上传压缩文件(例如：my_cluster.zip)，压缩文件的内容如下，<v-icon icon="ri-pushpin-fill" color="error"></v-icon>文件为必须，会自动进行检测，如缺失会导致导入失败
@@ -102,7 +104,10 @@
 <script setup>
 import settingApi from "@/api/setting"
 import {showSnackbar} from "@/utils/snackbar";
+import useGlobalStore from "@/plugins/pinia/global"
 
+
+const globalStore = useGlobalStore()
 
 const helpDialogVisible = ref(false)
 
@@ -115,14 +120,16 @@ const checkUploadFile = (param) => {
 }
 const handleUpload = (file) => {
   if (!checkUploadFile(file)) {
-    showSnackbar('请上传Excel文件', 'error')
+    showSnackbar('请上传zip文件', 'error')
     uploadDialogVisible.value = false
     return
   }
   uploadLoading.value = true
   const formData = new FormData()
   formData.append('file', file)
+  formData.append('clusterName', globalStore.selectedDstCluster)
   settingApi.import.upload.post(formData).then(response => {
+    getClusters()
     showSnackbar(response.message)
   }).finally(() => {
     uploadDialogVisible.value = false
@@ -130,9 +137,18 @@ const handleUpload = (file) => {
   })
 }
 
+const getClusters = () => {
+  settingApi.clusters.get().then(response => {
+    globalStore.dstClusters = response.data
+    if (globalStore.selectedDstCluster === null && globalStore.dstClusters !== null) {
+      globalStore.selectedDstCluster = globalStore.dstClusters[0].clusterName
+    }
+  })
+}
+
 const activeTabName = ref('win')
 
-const open = shallowRef(['public'])
+const open = shallowRef([1, 14])
 const files = shallowRef({
   ini: 'ri-file-settings-line',
   lua: 'ri-file-code-line',
@@ -143,7 +159,6 @@ const items = [
   {
     id: 1,
     title: '压缩文件名xxx.zip',
-    subtitle: '点击打开我',
     children: [
       {
         id: 2,

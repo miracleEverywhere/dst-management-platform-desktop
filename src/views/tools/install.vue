@@ -4,7 +4,7 @@
       <v-card height="600">
         <template #title>
           <div class="card-header">
-            <span class="font-weight-bold">系统信息</span>
+            <span>系统信息</span>
           </div>
         </template>
         <template #text>
@@ -51,7 +51,7 @@
       <v-card height="600">
         <template #title>
           <div class="card-header">
-            <span class="font-weight-bold">安装检查</span>
+            <span>安装检查</span>
           </div>
         </template>
         <template #text>
@@ -60,9 +60,13 @@
               v-if="osInfo.Platform === 'ubuntu' || osInfo.Platform === 'centos' || osInfo.Platform === 'rocky'">
               <v-icon class="mb-4" color="success" icon="ri-checkbox-circle-fill" size="64"/>
               <div class="mb-2" style="font-size: 1.3rem; font-weight: 400">检查通过</div>
-              <div class="text-medium-emphasis mb-4">请点击下方按钮进行安装</div>
-              <v-btn :loading="installing" color="#2992ff" variant="tonal" @click="handleInstall">
+              <div v-if="version.local===-1" class="text-medium-emphasis mb-4">请点击下方按钮进行安装</div>
+              <div v-else class="text-medium-emphasis mb-4">检测到游戏已安装，点击下方按钮可重新安装</div>
+              <v-btn v-if="version.local===-1" :loading="installing" color="info" @click="handleInstall">
                 安装
+              </v-btn>
+              <v-btn v-else :loading="installing" color="warning" @click="handleInstall">
+                重新安装
               </v-btn>
             </template>
             <template v-else>
@@ -97,7 +101,7 @@
           </div>
         </v-card-item>
         <v-card-text>
-          <v-progress-linear :model-value="percentage" color="primary" height="20" rounded-bar rounded>
+          <v-progress-linear :model-value="percentage" color="info" height="20" rounded-bar rounded>
             <template v-slot:default="{ value }">
               <strong>{{ Math.ceil(value) }}%</strong>
             </template>
@@ -113,8 +117,16 @@
 
 <script setup>
 import toolsApi from "@/api/tools"
+import externalApi from "@/api/externalApi"
 import {seconds2Time} from "@/utils/tools.js";
 import {showSnackbar} from "@/utils/snackbar";
+
+
+onMounted(() => {
+  getOSInfo()
+  getVersion()
+  getIsInstalling()
+})
 
 const osInfo = ref({})
 const installing = ref(false)
@@ -146,6 +158,7 @@ const startRequests = () => {
   }, 1000)
 }
 const cancelRequests = () => {
+  installing.value = false
   if (intervalId) {
     clearInterval(intervalId)
     intervalId = null
@@ -166,10 +179,27 @@ const handleGetStatus = () => {
   })
 }
 
-
-onMounted(() => {
-  getOSInfo()
+const version = ref({
+  server: -1,
+  local: -1
 })
+
+const getVersion = () => {
+  externalApi.dstVersion.get().then(response => {
+    if (response.data) {
+      version.value = response.data
+    }
+  })
+}
+
+const getIsInstalling = () => {
+  toolsApi.isInstalling.get().then(response => {
+    if (response.data) {
+      installing.value = true
+      startRequests()
+    }
+  })
+}
 
 onBeforeUnmount(() => {
   cancelRequests();
