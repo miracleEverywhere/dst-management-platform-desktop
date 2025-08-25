@@ -43,7 +43,7 @@
                   <v-icon icon="ri-apps-fill"/>
                   集群 {{clustersStat.cluster}} 个
                 </v-chip>
-                <v-chip v-if="clustersStat.cluster===-1" color="warning" style="margin-right: 5px">
+                <v-chip v-else color="warning" style="margin-right: 5px">
                   <v-icon icon="ri-apps-2-fill"/>
                   获取中
                 </v-chip>
@@ -51,7 +51,7 @@
                   <v-icon icon="ri-earth-fill"/>
                   世界 {{clustersStat.world}} 个
                 </v-chip>
-                <v-chip v-if="clustersStat.world===-1" color="warning">
+                <v-chip v-else color="warning">
                   <v-icon icon="ri-earth-fill"/>
                   获取中
                 </v-chip>
@@ -237,6 +237,7 @@ const getClusters = () => {
 
 const handleGotoDashboard = () => {
   globalStore.setConfigInfo(configItem.value)
+  globalStore.inDashboard = true
   configStore.inConfig = false
   needContinue.value = false
   ElectronApi.window.dashboard()
