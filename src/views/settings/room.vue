@@ -30,7 +30,7 @@
     </v-stepper-header>
     <v-stepper-window v-model="step">
       <v-stepper-window-item :value="0">
-        <v-container height="700" style="overflow-y: auto">
+        <v-container height="750" style="overflow-y: auto">
           <v-form ref="clusterSettingFormRef">
             <v-row class="mt-4">
               <v-text-field v-model="clusterSettingForm.name" :rules="rules.require" label="房间名"></v-text-field>
@@ -124,536 +124,538 @@
         </v-container>
       </v-stepper-window-item>
       <v-stepper-window-item :value="1">
-        <v-tabs v-model="worldTabName">
-          <v-tab v-for="world in worldForm" :key="world.name" :value="world.name">
-            {{world.name}}
-            <v-btn icon="ri-delete-bin-5-line" variant="text"
-                   @click="handleWorldTabsEdit(world.name, 'remove')"
-                   class="ml-4" style="margin-right: -12px"></v-btn>
-          </v-tab>
-          <v-btn icon="ri-add-line" variant="text"
-                 @click="handleWorldTabsEdit('', 'add')"></v-btn>
-        </v-tabs>
-        <v-tabs-window v-model="worldTabName" class="mx-8">
-          <v-tabs-window-item v-for="world in worldForm" :key="world.name" :value="world.name">
-            <v-form :ref="(el) => (dynamicWorldRefs[world.name] = el)">
-              <v-row class="mt-4">
-                <v-col>
-                  <v-switch v-model="world.isMaster">
-                    <template #prepend>
-                      主世界
-                    </template>
-                  </v-switch>
-                </v-col>
-                <v-col>
-                  <v-switch v-model="world.encodeUserPath">
-                    <template #prepend>
-                      用户路径编码
-                    </template>
-                  </v-switch>
-                </v-col>
-                <v-col>
-                  <v-number-input v-model.number="world.id" :disabled="world.saved"
+        <v-container height="750" style="overflow-y: auto">
+          <v-tabs v-model="worldTabName">
+            <v-tab v-for="world in worldForm" :key="world.name" :value="world.name">
+              {{world.name}}
+              <v-btn icon="ri-delete-bin-5-line" variant="text"
+                     @click="handleWorldTabsEdit(world.name, 'remove')"
+                     class="ml-4" style="margin-right: -12px"></v-btn>
+            </v-tab>
+            <v-btn icon="ri-add-line" variant="text"
+                   @click="handleWorldTabsEdit('', 'add')"></v-btn>
+          </v-tabs>
+          <v-tabs-window v-model="worldTabName" class="mx-8">
+            <v-tabs-window-item v-for="world in worldForm" :key="world.name" :value="world.name">
+              <v-form :ref="(el) => (dynamicWorldRefs[world.name] = el)">
+                <v-row class="mt-4">
+                  <v-col>
+                    <v-switch v-model="world.isMaster">
+                      <template #prepend>
+                        主世界
+                      </template>
+                    </v-switch>
+                  </v-col>
+                  <v-col>
+                    <v-switch v-model="world.encodeUserPath">
+                      <template #prepend>
+                        用户路径编码
+                      </template>
+                    </v-switch>
+                  </v-col>
+                  <v-col>
+                    <v-number-input v-model.number="world.id" :disabled="world.saved"
+                                    :rules="rules.require"
+                                    control-variant="hidden" inset label="世界ID"
+                                    density="compact" variant="outlined">
+                    </v-number-input>
+                  </v-col>
+                  <v-col>
+                    <v-number-input v-model.number="world.serverPort"
+                                    :rules="rules.require"
+                                    control-variant="hidden" inset label="游戏端口"
+                                    density="compact" variant="outlined">
+                    </v-number-input>
+                  </v-col>
+                </v-row>
+                <v-row class="mt-2">
+                  <v-col>
+                    <v-number-input v-model.number="world.shardMasterPort"
+                                    :rules="rules.require"
+                                    control-variant="hidden" inset label="主节点端口"
+                                    density="compact" variant="outlined">
+                    </v-number-input>
+                  </v-col>
+                  <v-col>
+                    <v-number-input v-model.number="world.steamMasterPort"
+                                    :rules="rules.require"
+                                    control-variant="hidden" inset label="Steam连接端口"
+                                    density="compact" variant="outlined">
+                    </v-number-input>
+                  </v-col>
+                  <v-col>
+                    <v-number-input v-model.number="world.steamAuthenticationPort"
+                                    :rules="rules.require"
+                                    control-variant="hidden" inset label="Steam认证端口"
+                                    density="compact" variant="outlined">
+                    </v-number-input>
+                  </v-col>
+                  <v-col>
+                    <v-text-field v-model="world.shardMasterIp" :disabled="world.isMaster"
                                   :rules="rules.require"
-                                  control-variant="hidden" inset label="世界ID"
-                                  density="compact" variant="outlined">
-                  </v-number-input>
-                </v-col>
-                <v-col>
-                  <v-number-input v-model.number="world.serverPort"
-                                  :rules="rules.require"
-                                  control-variant="hidden" inset label="游戏端口"
-                                  density="compact" variant="outlined">
-                  </v-number-input>
-                </v-col>
-              </v-row>
-              <v-row class="mt-2">
-                <v-col>
-                  <v-number-input v-model.number="world.shardMasterPort"
-                                  :rules="rules.require"
-                                  control-variant="hidden" inset label="主节点端口"
-                                  density="compact" variant="outlined">
-                  </v-number-input>
-                </v-col>
-                <v-col>
-                  <v-number-input v-model.number="world.steamMasterPort"
-                                  :rules="rules.require"
-                                  control-variant="hidden" inset label="Steam连接端口"
-                                  density="compact" variant="outlined">
-                  </v-number-input>
-                </v-col>
-                <v-col>
-                  <v-number-input v-model.number="world.steamAuthenticationPort"
-                                  :rules="rules.require"
-                                  control-variant="hidden" inset label="Steam认证端口"
-                                  density="compact" variant="outlined">
-                  </v-number-input>
-                </v-col>
-                <v-col>
-                  <v-text-field v-model="world.shardMasterIp" :disabled="world.isMaster"
-                                :rules="rules.require"
-                                density="compact" label="主世界IP">
-                  </v-text-field>
-                </v-col>
-              </v-row>
-             <v-row class="mt-2">
-               <v-col cols="3">
-                 <v-text-field
-                   v-model="world.clusterKey"
-                   :rules="rules.require"
-                   :append-inner-icon="isClusterKeyVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
-                   :type="isClusterKeyVisible ? 'text' : 'password'"
-                   autocomplete="password"
-                   label="游戏令牌" density="compact"
-                   @click:append-inner="isClusterKeyVisible = !isClusterKeyVisible"
-                 />
-               </v-col>
-               <v-spacer/>
-             </v-row>
-            </v-form>
+                                  density="compact" label="主世界IP">
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+               <v-row class="mt-2">
+                 <v-col cols="3">
+                   <v-text-field
+                     v-model="world.clusterKey"
+                     :rules="rules.require"
+                     :append-inner-icon="isClusterKeyVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                     :type="isClusterKeyVisible ? 'text' : 'password'"
+                     autocomplete="password"
+                     label="游戏令牌" density="compact"
+                     @click:append-inner="isClusterKeyVisible = !isClusterKeyVisible"
+                   />
+                 </v-col>
+                 <v-spacer/>
+               </v-row>
+              </v-form>
 
-            <v-tabs v-model="worldLevelDataTabName" @update:model-value="handleWorldTabChange" class="mt-4">
-              <v-tab value="Code">
-                配置文件
-              </v-tab>
-              <v-tab
-                v-if="(clusterSettingForm.gameMode==='endless'||clusterSettingForm.gameMode==='survival') && world.levelData!==''"
-                value="Visualization">
-                可视化
-              </v-tab>
-            </v-tabs>
-            <v-tabs-window v-model="worldLevelDataTabName">
-              <v-tabs-window-item value="Code">
-                <sc-code-editor ref="editorGroundSettingRef" v-model="world.levelData" :height="400"
-                              :theme="globalStore.theme === 'dark' ? 'darcula' : 'idea'" class="mt-4" mode="lua"
-                              style="width: 100%"></sc-code-editor>
-              </v-tabs-window-item>
-              <v-tabs-window-item value="Visualization">
-                <template v-if="visualizationType==='forest' && Object.keys(overridesObj).length!==0">
-                  <v-alert color="info" title="世界规则 - 全局" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldRule.global">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 活动" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldRule.events">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 冒险家" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldRule.survivors">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 世界" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldRule.world">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 资源再生" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldRule.resourceRegrowth">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 非自然传送门资源" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldRule.unnaturalPortalResource">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 生物" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldRule.creatures">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 敌对生物" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldRule.hostileCreatures">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 巨兽" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldRule.giants">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="success" title="世界生成 - 全局" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldGeneration.global">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="success" title="世界生成 - 世界" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldGeneration.world">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="success" title="世界生成 - 资源" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldGeneration.resources">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="success" title="世界生成 - 生物以及刷新点" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldGeneration.creaturesAndSpawners">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="success" title="世界生成 - 敌对生物以及刷新点" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in groundWorldGeneration.hostileCreaturesAndSpawners">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                </template>
-                <template v-if="visualizationType==='cave' && Object.keys(overridesObj).length!==0">
-                  <v-alert color="info" title="世界规则 - 世界" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in cavesWorldRule.world">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 资源再生" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in cavesWorldRule.resourceRegrowth">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 生物" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in cavesWorldRule.creatures">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 敌对生物" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in cavesWorldRule.hostileCreatures">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="info" title="世界规则 - 巨兽" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-scales-3-fill"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in cavesWorldRule.giants">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="success" title="世界生成 - 世界" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in cavesWorldGeneration.world">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="caveOverrideWorldGenerationWorld[i]?.configs || ['undefined']"
-                                          :customConfigsValue="caveOverrideWorldGenerationWorld[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="caveOverrideWorldGenerationWorld[i]?.modelValue || 'undefined'"
-                                          :i18n="caveOverrideWorldGenerationWorld[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="caveOverrideWorldGenerationWorld[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="success" title="世界生成 - 资源" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in cavesWorldGeneration.resources">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="success" title="世界生成 - 生物以及刷新点" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in cavesWorldGeneration.creaturesAndSpawners">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                  <v-alert color="success" title="世界生成 - 敌对生物以及刷新点" density="compact" class="mt-4"
-                           variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
-                  <div class="item-container">
-                    <template v-for="(i, key) in cavesWorldGeneration.hostileCreaturesAndSpawners">
-                      <div>
-                        <LevelDataSetting :key="key"
-                                          v-model="overridesObj[i]"
-                                          :configs="overrides[i]?.configs || ['undefined']"
-                                          :customConfigsValue="overrides[i]?.customConfigsValue || {}"
-                                          :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
-                                          :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
-                                          :image="overrides[i]?.image || 'undefined.png'"
-                                          :name="i"
-                                          @changeModelValue="handleModelValueChange"
-                        />
-                      </div>
-                    </template>
-                  </div>
-                </template>
-              </v-tabs-window-item>
-            </v-tabs-window>
-          </v-tabs-window-item>
-        </v-tabs-window>
+              <v-tabs v-model="worldLevelDataTabName" @update:model-value="handleWorldTabChange" class="mt-4">
+                <v-tab value="Code">
+                  配置文件
+                </v-tab>
+                <v-tab
+                  v-if="(clusterSettingForm.gameMode==='endless'||clusterSettingForm.gameMode==='survival') && world.levelData!==''"
+                  value="Visualization">
+                  可视化
+                </v-tab>
+              </v-tabs>
+              <v-tabs-window v-model="worldLevelDataTabName">
+                <v-tabs-window-item value="Code">
+                  <sc-code-editor ref="editorGroundSettingRef" v-model="world.levelData" :height="400"
+                                :theme="globalStore.theme === 'dark' ? 'darcula' : 'idea'" class="mt-4" mode="lua"
+                                style="width: 100%"></sc-code-editor>
+                </v-tabs-window-item>
+                <v-tabs-window-item value="Visualization">
+                  <template v-if="visualizationType==='forest' && Object.keys(overridesObj).length!==0">
+                    <v-alert color="info" title="世界规则 - 全局" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldRule.global">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 活动" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldRule.events">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 冒险家" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldRule.survivors">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 世界" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldRule.world">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 资源再生" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldRule.resourceRegrowth">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 非自然传送门资源" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldRule.unnaturalPortalResource">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 生物" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldRule.creatures">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 敌对生物" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldRule.hostileCreatures">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 巨兽" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldRule.giants">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="success" title="世界生成 - 全局" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldGeneration.global">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="success" title="世界生成 - 世界" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldGeneration.world">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="success" title="世界生成 - 资源" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldGeneration.resources">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="success" title="世界生成 - 生物以及刷新点" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldGeneration.creaturesAndSpawners">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="success" title="世界生成 - 敌对生物以及刷新点" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in groundWorldGeneration.hostileCreaturesAndSpawners">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+                  <template v-if="visualizationType==='cave' && Object.keys(overridesObj).length!==0">
+                    <v-alert color="info" title="世界规则 - 世界" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in cavesWorldRule.world">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 资源再生" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in cavesWorldRule.resourceRegrowth">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 生物" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in cavesWorldRule.creatures">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 敌对生物" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in cavesWorldRule.hostileCreatures">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="info" title="世界规则 - 巨兽" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-scales-3-fill"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in cavesWorldRule.giants">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="success" title="世界生成 - 世界" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in cavesWorldGeneration.world">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="caveOverrideWorldGenerationWorld[i]?.configs || ['undefined']"
+                                            :customConfigsValue="caveOverrideWorldGenerationWorld[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="caveOverrideWorldGenerationWorld[i]?.modelValue || 'undefined'"
+                                            :i18n="caveOverrideWorldGenerationWorld[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="caveOverrideWorldGenerationWorld[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="success" title="世界生成 - 资源" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in cavesWorldGeneration.resources">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="success" title="世界生成 - 生物以及刷新点" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in cavesWorldGeneration.creaturesAndSpawners">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                    <v-alert color="success" title="世界生成 - 敌对生物以及刷新点" density="compact" class="mt-4 mb-2"
+                             variant="tonal" icon="ri-color-filter-ai-line"></v-alert>
+                    <div class="item-container">
+                      <template v-for="(i, key) in cavesWorldGeneration.hostileCreaturesAndSpawners">
+                        <div>
+                          <LevelDataSetting :key="key"
+                                            v-model="overridesObj[i]"
+                                            :configs="overrides[i]?.configs || ['undefined']"
+                                            :customConfigsValue="overrides[i]?.customConfigsValue || {}"
+                                            :defaultModelValue="overrides[i]?.modelValue || 'undefined'"
+                                            :i18n="overrides[i]?.i18n || {zh: '平台未识别', en: 'undefined'}"
+                                            :image="overrides[i]?.image || 'undefined.png'"
+                                            :name="i"
+                                            @changeModelValue="handleModelValueChange"
+                          />
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+                </v-tabs-window-item>
+              </v-tabs-window>
+            </v-tabs-window-item>
+          </v-tabs-window>
+        </v-container>
       </v-stepper-window-item>
       <v-stepper-window-item :value="2">
-        <v-container height="700" style="overflow-y: auto">
+        <v-container height="750" style="overflow-y: auto">
           <v-alert border="start" border-color="info" density="compact">
             <span>如果世界个数大于2，请点击右侧按钮加入多层世界模组；如世界个数小于等于2，则无需修改</span>
             <v-dialog v-model="multiWorldModAddDialog" width="900" @after-enter="openMultiWorldModAddDialog">
@@ -717,14 +719,14 @@
               </v-card>
             </v-dialog>
           </v-alert>
-          <sc-code-editor v-model="clusterModForm.mod" :height="600"
+          <sc-code-editor v-model="clusterModForm.mod" :height="650"
                           ::theme="globalStore.theme === 'dark' ? 'darcula' : 'idea'"
                           class="mt-4"
                           mode="lua" style="width: 100%"></sc-code-editor>
         </v-container>
       </v-stepper-window-item>
       <v-stepper-window-item :value="3">
-        <v-container height="700" style="overflow-y: auto">
+        <v-container height="750" style="overflow-y: auto">
           <div class="d-flex flex-column align-center justify-center" style="height: 600px">
             <v-icon color="success" size="128" icon="ri-checkbox-circle-fill"/>
             <div style="font-size: 3rem; font-weight: 300; line-height: 1; letter-spacing: -0.015625em">
@@ -745,7 +747,7 @@
       </template>
       <template #next>
         <v-btn v-if="step!==3" color="primary" variant="elevated" @click="handleNext">下一步</v-btn>
-        <v-menu open-on-hover>
+        <v-menu open-on-click>
           <template v-slot:activator="{ props }">
             <v-btn v-if="step===3" :disabled="false" color="success" prepend-icon="ri-list-unordered"
                    variant="elevated" v-bind="props">

@@ -99,8 +99,8 @@
         <v-card-text>
           <v-container height="700" style="overflow-y: auto">
             <v-row>
+              <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               <v-col class="mt-4" cols="12">
-                <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               </v-col>
               <v-chip v-for="uid in adminListData" closable color="info" class="mt-2 mr-2" label
                       size="large" @click:close="handlePlayerChange('admin','delete',uid)">
@@ -152,10 +152,11 @@
         <v-card-text>
           <v-container height="700" style="overflow-y: auto">
             <v-row>
+              <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               <v-col class="mt-4" cols="12">
-                <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
+
               </v-col>
-              <v-chip v-for="uid in blockListData" closable color="success" class="mt-2 mr-2" label
+              <v-chip v-for="uid in blockListData" closable color="info" class="mt-2 mr-2" label
                       size="large" @click:close="handlePlayerChange('block','delete',uid)">
                 {{ uid + getNickname(uid) }}
               </v-chip>
@@ -186,10 +187,11 @@
         <v-card-text>
           <v-container height="700" style="overflow-y: auto">
             <v-row>
+              <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               <v-col class="mt-4" cols="12">
-                <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
+
               </v-col>
-              <v-chip  v-for="uid in whiteListData" closable color="success" class="mt-2 mr-2" label
+              <v-chip  v-for="uid in whiteListData" closable color="info" class="mt-2 mr-2" label
                        size="large" @click:close="handlePlayerChange('white','delete',uid)">
                 {{ uid + getNickname(uid) }}
               </v-chip>
