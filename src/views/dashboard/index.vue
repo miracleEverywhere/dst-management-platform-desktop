@@ -788,12 +788,16 @@ let intervalSysId = null
 let intervalWorldId = null
 const startRequests = () => {
   intervalSysId = setInterval(() => {
-    getSysInfo()
+    if (globalStore.inDashboard) {
+      getSysInfo()
+    }
   }, 2000)
   intervalWorldId = setInterval(() => {
     if (globalStore.selectedDstCluster) {
-      getWorldInfo()
-      handleGetUpdating()
+      if (globalStore.inDashboard) {
+        getWorldInfo()
+        handleGetUpdating()
+      }
     }
   }, 10000)
 }
