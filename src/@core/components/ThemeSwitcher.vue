@@ -31,6 +31,8 @@ const {
   global: globalTheme,
 } = useTheme()
 
+const theme = useTheme()
+
 const {
   state: currentThemeName,
   next: getNextThemeName,
@@ -53,7 +55,8 @@ const changeTheme = async (event) => {
   // 定义主题切换逻辑
   const updateTheme = () => {
     const nextTheme = getNextThemeName();
-    globalTheme.name.value = nextTheme;
+    // globalTheme.name.value = nextTheme;
+    theme.change(nextTheme)
     globalStore.theme = nextTheme;
     ElectronApi.store.set('theme', nextTheme);
   };

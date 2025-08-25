@@ -29,10 +29,6 @@ export const routes = [
         component: () => import('@/views/settings/system.vue'),
       },
       {
-        path: 'tools/update',
-        component: () => import('@/views/tools/update.vue'),
-      },
-      {
         path: 'tools/backup',
         component: () => import('@/views/tools/backup.vue'),
       },
@@ -53,32 +49,36 @@ export const routes = [
         component: () => import('@/views/tools/metrics.vue'),
       },
       {
-        path: 'logs/ground',
-        component: () => import('@/views/logs/ground.vue'),
-      },
-      {
-        path: 'logs/cave',
-        component: () => import('@/views/logs/cave.vue'),
+        path: 'logs/world',
+        component: () => import('@/views/logs/world.vue'),
       },
       {
         path: 'logs/chat',
         component: () => import('@/views/logs/chat.vue'),
       },
       {
-        path: 'logs/dmp',
-        component: () => import('@/views/logs/dmp.vue'),
+        path: 'logs/access',
+        component: () => import('@/views/logs/access.vue'),
       },
       {
         path: 'logs/runtime',
         component: () => import('@/views/logs/runtime.vue'),
       },
       {
+        path: 'logs/steam',
+        component: () => import('@/views/logs/steam.vue'),
+      },
+      {
         path: 'logs/clean',
         component: () => import('@/views/logs/clean.vue'),
       },
       {
-        path: 'help',
-        component: () => import('@/views/help/index.vue'),
+        path: 'clusters',
+        component: () => import('@/views/clusters/index.vue'),
+      },
+      {
+        path: 'users',
+        component: () => import('@/views/users/index.vue'),
       },
     ],
   },

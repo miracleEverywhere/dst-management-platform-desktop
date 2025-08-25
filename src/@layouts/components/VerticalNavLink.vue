@@ -1,4 +1,6 @@
 <script setup>
+import NavItems from "@/layouts/components/NavItems.vue";
+
 const props = defineProps({
   item: {
     type: null,
@@ -13,6 +15,7 @@ const props = defineProps({
     :class="{ disabled: item.disable }"
   >
     <Component
+      v-ripple
       :is="item.to ? 'RouterLink' : 'a'"
       :to="item.to"
       :href="item.href"

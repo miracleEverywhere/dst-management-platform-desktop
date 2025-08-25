@@ -58,11 +58,19 @@
                       </v-btn>
                     </template>
                     <v-list>
-                      <v-list-item :disabled="adminDisable(item.uid)" title="添加管理员" @click="handleAddAdmin(item.uid)"/>
-                      <v-list-item :disabled="blockDisable(item.uid)" title="添加黑名单" @click="handleAddBlock(item.uid)"/>
-                      <v-list-item :disabled="whiteDisable(item.uid)" title="添加白名单" @click="handleAddWhite(item.uid)"/>
+                      <v-list-item :disabled="adminDisable(item.uid)" title="添加管理员"
+                                   @click="handleCommand({type: 'admin',uid: item.uid})"/>
+                      <v-list-item :disabled="blockDisable(item.uid)" title="添加黑名单"
+                                   @click="handleCommand({type: 'block',uid: item.uid})"/>
+                      <v-list-item :disabled="whiteDisable(item.uid)" title="添加白名单"
+                                   @click="handleCommand({type: 'white',uid: item.uid})"/>
                       <v-divider/>
-                      <v-list-item :disabled="adminDisable(item.uid)" title="踢出玩家" @click="handleKick(item.uid)"/>
+                      <v-list-item :disabled="adminDisable(item.uid)" title="踢出该玩家"
+                                   @click="handleCommand({type: 'kick',uid: item.uid})"/>
+                      <v-list-item :disabled="adminDisable(item.uid)" title="杀死该玩家"
+                                   @click="handleCommand({type: 'kill',uid: item.uid})"/>
+                      <v-list-item :disabled="adminDisable(item.uid)" title="复活该玩家"
+                                   @click="handleCommand({type: 'respawn',uid: item.uid})"/>
                     </v-list>
                   </v-menu>
                 </template>
@@ -90,21 +98,26 @@
         </v-card-title>
         <v-card-text>
           <v-container height="700" style="overflow-y: auto">
-            <v-row v-if="adminListData.length > 0">
+            <v-row>
+              <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               <v-col class="mt-4" cols="12">
-                <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               </v-col>
-                <v-chip v-for="uid in adminListData" closable color="info" class="mt-2 mr-2"
-                        size="large" @click:close="handleDeleteAdmin(uid)">
-                  {{ uid + getNickname(uid) }}
-                </v-chip>
-            </v-row>
-            <div v-else class="d-flex flex-column align-center justify-center" style="height: 600px">
-              <v-icon color="warning" icon="ri-error-warning-fill" size="128"/>
-              <div class="mt-8" style="font-size: 1.6rem; font-weight: 300; line-height: 1; letter-spacing: -0.015625em">
-                没有发现管理员
+              <v-chip v-for="uid in adminListData" closable color="info" class="mt-2 mr-2" label
+                      size="large" @click:close="handlePlayerChange('admin','delete',uid)">
+                {{ uid + getNickname(uid) }}
+              </v-chip>
+              <div class="d-flex align-center" style="width: 140px">
+                <v-text-field v-if="InputVisible" ref="InputRef" v-model="InputValue"
+                              @keyup.enter="handleInputConfirm('admin')"
+                              @blur="handleInputConfirm('admin')"
+                              density="compact"
+                              placeholder="KU_开头" style="margin-top: 7px"
+                ></v-text-field>
+                <v-btn v-else variant="tonal" append-icon="ri-add-line"
+                       @click="showInput"
+                       color="XX" class="mt-2 mr-2">新增</v-btn>
               </div>
-            </div>
+            </v-row>
           </v-container>
         </v-card-text>
       </v-card>
@@ -138,21 +151,27 @@
         </v-card-title>
         <v-card-text>
           <v-container height="700" style="overflow-y: auto">
-            <v-row v-if="blockListData.length > 0">
+            <v-row>
+              <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               <v-col class="mt-4" cols="12">
-                <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
+
               </v-col>
-              <v-chip v-for="uid in blockListData" closable color="success" class="mt-2 mr-2"
-                      size="large" @click:close="handleDeleteBlock(uid)">
+              <v-chip v-for="uid in blockListData" closable color="info" class="mt-2 mr-2" label
+                      size="large" @click:close="handlePlayerChange('block','delete',uid)">
                 {{ uid + getNickname(uid) }}
               </v-chip>
-            </v-row>
-            <div v-else class="d-flex flex-column align-center justify-center" style="height: 600px">
-              <v-icon color="warning" icon="ri-error-warning-fill" size="128"/>
-              <div class="mt-8" style="font-size: 1.6rem; font-weight: 300; line-height: 1; letter-spacing: -0.015625em">
-                没有发现黑名单
+              <div class="d-flex align-center" style="width: 140px">
+                <v-text-field v-if="InputVisible" ref="InputRef" v-model="InputValue"
+                              @keyup.enter="handleInputConfirm('block')"
+                              @blur="handleInputConfirm('block')"
+                              density="compact"
+                              placeholder="KU_开头" style="margin-top: 7px"
+                ></v-text-field>
+                <v-btn v-else variant="tonal" append-icon="ri-add-line"
+                       @click="showInput"
+                       color="XX" class="mt-2 mr-2">新增</v-btn>
               </div>
-            </div>
+            </v-row>
           </v-container>
         </v-card-text>
       </v-card>
@@ -167,21 +186,27 @@
         </v-card-title>
         <v-card-text>
           <v-container height="700" style="overflow-y: auto">
-            <v-row v-if="whiteListData.length > 0">
+            <v-row>
+              <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
               <v-col class="mt-4" cols="12">
-                <v-alert color="success" density="compact">提示：点击玩家UID后的 "×" 即可删除</v-alert>
+
               </v-col>
-              <v-chip  v-for="uid in whiteListData" closable color="success" class="mt-2 mr-2"
-                       size="large" @click:close="handleDeleteWhite(uid)">
+              <v-chip  v-for="uid in whiteListData" closable color="info" class="mt-2 mr-2" label
+                       size="large" @click:close="handlePlayerChange('white','delete',uid)">
                 {{ uid + getNickname(uid) }}
               </v-chip>
-            </v-row>
-            <div v-else class="d-flex flex-column align-center justify-center" style="height: 600px">
-              <v-icon color="warning" icon="ri-error-warning-fill" size="128"/>
-              <div class="mt-8" style="font-size: 1.6rem; font-weight: 300; line-height: 1; letter-spacing: -0.015625em">
-                没有发现白名单
+              <div class="d-flex align-center" style="width: 140px">
+                <v-text-field v-if="InputVisible" ref="InputRef" v-model="InputValue"
+                              @keyup.enter="handleInputConfirm('white')"
+                              @blur="handleInputConfirm('white')"
+                              density="compact"
+                              placeholder="KU_开头" style="margin-top: 7px"
+                ></v-text-field>
+                <v-btn v-else variant="tonal" append-icon="ri-add-line"
+                       @click="showInput"
+                       color="XX" class="mt-2 mr-2">新增</v-btn>
               </div>
-            </div>
+            </v-row>
           </v-container>
         </v-card-text>
       </v-card>
@@ -240,11 +265,19 @@
                     </v-btn>
                   </template>
                   <v-list>
-                    <v-list-item :disabled="adminDisable(item.uid)" title="添加管理员" @click="handleAddAdmin(item.uid)"/>
-                    <v-list-item :disabled="blockDisable(item.uid)" title="添加黑名单" @click="handleAddBlock(item.uid)"/>
-                    <v-list-item :disabled="whiteDisable(item.uid)" title="添加白名单" @click="handleAddWhite(item.uid)"/>
+                    <v-list-item :disabled="adminDisable(item.uid)" title="添加管理员"
+                                 @click="handleCommand({type: 'admin',uid: item.uid})"/>
+                    <v-list-item :disabled="blockDisable(item.uid)" title="添加黑名单"
+                                 @click="handleCommand({type: 'block',uid: item.uid})"/>
+                    <v-list-item :disabled="whiteDisable(item.uid)" title="添加白名单"
+                                 @click="handleCommand({type: 'white',uid: item.uid})"/>
                     <v-divider/>
-                    <v-list-item :disabled="adminDisable(item.uid)" title="踢出玩家" @click="handleKick(item.uid)"/>
+                    <v-list-item :disabled="adminDisable(item.uid)" title="踢出该玩家"
+                                 @click="handleCommand({type: 'kick',uid: item.uid})"/>
+                    <v-list-item :disabled="adminDisable(item.uid)" title="杀死该玩家"
+                                 @click="handleCommand({type: 'kill',uid: item.uid})"/>
+                    <v-list-item :disabled="adminDisable(item.uid)" title="复活该玩家"
+                                 @click="handleCommand({type: 'respawn',uid: item.uid})"/>
                   </v-list>
                 </v-menu>
               </template>
@@ -259,38 +292,49 @@
 <script setup>
 import settingApi from "@/api/setting"
 import {showSnackbar} from "@/utils/snackbar";
+import useGlobalStore from "@/plugins/pinia/global";
+
 
 onMounted(() => {
   getPlayerList()
 })
 
+const globalStore = useGlobalStore();
 
 const playerListLoading = ref(false)
 const playerListPage = ref(1)
 const playerListRows = ref(0)
 const getPlayerList = (tip = false) => {
   playerListLoading.value = true
-  settingApi.player.list.get().then(response => {
+  settingApi.player.list.get({clusterName: globalStore.selectedDstCluster}).then(response => {
     playersData.value = response.data.players
     uidMap.value = response.data.uidMap
     adminListData.value = []
-    for (let i of response.data.adminList) {
-      if (i !== '') {
-        adminListData.value.push(i)
+    if ((response.data.adminList?.length || 0 ) > 0) {
+      for (let i of response.data.adminList) {
+        if (i !== '') {
+          adminListData.value.push(i)
+        }
       }
     }
     blockListData.value = []
-    for (let i of response.data.blockList) {
-      if (i !== '') {
-        blockListData.value.push(i)
+    if ((response.data.blockList?.length || 0 ) > 0) {
+      for (let i of response.data.blockList) {
+        if (i !== '') {
+          blockListData.value.push(i)
+        }
       }
     }
+
     whiteListData.value = []
-    for (let i of response.data.whiteList) {
-      if (i !== '') {
-        whiteListData.value.push(i)
+    if ((response.data.whiteList?.length || 0 ) > 0) {
+      for (let i of response.data.whiteList) {
+        if (i !== '') {
+          whiteListData.value.push(i)
+        }
       }
     }
+
     if (tip) {
       showSnackbar('刷新成功')
     }
@@ -334,64 +378,49 @@ const whiteDisable = (uid) => {
 const handleCommand = (cmd) => {
   switch (cmd.type) {
     case 'admin':
-      handleAddAdmin(cmd.uid)
+      handlePlayerChange(cmd.type,'add', cmd.uid)
       break;
     case 'block':
-      handleAddBlock(cmd.uid)
+      handlePlayerChange(cmd.type,'add', cmd.uid)
       break;
     case 'white':
-      handleAddWhite(cmd.uid)
+      handlePlayerChange(cmd.type,'add', cmd.uid)
       break;
     case 'kick':
-      handleKick(cmd.uid)
+      handleAction(cmd.type, cmd.uid)
+      break;
+    case 'kill':
+      handleAction(cmd.type, cmd.uid)
+      break;
+    case 'respawn':
+      handleAction(cmd.type, cmd.uid)
+      break;
+    case 'despawn':
+      handleAction(cmd.type, cmd.uid)
       break;
   }
 }
 
-const handleAddAdmin = (uid) => {
-  settingApi.player.addAdmin.post({uid: uid}).then(response => {
+const handlePlayerChange = (listName, type, uid) => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    listName: listName,
+    type: type,
+    uid: uid
+  }
+  settingApi.player.change.post(reqForm).then(response => {
     showSnackbar(response.message)
     getPlayerList()
   })
 }
 
-const handleDeleteAdmin = (uid) => {
-  settingApi.player.deleteAdmin.post({uid: uid}).then(response => {
-    showSnackbar(response.message)
-    getPlayerList()
-  })
-}
-
-const handleAddBlock = (uid) => {
-  settingApi.player.addBlock.post({uid: uid}).then(response => {
-    showSnackbar(response.message)
-    getPlayerList()
-  })
-}
-
-const handleDeleteBlock = (uid) => {
-  settingApi.player.deleteBlock.post({uid: uid}).then(response => {
-    showSnackbar(response.message)
-    getPlayerList()
-  })
-}
-
-const handleAddWhite = (uid) => {
-  settingApi.player.addWhite.post({uid: uid}).then(response => {
-    showSnackbar(response.message)
-    getPlayerList()
-  })
-}
-
-const handleDeleteWhite = (uid) => {
-  settingApi.player.deleteWhite.post({uid: uid}).then(response => {
-    showSnackbar(response.message)
-    getPlayerList()
-  })
-}
-
-const handleKick = (uid) => {
-  settingApi.player.kick.post({uid: uid}).then(response => {
+const handleAction = (type, uid) => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    uid: uid,
+    type: type
+  }
+  settingApi.player.action.post(reqForm).then(response => {
     showSnackbar(response.message)
   })
 }
@@ -415,7 +444,10 @@ const historyListLoading = ref(false)
 const handleGetHistoryPlayer = (tip = false) => {
   historyListLoading.value = true
   uids.value = []
-  settingApi.player.history.get().then(response => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+  }
+  settingApi.player.history.get(reqForm).then(response => {
     for (let i of response.data) {
       if (i.uid.length === 11) {
         uids.value.push(i)
@@ -467,6 +499,29 @@ const historyTableHeaders = ref([
   {title: "UID", value: "uid"},
   {title: "操作", value: "actions"},
 ])
+
+const InputVisible = ref(false)
+const InputRef = ref()
+const InputValue = ref('')
+
+const showInput = () => {
+  InputVisible.value = true
+  nextTick(() => {
+    InputRef.value.focus()
+  })
+}
+
+const handleInputConfirm = (listName) => {
+  if (InputValue.value) {
+    if (!(/^KU_/.test(InputValue.value))) {
+      showSnackbar('请输入正确的玩家UID', 'error')
+      return
+    }
+    handlePlayerChange(listName, 'add', InputValue.value)
+  }
+  InputVisible.value = false
+  InputValue.value = ''
+}
 </script>
 
 <style scoped>

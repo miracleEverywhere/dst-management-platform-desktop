@@ -2,12 +2,12 @@
   <v-card height="870">
     <template #title>
       <div class="card-header">
-        <span class="font-weight-bold">定时通知</span>
+        <span>定时通知</span>
         <v-btn @click="addAnnounce">新增</v-btn>
       </div>
     </template>
     <template #text>
-      <v-container height="700" style="overflow-y: auto">
+      <v-sheet border rounded>
         <v-data-table :headers="headers" :items="announceData" :loading="loading" hide-default-footer>
           <!-- 是否激活 -->
           <template v-slot:item.enable="{ item }">
@@ -18,11 +18,11 @@
 
           <!-- 操作列 -->
           <template v-slot:item.actions="{ item }">
-            <v-btn class="mr-2" size="small" @click="openAnnounceUpdate(item)">更新</v-btn>
-            <v-btn color="error" size="small" @click="handleAnnounceDelete(item)">删除</v-btn>
+            <v-btn class="mr-2" variant="text" @click="openAnnounceUpdate(item)">更新</v-btn>
+            <v-btn color="error" variant="text" @click="handleAnnounceDelete(item)">删除</v-btn>
           </template>
         </v-data-table>
-      </v-container>
+      </v-sheet>
     </template>
   </v-card>
   <v-dialog v-model="addDialogVisible" width="600">
@@ -31,7 +31,7 @@
       <v-card-text>
         <v-sheet class="mx-auto pa-4">
           <v-form ref="announceFormRef" :rules="announceFormRules">
-            <v-text-field v-model="announceForm.name" class="mb-4" label="名称"></v-text-field>
+            <v-text-field v-model="announceForm.name" :disabled="announceAction==='put'"  class="mb-4" label="名称"></v-text-field>
             <v-switch v-model="announceForm.enable" :label="announceForm.enable ? '启用' : '禁用'" class="mb-4"
                       inset></v-switch>
             <v-text-field v-model="announceForm.content" class="mb-4" label="内容"></v-text-field>
@@ -65,6 +65,14 @@
 import {ref} from "vue";
 import {showSnackbar} from "@/utils/snackbar";
 import toolsApi from "@/api/tools";
+import useGlobalStore from '@/plugins/pinia/global'
+
+
+onMounted(() => {
+  getAnnounceData();
+});
+
+const globalStore = useGlobalStore()
 
 const announceForm = ref({
   name: "",
@@ -106,7 +114,6 @@ const handleAnnounce = async () => {
 
   try {
     const {valid} = await announceFormRef.value.validate();
-    console.log("表单验证结果", valid);
 
     if (valid) {
       if (announceForm.value.frequency < 1) {
@@ -133,7 +140,11 @@ const handleAnnounce = async () => {
 
 // 新增通知
 const handleAnnouncePost = () => {
-  toolsApi.announce.post(announceForm.value).then((response) => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    autoAnnounce: announceForm.value
+  }
+  toolsApi.announce.post(reqForm).then((response) => {
     showSnackbar(response.message, "success");
     getAnnounceData();
   });
@@ -141,7 +152,11 @@ const handleAnnouncePost = () => {
 
 // 更新通知
 const handleAnnouncePut = () => {
-  toolsApi.announce.put(announceForm.value).then((response) => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    autoAnnounce: announceForm.value
+  }
+  toolsApi.announce.put(reqForm).then((response) => {
     showSnackbar(response.message, "success");
     getAnnounceData();
   });
@@ -165,7 +180,12 @@ const handleAnnounceDelete = (form) => {
 const confirmDelete = () => {
   if (!currentDeleteItem.value) return;
 
-  toolsApi.announce.delete(currentDeleteItem.value).then(response => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    autoAnnounce: currentDeleteItem.value
+  }
+
+  toolsApi.announce.delete(reqForm).then(response => {
     showSnackbar(response.message, "success");
     getAnnounceData();
   }).finally(() => {
@@ -202,19 +222,15 @@ function DEFAULT_HEADERS() {
 const headers = ref(DEFAULT_HEADERS());
 const getAnnounceData = () => {
   loading.value = true;
-  toolsApi.announce
-    .get()
-    .then((response) => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster
+  }
+  toolsApi.announce.get(reqForm).then((response) => {
       announceData.value = response.data;
-    })
-    .finally(() => {
+    }).finally(() => {
       loading.value = false;
     });
 };
-
-onMounted(() => {
-  getAnnounceData();
-});
 </script>
 
 <style scoped></style>

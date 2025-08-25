@@ -10,22 +10,21 @@
     <v-tabs-window-item value="Download">
       <v-card class="mt-4" height="820">
         <v-card-text>
-          <div>
-            <v-text-field v-model="modSearchForm.searchText" density="compact"
-                          :label="modSearchForm.searchType==='text'?'请输入要搜索的模组名称':'请输入要搜索的模组ID'"
-                          variant="outlined" clearable>
-              <template #prepend>
-                <v-select v-model="modSearchForm.searchType" density="compact" :items="searchTypeMap"
-                          variant="outlined">
-                </v-select>
-              </template>
-              <template #append>
-                <v-btn @click="handleModSearch">搜索</v-btn>
-              </template>
-            </v-text-field>
-          </div>
-
           <v-container height="700" class="mt-4" style="overflow-y: auto">
+            <div class="mb-4">
+              <v-text-field v-model="modSearchForm.searchText" density="compact"
+                            :label="modSearchForm.searchType==='text'?'请输入要搜索的模组名称':'请输入要搜索的模组ID'"
+                            variant="outlined" clearable>
+                <template #prepend>
+                  <v-select v-model="modSearchForm.searchType" density="compact" :items="searchTypeMap"
+                            variant="outlined">
+                  </v-select>
+                </template>
+                <template #append>
+                  <v-btn @click="handleModSearch">搜索</v-btn>
+                </template>
+              </v-text-field>
+            </div>
             <template v-if="modSearchLoading">
               <v-skeleton-loader type="table-row@15"></v-skeleton-loader>
             </template>
@@ -41,6 +40,7 @@
                 </span>
                 <v-pagination
                   v-model="modSearchForm.page"
+                  variant="text"
                   :length="Math.ceil(modSearchData.total/modSearchForm.pageSize)"
                   :total-visible="7"
                   @first="handleModSearch(false)"
@@ -68,7 +68,11 @@
                 </v-tooltip>
                 同步
               </v-btn>
-              <v-btn color="error" :loading="addClientModsDisabledConfigButtonLoading"
+              <v-btn :disabled="selectedDownloadMods.length===0"
+                     @click="handleMultiDeleteMod"
+                     color="error" class="mr-4">批量删除</v-btn>
+              <v-btn color="warning" :loading="addClientModsDisabledConfigButtonLoading"
+                     prepend-icon="ri-add-line"
                      :disabled="addClientModsDisabledConfigButtonDisable"
                      @click="handleAddClientModsDisabledConfig">
                 禁本地
@@ -78,55 +82,80 @@
         </v-card-title>
         <v-card-text>
           <v-alert color="warning" density="compact" class="mt-2">
-            模组下载速度取决于网络和文件大小，请耐心等待，切勿重复下载
+            提示：模组下载速度取决于网络和文件大小，请耐心等待，切勿重复下载；建议启用最新版本的模组；请勿过度依赖此功能，如遇问题，请使用游戏本体生成模组配置
           </v-alert>
-          <v-container height="700" style="overflow-y: auto">
-            <v-data-table
-              :headers="addTableHeaders"
-              :items="downloadedMod"
-              :items-per-page="10"
-              :loading="downloadedModLoading"
-              :page.sync="downloadedModPage"
-              :server-items-length="downloadedModRows"
-              class="mt-4"
-            >
-              <template v-slot:loading>
-                <v-skeleton-loader type="table-row@12"></v-skeleton-loader>
-              </template>
-              <template v-slot:item.id="{item}">
-                <v-chip :color="colors.cyan.darken1" label>
-                  {{ item.id }}
-                </v-chip>
-              </template>
-              <template v-slot:item.size="{item}">
-                <v-chip color="info" label>
-                  {{ formatBytes(item.size) }}
-                </v-chip>
-              </template>
-              <template v-slot:item.downloadedReady="{item}">
-                <v-chip v-if="item.downloadedReady" color="success" label>
-                  <v-icon icon="$success" start/>
-                  下载完成
-                </v-chip>
-                <v-chip v-else color="warning" label>
-                  <v-icon icon="$warning" start/>
-                  正在下载或需更新
-                </v-chip>
-              </template>
-              <template v-slot:item.action="{item}">
-                <v-menu open-on-hover>
-                  <template v-slot:activator="{ props }">
-                    <v-btn append-icon="ri-arrow-down-s-line" color="xx" v-bind="props" variant="text">
-                      操作
-                    </v-btn>
+          <v-alert border="start" border-color="info" density="compact" class="mt-2">
+            <div class="d-flex align-center">
+              <span>下面的模组与饥荒服务器使用的模组不是一个概念，更新下方模组不会更新饥荒游戏模组，详情见</span>
+              <v-btn append-icon="ri-arrow-right-up-line" color="info"
+                     href="https://miraclesses.top" target="_blank"
+                     density="compact" class="ml-2">文档</v-btn>
+            </div>
+          </v-alert>
+          <v-container height="600" style="overflow-y: auto">
+            <v-text-field v-model="downloadedModSearchText" clearable
+                          placeholder="请输入模组名进行搜索" class="mb-2"></v-text-field>
+            <v-sheet border rounded>
+              <v-data-table
+                v-model="selectedDownloadMods"
+                return-object show-select
+                :headers="addTableHeaders"
+                :search="downloadedModSearchText"
+                :items="downloadedMod"
+                :items-per-page="10"
+                :loading="downloadedModLoading"
+                :page.sync="downloadedModPage"
+                :server-items-length="downloadedModRows"
+                class="mt-4"
+              >
+                <template v-slot:loading>
+                  <v-skeleton-loader type="table-row@12"></v-skeleton-loader>
+                </template>
+                <template v-slot:item.id="{item}">
+                  <v-chip :color="colors.cyan.darken1" label>
+                    {{ item.id }}
+                  </v-chip>
+                </template>
+                <template v-slot:item.size="{item}">
+                  <v-chip color="info" label>
+                    {{ formatBytes(item.size) }}
+                  </v-chip>
+                </template>
+                <template v-slot:item.downloadedReady="{item}">
+                  <template v-if="item.downloadedReady">
+                    <v-chip color="success" label>
+                      <v-icon icon="$success" start/>
+                      下载完成
+                    </v-chip>
                   </template>
-                  <v-list>
-                    <v-list-item title="启用" @click="handleModEnable(item)"/>
-                    <v-list-item title="删除" @click="handleModDelete(item)"/>
-                  </v-list>
-                </v-menu>
-              </template>
-            </v-data-table>
+                  <template v-if="!item.downloadedReady">
+                    <v-chip v-if="item.file_url!==''" color="xx" label>
+                      <v-icon icon="$info" start/>
+                      非UGC模组
+                    </v-chip>
+                    <v-chip v-else color="warning" label>
+                      <v-icon icon="$warning" start/>
+                      模组需更新
+                    </v-chip>
+                  </template>
+
+                </template>
+                <template v-slot:item.action="{item}">
+                  <v-menu open-on-hover>
+                    <template v-slot:activator="{ props }">
+                      <v-btn append-icon="ri-arrow-down-s-line" color="xx" v-bind="props" variant="text">
+                        操作
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item title="启用" @click="handleModEnable(item)"/>
+                      <v-list-item title="更新" @click="handleRedownload(item)"/>
+                      <v-list-item title="删除" @click="handleModDelete(item)"/>
+                    </v-list>
+                  </v-menu>
+                </template>
+              </v-data-table>
+            </v-sheet>
           </v-container>
         </v-card-text>
       </v-card>
@@ -282,6 +311,7 @@ import modInfo from "./components/modInfo.vue"
 import {formatBytes} from "@/utils/tools.js";
 import {showSnackbar} from "@/utils/snackbar";
 import colors from 'vuetify/lib/util/colors'
+import useGlobalStore from "@/plugins/pinia/global"
 
 
 onMounted(async () => {
@@ -289,6 +319,9 @@ onMounted(async () => {
   await handleGetModSetting()
   handleGetOSPlatform()
 })
+
+
+const globalStore = useGlobalStore()
 
 const searchTypeMap = ref([
   {title: '名称', value: 'text'},
@@ -307,11 +340,19 @@ const handleTabClick = (tab) => {
 
 const modSettingFormat = ref([])
 const modSettingFormatLoading = ref(false)
+const noEdit = ref(false)
 const handleGetModSetting = () => {
   modSettingFormatLoading.value = true
   clickedModID.value = 0
   clickedModFileUrl.value = ""
-  settingsApi.mod.settingFormat.get().then(response => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+  }
+  settingsApi.mod.settingFormat.get(reqForm).then(response => {
+    if (response.data === 5000) {
+      noEdit.value = true
+      showSnackbar(response.message)
+    }
     modSettingFormat.value = response.data
     for (let i of modSettingFormat.value) {
       if (i.id === 1) {
@@ -339,7 +380,11 @@ const modConfigurations = ref({
 })
 const handleGetModConfigurations = () => {
   modConfigurationsLoading.value = true
-  settingsApi.mod.configOptions.get({id: clickedModID.value}).then(response => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    id: clickedModID.value
+  }
+  settingsApi.mod.configOptions.get(reqForm).then(response => {
     modConfigurations.value = response.data
   }).finally(() => {
     modConfigurationsLoading.value = false
@@ -348,7 +393,11 @@ const handleGetModConfigurations = () => {
 
 const handleModConfigChange = () => {
   modConfigurationsLoading.value = true
-  settingsApi.mod.configChange.post({modFormattedData: modSettingFormat.value}).then(response => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+    modFormattedData: modSettingFormat.value
+  }
+  settingsApi.mod.configChange.post(reqForm).then(response => {
     showSnackbar(response.message)
   }).finally(() => {
     modConfigurationsLoading.value = false
@@ -402,10 +451,14 @@ const handleGetDownloadedMod = () => {
   })
 }
 
+const selectedDownloadMods = ref([])
 const syncModLoading = ref(false)
 const handleSyncMod = () => {
   syncModLoading.value = true
-  settingsApi.mod.sync.post().then(response => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+  }
+  settingsApi.mod.sync.post(reqForm).then(response => {
     showSnackbar(response.message)
     handleGetDownloadedMod()
   }).finally(() => {
@@ -433,6 +486,7 @@ const handleModCommand = (actions) => {
 const handleModEnable = (row) => {
   const isUgc = row.file_url === "";
   const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
     isUgc: isUgc,
     id: row.id
   }
@@ -457,11 +511,35 @@ const handleModDelete = (row) => {
   })
 }
 
+const handleRedownload = (row) => {
+  const reqFrom = {
+    id: row.id,
+    file_url: row.file_url
+  }
+  settingsApi.mod.download.post(reqFrom).then(response => {
+    showSnackbar(response.message)
+  })
+}
+
+const multiDeleteLoading = ref(false)
+const handleMultiDeleteMod = async () => {
+  multiDeleteLoading.value = true
+  for (let row of selectedDownloadMods.value) {
+    await handleModDelete(row, true)
+  }
+  multiDeleteLoading.value = false
+  selectedDownloadMods.value = []
+  handleGetDownloadedMod()
+}
+
 const buttonDisableModLoading = ref(false)
 const handleModDisable = () => {
   if (clickedModID.value === 1) {
     buttonDisableModLoading.value = true
-    settingsApi.mod.deleteClintModsDisabled.post().then(response => {
+    const reqForm = {
+      clusterName: globalStore.selectedDstCluster,
+    }
+    settingsApi.mod.deleteClintModsDisabled.post(reqForm).then(response => {
       showSnackbar(response.message)
       handleGetModSetting()
       addClientModsDisabledConfigButtonDisable.value = false
@@ -472,6 +550,7 @@ const handleModDisable = () => {
     buttonDisableModLoading.value = true
     const isUgc = clickedModFileUrl.value === "";
     const reqForm = {
+      clusterName: globalStore.selectedDstCluster,
       isUgc: isUgc,
       id: clickedModID.value
     }
@@ -504,6 +583,7 @@ const modUpdateButtonLoading = ref(false)
 const handleModUpdate = () => {
   modUpdateButtonLoading.value = true
   const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
     isUgc: clickedModFileUrl.value === "",
     id: clickedModID.value,
     fileURL: clickedModFileUrl.value
@@ -522,7 +602,10 @@ const addClientModsDisabledConfigButtonDisable = ref(false)
 const addClientModsDisabledConfigButtonLoading = ref(false)
 const handleAddClientModsDisabledConfig = () => {
   addClientModsDisabledConfigButtonLoading.value = true
-  settingsApi.mod.addClintModsDisabled.post().then(response => {
+  const reqForm = {
+    clusterName: globalStore.selectedDstCluster,
+  }
+  settingsApi.mod.addClintModsDisabled.post(reqForm).then(response => {
     showSnackbar(response.message)
   }).finally(() => {
     addClientModsDisabledConfigButtonLoading.value = false
@@ -539,6 +622,16 @@ const addTableHeaders = ref([
 ])
 const downloadedModPage = ref(1)
 const downloadedModRows = ref(0)
+
+const downloadedModSearchText = ref('')
+// const downloadedModFiltered = computed(() => {
+//   if (!downloadedModSearchText.value) {
+//     return downloadedMod.value
+//   }
+//   return downloadedMod.value.filter(mod =>
+//     mod.name.toLowerCase().includes(downloadedModSearchText.value.toLowerCase())
+//   )
+// })
 </script>
 
 <style scoped>

@@ -64,14 +64,7 @@
   >
     <VerticalNavLink
       :item="{
-        title: '定时更新',
-        icon: 'ri-download-cloud-line',
-        to: '/tools/update',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: '定时备份',
+        title: '备份管理',
         icon: 'ri-save-2-line',
         to: '/tools/backup',
       }"
@@ -116,16 +109,9 @@
   >
     <VerticalNavLink
       :item="{
-        title: '地面日志',
-        icon: 'ri-sun-line',
-        to: '/logs/ground',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: '洞穴日志',
-        icon: 'ri-typhoon-line',
-        to: '/logs/cave',
+        title: '世界日志',
+        icon: 'ri-earth-line',
+        to: '/logs/world',
       }"
     />
     <VerticalNavLink
@@ -139,14 +125,21 @@
       :item="{
         title: '请求日志',
         icon: 'ri-code-box-line',
-        to: '/logs/dmp',
+        to: '/logs/access',
       }"
     />
     <VerticalNavLink
       :item="{
-        title: '运行日志',
+        title: '平台日志',
         icon: 'ri-cpu-line',
         to: '/logs/runtime',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
+        title: 'Steam日志',
+        icon: 'ri-steam-line',
+        to: '/logs/steam',
       }"
     />
     <VerticalNavLink
@@ -157,12 +150,29 @@
       }"
     />
   </VerticalNavGroup>
+  <VerticalNavLink
+    :item="{
+      title: '用户管理',
+      icon: 'ri-user-settings-line',
+      to: '/users',
+    }"
+    @click="handleCloseAll"
+  />
+  <VerticalNavLink
+    :item="{
+      title: '集群管理',
+      icon: 'ri-apps-line',
+      to: '/clusters',
+    }"
+    @click="handleCloseAll"
+  />
   <!-- 👉 帮助 -->
   <VerticalNavLink
     :item="{
       title: '帮助',
       icon: 'ri-heart-2-line',
-      to: '/help',
+      href: 'https://miraclesses.top',
+      target: '_blank',
     }"
     @click="handleCloseAll"
   />

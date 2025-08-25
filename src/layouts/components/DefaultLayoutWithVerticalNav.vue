@@ -12,14 +12,52 @@
         </IconBtn>
 
         <div
-          class="d-flex align-center"
-          style="user-select: none;"
+          class="d-flex align-center w-25"
         >
-          <span class="d-none d-md-flex align-center text-disabled">
-            <v-icon icon="ri-bookmark-3-line"></v-icon>
-            <span class="me-3 ml-1">{{ globalStore.name }}</span>
-          </span>
+          <v-select v-model="globalStore.selectedDstCluster"
+                    v-model:menu="selectOpen"
+                    :items="globalStore.dstClusters===null?[]:globalStore.dstClusters"
+                    item-title="clusterDisplayName"
+                    item-value="clusterName"
+                    density="compact"
+                    @update:model-value="handleSelectedClusterChange"
+          >
+            <template #append-item>
+              <v-list-item @click="handleOpenCreateDialog">
+                <v-list-item-title>
+                  新建集群
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-select>
+
         </div>
+
+        <v-dialog v-model="clusterCreateDialogVisible" persistent width="60%">
+          <v-card>
+            <v-card-title>
+              集群创建
+            </v-card-title>
+            <v-card-text>
+              <v-form class="my-8" @submit.prevent="handleCreate">
+                <v-text-field v-model="clusterForm.clusterName"
+                              :rules="clusterFormRules"
+                              label="集群名"
+                              class="mb-4"
+                ></v-text-field>
+                <v-text-field v-model="clusterForm.clusterDisplayName"
+                              label="集群昵称"
+                              class="mb-8"
+                ></v-text-field>
+                <div class="d-flex justify-end" style="margin-bottom: -32px">
+                  <v-btn @click="clusterCreateDialogVisible=false" class="mr-4" color="grey">取消</v-btn>
+                  <v-btn :loading="createLoading" type="submit">创建</v-btn>
+                </div>
+
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
 
         <VSpacer/>
 
@@ -55,10 +93,11 @@
         to="/"
       >
         <!-- LOGO -->
-        <div
-          class="d-flex"
-          v-html="logo"
-        />
+        <v-img
+          width="4em"
+          height="4em"
+          src="src/assets/images/logo.svg"
+        ></v-img>
         <!-- 标题 -->
         <h1 class="font-weight-medium leading-normal text-xl text-uppercase">
           {{ title }}
@@ -82,12 +121,20 @@
 
 <script setup>
 import NavItems from '@/layouts/components/NavItems.vue'
-import logo from '@images/logo.svg?raw'
+import settingApi from '@/api/setting'
 import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import useGlobalStore from "@/plugins/pinia/global";
 import useConfigStore from '@/plugins/pinia/config'
 import ElectronApi from "@/utils/electronApi";
+import {DB_KEY} from "@/config";
+import {showSnackbar} from "@/utils/snackbar";
+
+
+onMounted(async () => {
+  await getClusters()
+  await getDefaultCluster()
+})
 
 const router = useRouter()
 const globalStore = useGlobalStore()
@@ -95,8 +142,13 @@ const configStore = useConfigStore()
 
 const title = import.meta.env.VITE_TITLE
 
+const getDefaultCluster = async () => {
+  globalStore.selectedDstCluster = await ElectronApi.store.get(DB_KEY.selectedDstCluster + globalStore.id) || null
+}
+
 const handleOut = () => {
   configStore.inConfig = true
+  globalStore.inDashboard = false
   globalStore.clearStore()
   ElectronApi.window.config()
 }
@@ -109,12 +161,76 @@ const needDisabled = () => {
   if (router.currentRoute.value.fullPath === '/tools/statistics') {
     return true
   }
-  if (router.currentRoute.value.fullPath === '/tools/metrics') {
+  return router.currentRoute.value.fullPath === '/tools/metrics';
+}
+
+const getClusters = () => {
+  settingApi.clusters.get().then(response => {
+    globalStore.dstClusters = response.data
+    const selectedDstCluster = ElectronApi.store.get(DB_KEY.selectedDstCluster + globalStore.id) || null
+    if (globalStore.selectedDstCluster === null && globalStore.dstClusters !== null && selectedDstCluster === null) {
+      ElectronApi.store.set(DB_KEY.selectedDstCluster + globalStore.id, globalStore.dstClusters[0].clusterName)
+      globalStore.selectedDstCluster = globalStore.dstClusters[0].clusterName
+    }
+  })
+}
+
+const handleSelectedClusterChange = () => {
+  if (globalStore.selectedDstCluster) {
+    ElectronApi.store.set(DB_KEY.selectedDstCluster + globalStore.id, globalStore.selectedDstCluster)
+    handleReload()
+  }
+}
+
+const selectOpen = ref(false)
+const clusterCreateDialogVisible = ref(false)
+const handleOpenCreateDialog = () => {
+  selectOpen.value = false
+  clusterCreateDialogVisible.value = true
+}
+const clusterForm = ref({
+  clusterName: "",
+  clusterDisplayName: "",
+})
+const clusterFormRules = ref([
+  value => {
+    if (!value) {
+      return "请输入集群名"
+    }
+    if (!/^[a-zA-Z]/.test(value)) {
+      return '第一个字符必须是字母'
+    }
+    if (!/^[a-zA-Z0-9]+$/.test(value)) {
+      return '只能包含字母和数字'
+    }
+
     return true
   }
+])
+const createLoading = ref(false)
+const handleCreate = async (event) => {
+  createLoading.value = true
+  const results = await event
+  if (!results.valid) {
+    createLoading.value = false
+    return
+  }
 
-  return false
+  const reqForm = {
+    clusterName: clusterForm.value.clusterName,
+    clusterDisplayName: clusterForm.value.clusterDisplayName?clusterForm.value.clusterDisplayName:clusterForm.value.clusterName
+  }
+  createLoading.value = true
+  settingApi.cluster.post(reqForm).then(async response => {
+    clusterCreateDialogVisible.value = false
+    showSnackbar(response.message)
+    await getClusters()
+    globalStore.selectedDstCluster = clusterForm.value.clusterName
+  }).finally(() => {
+    createLoading.value = false
+  })
 }
+
 </script>
 
 <style lang="scss" scoped>

@@ -2,10 +2,16 @@
   <VerticalNavLayout>
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
-        <div class="d-flex" v-html="logo"/>
-        <h1 class="font-weight-medium leading-normal text-xl text-uppercase ml-3">
-          {{title}}
-        </h1>
+        <div class="d-flex align-center">
+          <v-img
+            width="4em"
+            height="4em"
+            src="src/assets/images/logo.svg"
+          ></v-img>
+          <h1 class="font-weight-medium leading-normal text-xl text-uppercase ml-3">
+            {{title}}
+          </h1>
+        </div>
         <VSpacer />
         <IconBtn
             href="https://github.com/miracleEverywhere/dst-management-platform-desktop"
@@ -40,7 +46,6 @@
 import config from '@/views/config/components/configItem.vue'
 import VerticalNavLayout from "@layouts/components/VerticalNavLayout.vue";
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
-import logo from '@images/logo.svg?raw'
 import {useTheme} from "vuetify";
 import {onMounted} from "vue";
 import useGlobalStore from "@/plugins/pinia/global";

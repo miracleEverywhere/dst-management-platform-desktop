@@ -1,23 +1,22 @@
 <template>
   <v-app>
-    <v-snackbar v-model="snackbar" :timeout="timeout" transition="slide-y-transition"
-                :location="location" variant="flat" color="#FFFFFF00">
+    <v-snackbar v-model="snackbar" :location="location" :timeout="timeout"
+                color="#FFFFFF00" transition="slide-y-transition" variant="flat">
       <v-card>
-        <v-alert :type="color" :icon="icon" variant="text" density="compact">
+        <v-alert :icon="icon" :type="color" density="compact" variant="text">
           {{ text }}
         </v-alert>
       </v-card>
-
     </v-snackbar>
+
     <router-view/>
   </v-app>
 </template>
 
 <script setup>
-import { useSnackbar } from './utils/snackbar';
+import {useSnackbar} from './utils/snackbar'
 
-const { snackbar, color, text, location, icon, timeout } = useSnackbar();
-
+const {snackbar, color, text, location, icon, timeout} = useSnackbar()
 </script>
 
 <style scoped>
