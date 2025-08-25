@@ -70,7 +70,7 @@
                     <v-card-text>
                       <v-data-table
                           :headers="modInfoTableHeaders"
-                          :items="modInfoList"
+                          :items="modInfoList.filter(mod => mod.id!==1)"
                           :loading="modInfoLoading"
                           :items-per-page="10"
                           :page.sync="modInfoTablePage"
