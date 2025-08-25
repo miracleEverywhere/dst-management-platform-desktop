@@ -23,6 +23,7 @@ const globalStore = defineStore("global", {
       theme: '',
       selectedDstCluster: null,
       dstClusters: null,
+      inDashboard: false,
     };
   },
   actions: {
@@ -41,6 +42,7 @@ const globalStore = defineStore("global", {
       this.url = ''
       this.token = ''
       this.remark = ''
+      this.inDashboard = false
     }
   },
   // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值
