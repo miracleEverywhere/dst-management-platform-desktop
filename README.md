@@ -9,6 +9,8 @@
     <h3>:star2: 实现同时管理多个DMP的桌面软件 :star2:</h3>
 </div>
 
+---
+
 ### 界面展示
 
 ![多平台管理](docs/images/config.png)
