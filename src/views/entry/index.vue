@@ -46,6 +46,11 @@ const getDmps = () => {
   }
 }
 
+onMounted(() => {
+  // ElectronApi.store.clear()
+  getDmps()
+})
+
 
 </script>
 

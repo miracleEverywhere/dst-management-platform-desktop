@@ -107,9 +107,9 @@
             <v-dialog v-model="dialog" width="45%" persistent @after-enter="initDialog(false)">
               <v-card title="新建">
                 <v-card-text>
-                  123
+                  <!-- 删除这里的 "123" 文本节点 -->
                   <v-form fast-fail @submit.prevent="handleAdd">
-                    <v-container max-width="500">
+                    <v-container max-width="500">  <!-- 添加 container 保持一致性 -->
                       <v-row>
                         <v-col cols="12" sm="9">
                           <v-text-field v-model="addForm.ip" :rules="addFormRules.ip"
@@ -193,17 +193,7 @@ const addForm = ref({
 const addFormRules = {
   ip: [
     value => {
-      if (value) {
-        if (/^\d/.test(value)) {
-          return validateIpv4(value)
-        } else {
-          if (/.+\..+/.test(value)) {
-            return true
-          } else {
-            return '请输入正确的域名'
-          }
-        }
-      }
+      if (value) return true
       return '请输入IP/域名'
     },
   ],
