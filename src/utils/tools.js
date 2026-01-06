@@ -352,3 +352,22 @@ export const getDstRoleName = (name, lang) => {
 
   return translations[name] ?? name
 }
+
+export function parseJwt(token) {
+  try {
+    // 分割 JWT 的三个部分
+    const [headerBase64, payloadBase64, signature] = token.split('.');
+
+    // Base64 解码（注意处理 URL 安全的 Base64）
+    const header = JSON.parse(atob(headerBase64.replace(/-/g, '+').replace(/_/g, '/')));
+    const payload = JSON.parse(atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/')));
+
+    return {
+      header,
+      payload,
+      signature
+    };
+  } catch (e) {
+    return null;
+  }
+}

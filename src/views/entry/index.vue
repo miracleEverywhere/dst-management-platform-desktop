@@ -11,9 +11,14 @@
     </div>
   </div>
   <div>
-    <v-card>
-      123
-    </v-card>
+    <v-row dense>
+      <v-col v-for="dmp in dmps" cols="12" sm="6">
+        <dmp :dmp="dmp"/>
+      </v-col>
+      <v-col cols="12" sm="6">
+        <dmp/>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -25,26 +30,22 @@ import Document from "@/layouts/components/Document.vue"
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue"
 import ElectronApi from "@/utils/electronApi";
 import {DB_KEY} from "@/config";
-import {useTheme} from "vuetify";
 import useGlobalStore from "@/plugins/store/global";
+import Dmp from "@/views/entry/components/dmp.vue";
 
 const globalStore = useGlobalStore()
 
+const dmps = ref([])
 
-const initTheme = () => {
-  // const {name: themeName, global: globalTheme} = useTheme();
-  const theme = useTheme()
-  let dbTheme = ElectronApi.store.get(DB_KEY.theme);
-  const globalStore = useGlobalStore();
-
-  if (dbTheme) {
-    // globalTheme.name.value = theme;
-    theme.change(dbTheme)
-    globalStore.theme = dbTheme;
+const getDmps = () => {
+  const dbConfigs = ElectronApi.store.get(DB_KEY.dmps) || []
+  if (dbConfigs.length === 0) {
+    ElectronApi.store.set(DB_KEY.dmps, [])
   } else {
-    ElectronApi.store.set(DB_KEY.theme, "light");
+    dmps.value = dbConfigs
   }
 }
+
 
 </script>
 
