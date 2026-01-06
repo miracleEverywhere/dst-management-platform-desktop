@@ -16,6 +16,7 @@ const desktopStore = defineStore("desktop", {
     return {
       ip: '',
       port: '',
+      inEntry: true,
     }
   },
   actions: {},

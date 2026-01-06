@@ -6,7 +6,7 @@ const Store = require('electron-store')
 
 
 const store = new Store()
-let winConfig, winDashboard, needShownWin
+let winEntry, winDashboard, needShownWin
 let tray
 
 // 屏蔽安全警告
@@ -73,11 +73,11 @@ const template = [
   }
 ];
 
-const createWinConfig = () => {
-  winConfig = new BrowserWindow({
+const createWinEntry = () => {
+  winEntry = new BrowserWindow({
     width: 1090,
     height: 800,
-    resizable: false,
+    resizable: true,
     // icon: iconPath,
     autoHideMenuBar: true,
     title: '饥荒管理平台',
@@ -91,30 +91,30 @@ const createWinConfig = () => {
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
-    winConfig.loadURL(`${process.env.VITE_DEV_SERVER_URL}#/config`)
-    // winConfig.webContents.openDevTools({mode: 'detach'})
+    winEntry.loadURL(`${process.env.VITE_DEV_SERVER_URL}#/entry`)
+    // winEntry.webContents.openDevTools({mode: 'detach'})
   } else {
-    winConfig.loadFile(join(__dirname, '../dist/index.html'), {hash: '#/config'})
+    winEntry.loadFile(join(__dirname, '../dist/index.html'), {hash: '#/entry'})
   }
 
   const menuConfig = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menuConfig);
 
-  winConfig.on('close', (event) => {
+  winEntry.on('close', (event) => {
     if (!app.isQuiting) {
       // 如果不是通过退出菜单项触发的关闭事件，阻止关闭并隐藏窗口
       event.preventDefault();
-      winConfig.hide();
+      winEntry.hide();
     }
   });
 
-  winConfig.on('closed', () => {
-    winConfig = null;
+  winEntry.on('closed', () => {
+    winEntry = null;
   });
 
-  winConfig.once('ready-to-show', () => {
-    winConfig.show()
-    needShownWin = winConfig
+  winEntry.once('ready-to-show', () => {
+    winEntry.show()
+    needShownWin = winEntry
   })
 }
 
@@ -122,7 +122,7 @@ const createWinDashboard = () => {
   winDashboard = new BrowserWindow({
     width: 1600,
     height: 1080,
-    resizable: false,
+    resizable: true,
     // icon: iconPath,
     autoHideMenuBar: true,
     title: '饥荒管理平台',
@@ -226,7 +226,7 @@ app.setName('饥荒管理平台')
 
 app.whenReady().then(() => {
   createTray()
-  createWinConfig()
+  createWinEntry()
   createWinDashboard()
 })
 
@@ -241,7 +241,7 @@ app.on('activate', () => {
 
 ipcMain.on('open-dashboard-window', () => {
   needShownWin = winDashboard
-  winConfig.hide()
+  winEntry.hide()
   winDashboard.reload()
   winDashboard.webContents.on('did-finish-load', () => {
     winDashboard.show()
@@ -250,12 +250,12 @@ ipcMain.on('open-dashboard-window', () => {
 })
 
 ipcMain.on('open-config-window', () => {
-  needShownWin = winConfig
+  needShownWin = winEntry
   winDashboard.hide()
-  winConfig.reload()
-  winConfig.webContents.on('did-finish-load', () => {
-    winConfig.show()
-    winConfig.focus()
+  winEntry.reload()
+  winEntry.webContents.on('did-finish-load', () => {
+    winEntry.show()
+    winEntry.focus()
   });
 })
 

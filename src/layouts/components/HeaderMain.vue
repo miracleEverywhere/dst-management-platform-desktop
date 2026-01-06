@@ -55,50 +55,15 @@
         {{ t('global.gameVersion') + gameVersion.local }}
       </v-chip>
     </div>
-    <div>
-      <template v-if="dmpVersionGap&&!globalStore.dmpVersion.noTip">
-        <v-badge
-          v-tooltip="latestVersion"
-          location="top right"
-          color="error"
-          offset-x="24"
-          class="cursor-pointer"
-        >
-          <template #badge>
-            <div class="fcc">
-              <span @click="noTip">
-                New
-              </span>
-            </div>
-          </template>
-          <v-chip
-            color="info"
-            class="mr-4"
-            prepend-icon="ri-medal-2-line"
-          >
-            {{ t('global.dmpVersion') + Version }}
-          </v-chip>
-        </v-badge>
-      </template>
-      <template v-else>
-        <v-chip
-          color="info"
-          class="mr-4"
-          prepend-icon="ri-medal-2-line"
-        >
-          {{ t('global.dmpVersion') + Version }}
-        </v-chip>
-      </template>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { Version } from "@/config/index"
 import { useI18n } from "vue-i18n"
 import { useDisplay } from "vuetify"
 import { truncateString } from "@/utils/tools.js"
 import useGlobalStore from "@store/global"
+import useDesktopStore from "@store/desktop"
 import platformApi from "@/api/platform.js"
 import roomApi from "@/api/room.js"
 
@@ -106,6 +71,7 @@ import roomApi from "@/api/room.js"
 const { t } = useI18n()
 const { mobile } = useDisplay()
 const globalStore = useGlobalStore()
+const desktopStore = useDesktopStore()
 
 const gameVersion = ref({
   local: 0,
@@ -147,49 +113,12 @@ const getColor = () => {
   return 'success'
 }
 
-const dmpVersionGap = ref(false)
-const latestVersion = ref('')
-
-const getLatestVersion = async () => {
-  try {
-    const response = await fetch(
-      'https://api.github.com/repos/miracleEverywhere/dst-management-platform-api/releases/latest',
-      {
-        headers: {
-          'Accept': 'application/vnd.github.v3+json',
-        },
-      },
-    )
-
-    if (!response.ok) {
-      dmpVersionGap.value = false
-      
-      return
-    }
-
-    const releases = await response.json()
-
-    latestVersion.value = releases.tag_name
-    dmpVersionGap.value = releases.tag_name !== Version
-    if (releases.tag_name !== globalStore.dmpVersion.closeVersion) {
-      globalStore.dmpVersion.noTip = false
-    }
-
-    // dmpVersionGap.value = true
-  } catch {
-    dmpVersionGap.value = false
-  }
-}
-
-const noTip = () => {
-  globalStore.dmpVersion.noTip = true
-  globalStore.dmpVersion.closeVersion = latestVersion.value
-}
-
 onMounted(async () => {
+  if (desktopStore.inEntry) {
+    return
+  }
   await getGameVersion()
   getRoomBasic()
-  await getLatestVersion()
 })
 </script>
 
