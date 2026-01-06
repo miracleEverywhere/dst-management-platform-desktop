@@ -2,15 +2,28 @@
   <div class="precise-rating">
     <div class="rating-container">
       <div class="stars-background">
-        <v-icon v-for="n in props.length" :key="`star-bg-${n}`" :color="props.backgroundColor" :size="props.size"
-                icon="ri-star-fill"></v-icon>
+        <v-icon
+          v-for="n in props.length"
+          :key="`star-bg-${n}`"
+          :color="props.backgroundColor"
+          :size="props.size"
+          icon="ri-star-fill"
+        />
       </div>
-      <div :style="foregroundStyle" class="stars-foreground">
-        <v-icon v-for="n in props.length" :key="`star-fg-${n}`" :color="props.color" :size="props.size"
-                icon="ri-star-fill"></v-icon>
+      <div
+        :style="foregroundStyle"
+        class="stars-foreground"
+      >
+        <v-icon
+          v-for="n in props.length"
+          :key="`star-fg-${n}`"
+          :color="props.color"
+          :size="props.size"
+          icon="ri-star-fill"
+        />
       </div>
     </div>
-    <span v-if="props.showActualValue" class="actual-value">{{ actualValue }}</span>
+    <span v-if="props.showActualValue">{{ actualValue }}</span>
   </div>
 </template>
 
@@ -19,28 +32,28 @@ const props = defineProps({
   value: {
     type: Number,
     required: true,
-    validator: (value) => value >= 0
+    validator: value => value >= 0,
   },
   length: {
     type: Number,
-    default: 5
+    default: 5,
   },
   size: {
     type: [Number, String],
-    default: 'small'
+    default: 'small',
   },
   color: {
     type: String,
-    default: '#FFC107'
+    default: '#FFC107',
   },
   backgroundColor: {
     type: String,
-    default: '#E0E0E0'
+    default: '#E0E0E0',
   },
   showActualValue: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 
 const getActualSize = computed(() => {
@@ -55,8 +68,9 @@ const getActualSize = computed(() => {
     'default': 24,
     'medium': 28,
     'large': 32,
-    'x-large': 36
+    'x-large': 36,
   }
+  
   return sizeMap[props.size] || 24
 })
 
@@ -75,7 +89,7 @@ const foregroundStyle = computed(() => {
     width: `${fillWidth}px`,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
-    display: 'flex'
+    display: 'flex',
   }
 })
 </script>

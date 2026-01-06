@@ -1,180 +1,354 @@
 <template>
-  <v-card height="870">
-    <v-card-title>
-      <div class="card-header">
-        <span>日志清理</span>
-        <div class="d-flex align-center">
-          <v-checkbox v-model="allSelected" :indeterminate="indeterminate"
-                      label="全选" @change="toggleAll" class="mr-4"
-          ></v-checkbox>
-          <v-btn class="mr-4" :loading="logsInfoLoading" @click="handleGetLogsInfo">刷新</v-btn>
-          <v-btn color="error" class="mr-4" :loading="cleanButtonLoading" @click="handleCleanLogs">删除</v-btn>
-        </div>
-      </div>
-    </v-card-title>
-    <v-card-text>
-      <v-row class="d-flex">
-        <v-checkbox v-for="(item, index) in logFileTypes" :key="index"
-                    v-model="cleanLogFileTypes" :value="item"
-                    :label="logFileTypeMap[item].zh" @change="updateAllSelected"
-                    class="mr-4 mt-8"
-        ></v-checkbox>
-      </v-row>
-      <v-row>
-        <v-data-table
-            :headers="headers"
-            :items="logsInfo"
-            :loading="logsInfoLoading"
-            :items-per-page="10"
-            :page.sync="logsInfoTablePage"
-            :server-items-length="logsInfoTableRows"
-            class="mt-4"
+  <!-- 游戏是否安装 -->
+  <template v-if="globalStore.gameVersion.local!==0">
+    <!-- 房间是否选择 -->
+    <template v-if="globalStore.room.id!==0">
+      <v-card :height="calculateHeight()">
+        <v-card-title>
+          <div class="card-header">
+            <span>
+              {{ t('logs.clean.title') }}
+            </span>
+            <div>
+              <v-btn
+                v-if="!mobile"
+                color="info"
+                class="mr-2"
+                @click="selectedLog=[0, 1, 2, 3, 4]"
+              >
+                {{ t('logs.clean.selectAll') }}
+              </v-btn>
+              <v-btn
+                color="error"
+                class="mr-2"
+                @click="handleClean"
+              >
+                {{ t('logs.clean.delete') }}
+              </v-btn>
+              <v-btn
+                color="default"
+                :loading="getCleanInfoLoading"
+                @click="getCleanInfo"
+              >
+                {{ t('logs.clean.refresh') }}
+              </v-btn>
+            </div>
+          </div>
+        </v-card-title>
+        <v-card-text>
+          <v-item-group
+            v-model="selectedLog"
+            multiple
+          >
+            <v-container
+              :height="calculateHeight()-70"
+              style="overflow-y: auto"
+            >
+              <v-row>
+                <v-col
+                  cols="12"
+                  md="6"
+                >
+                  <v-item v-slot="{ isSelected, toggle }">
+                    <v-card @click="toggle">
+                      <div class="card-header mr-4 my-4">
+                        <div class="ma-4 d-flex align-center">
+                          <v-chip
+                            label
+                            class="mr-4"
+                          >
+                            {{ t('logs.clean.game') }}
+                          </v-chip>
+                          <span>
+                            {{ formatBytes(cleanInfo.game) }}
+                          </span>
+                        </div>
+                        <v-chip
+                          v-if="!isSelected"
+                          color="info"
+                        >
+                          {{ t('logs.clean.select') }}
+                        </v-chip>
+                        <v-chip
+                          v-if="isSelected"
+                          color="success"
+                        >
+                          {{ t('logs.clean.selected') }}
+                        </v-chip>
+                      </div>
+                    </v-card>
+                  </v-item>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="6"
+                >
+                  <v-item v-slot="{ isSelected, toggle }">
+                    <v-card @click="toggle">
+                      <div class="card-header mr-4 my-4">
+                        <div class="ma-4 d-flex align-center">
+                          <v-chip
+                            label
+                            class="mr-4"
+                          >
+                            {{ t('logs.clean.chat') }}
+                          </v-chip>
+                          <span>
+                            {{ formatBytes(cleanInfo.chat) }}
+                          </span>
+                        </div>
+                        <v-chip
+                          v-if="!isSelected"
+                          color="info"
+                        >
+                          {{ t('logs.clean.select') }}
+                        </v-chip>
+                        <v-chip
+                          v-if="isSelected"
+                          color="success"
+                        >
+                          {{ t('logs.clean.selected') }}
+                        </v-chip>
+                      </div>
+                    </v-card>
+                  </v-item>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="6"
+                >
+                  <v-item v-slot="{ isSelected, toggle }">
+                    <v-card @click="toggle">
+                      <div class="card-header mr-4 my-4">
+                        <div class="ma-4 d-flex align-center">
+                          <v-chip
+                            label
+                            class="mr-4"
+                          >
+                            {{ t('logs.clean.steam') }}
+                          </v-chip>
+                          <span>
+                            {{ formatBytes(cleanInfo.steam) }}
+                          </span>
+                        </div>
+                        <v-chip
+                          v-if="!isSelected"
+                          color="info"
+                        >
+                          {{ t('logs.clean.select') }}
+                        </v-chip>
+                        <v-chip
+                          v-if="isSelected"
+                          color="success"
+                        >
+                          {{ t('logs.clean.selected') }}
+                        </v-chip>
+                      </div>
+                    </v-card>
+                  </v-item>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="6"
+                >
+                  <v-item v-slot="{ isSelected, toggle }">
+                    <v-card @click="toggle">
+                      <div class="card-header mr-4 my-4">
+                        <div class="ma-4 d-flex align-center">
+                          <v-chip
+                            label
+                            class="mr-4"
+                          >
+                            {{ t('logs.clean.access') }}
+                          </v-chip>
+                          <span>
+                            {{ formatBytes(cleanInfo.access) }}
+                          </span>
+                        </div>
+                        <v-chip
+                          v-if="!isSelected"
+                          color="info"
+                        >
+                          {{ t('logs.clean.select') }}
+                        </v-chip>
+                        <v-chip
+                          v-if="isSelected"
+                          color="success"
+                        >
+                          {{ t('logs.clean.selected') }}
+                        </v-chip>
+                      </div>
+                    </v-card>
+                  </v-item>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="6"
+                >
+                  <v-item v-slot="{ isSelected, toggle }">
+                    <v-card @click="toggle">
+                      <div class="card-header mr-4 my-4">
+                        <div class="ma-4 d-flex align-center">
+                          <v-chip
+                            label
+                            class="mr-4"
+                          >
+                            {{ t('logs.clean.runtime') }}
+                          </v-chip>
+                          <span>
+                            {{ formatBytes(cleanInfo.runtime) }}
+                          </span>
+                        </div>
+                        <v-chip
+                          v-if="!isSelected"
+                          color="info"
+                        >
+                          {{ t('logs.clean.select') }}
+                        </v-chip>
+                        <v-chip
+                          v-if="isSelected"
+                          color="success"
+                        >
+                          {{ t('logs.clean.selected') }}
+                        </v-chip>
+                      </div>
+                    </v-card>
+                  </v-item>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-item-group>
+        </v-card-text>
+      </v-card>
+    </template>
+    <template v-else>
+      <result
+        :title="t('global.noRoomSelected.title')"
+        :sub-title="t('global.noRoomSelected.subTitle')"
+        type="error"
+        :height="calculateHeight()"
+      >
+        <v-btn
+          to="/rooms"
+          class="mt-4"
         >
-          <!-- 加载效果 -->
-          <template v-slot:loading>
-            <v-skeleton-loader type="table-row@6"></v-skeleton-loader>
-          </template>
-
-          <template v-slot:item.name="{item}">
-            <v-chip label color="success">
-              <v-icon icon="ri-file-text-line" start/>
-              {{item.name}}
-            </v-chip>
-          </template>
-
-          <template v-slot:item.size="{item}">
-            <v-chip label color="info">
-              <v-icon icon="ri-hard-drive-3-line" start/>
-              {{formatBytes(item.size)}}
-            </v-chip>
-          </template>
-
-          <template v-slot:item.num="{item}">
-            <v-chip label color="primary">
-              <v-icon icon="ri-file-search-line" start/>
-              {{item.num}}
-            </v-chip>
-          </template>
-
-        </v-data-table>
-      </v-row>
-    </v-card-text>
-  </v-card>
+          {{ t('global.noRoomSelected.button') }}
+        </v-btn>
+      </result>
+    </template>
+  </template>
+  <template v-else>
+    <result
+      v-if="userStore.userInfo.role==='admin'"
+      :title="t('global.noGame.title')"
+      :sub-title="t('global.noGame.subTitle')"
+      :height="calculateHeight()"
+      type="error"
+    >
+      <v-btn
+        to="/install"
+        class="mt-4"
+      >
+        {{ t('global.noGame.button') }}
+      </v-btn>
+    </result>
+    <result
+      v-else
+      :title="t('global.noGameNoAdmin.title')"
+      :sub-title="t('global.noGameNoAdmin.subTitle')"
+      :height="calculateHeight()"
+      type="error"
+    />
+  </template>
 </template>
 
 <script setup>
-import {showSnackbar} from "@/utils/snackbar";
+import useGlobalStore from "@store/global"
+import useUserStore from "@store/user"
+import { useDisplay } from "vuetify/framework"
+import { useI18n } from "vue-i18n"
+import { debounce, formatBytes } from "@/utils/tools"
 import logsApi from "@/api/logs"
-import {formatBytes} from "@/utils/tools.js";
-import useGlobalStore from "@/plugins/pinia/global";
-
-
-onMounted(() => {
-  handleGetLogsInfo()
-})
+import { showSnackbar } from "@/utils/snackbar"
 
 const globalStore = useGlobalStore()
+const userStore = useUserStore()
+const { mobile } = useDisplay()
+const { t } = useI18n()
 
-const logsInfo = ref([])
-const handleGetLogsInfo = (tip=false) => {
-  if (tip) {
-    showSnackbar('刷新成功', 'success')
-  }
-  logsInfoLoading.value = true
+const cleanInfo = ref({
+  game: 0,
+  chat: 0,
+  steam: 0,
+  access: 0,
+  runtime: 0,
+})
+
+const getCleanInfoLoading = ref(false)
+
+const getCleanInfo = () => {
   const reqForm = {
-    clusterName: globalStore.selectedDstCluster
+    roomID: globalStore.room.id,
   }
-  logsApi.clean.status.get(reqForm).then(response => {
-    logsInfo.value = response.data
+
+  getCleanInfoLoading.value = true
+  logsApi.clean.info.get(reqForm).then(response => {
+    selectedLog.value = []
+    cleanInfo.value = response.data
   }).finally(() => {
-    logsInfoLoading.value = false
+    getCleanInfoLoading.value = false
   })
 }
 
-const logFileTypes = ref(['World', 'Chat', 'Access', 'Runtime'])
-const cleanLogFileTypes = ref([])
+const selectedLog = ref([])
 
-const logFileTypeMap = {
-  World: {
-    zh: '世界日志',
-    en: 'World',
-  },
-  Chat: {
-    zh: '聊天日志',
-    en: 'Chat',
-  },
-  Access: {
-    zh: '请求日志',
-    en: 'Access',
-  },
-  Runtime: {
-    zh: '运行日志',
-    en: 'Runtime',
-  },
-}
+const cleanLoading = ref(false)
 
-const cleanButtonLoading = ref(false)
-const handleCleanLogs = () => {
-  if (cleanLogFileTypes.value.length === 0) {
-    showSnackbar("请至少选择一种日志", 'error')
+const handleClean = () => {
+  if (selectedLog.value.length === 0) {
+    showSnackbar(t('logs.clean.noSelected'), "error")
+    
     return
   }
-  cleanButtonLoading.value = true
-  const reqForm = {
-    clusterName: globalStore.selectedDstCluster,
-    logTypes: cleanLogFileTypes.value
+  cleanLoading.value = true
+
+  const reqFrom = {
+    roomID: globalStore.room.id,
+    game: selectedLog.value.includes(0),
+    chat: selectedLog.value.includes(1),
+    steam: selectedLog.value.includes(2),
+    access: selectedLog.value.includes(3),
+    runtime: selectedLog.value.includes(4),
   }
-  logsApi.clean.clean.post(reqForm).then(response => {
+
+  logsApi.clean.delete(reqFrom).then(response => {
     showSnackbar(response.message)
+    selectedLog.value = []
+    getCleanInfo()
   }).finally(() => {
-    cleanButtonLoading.value = false
-    cleanLogFileTypes.value = []
-    handleGetLogsInfo()
+    cleanLoading.value = false
   })
 }
 
-// 全选框的状态
-const allSelected = ref(false);
-const indeterminate = ref(false);
+const calculateHeight = () => {
+  return Math.max(2, Math.floor(windowHeight.value - 120))
+}
 
-// 计算属性：是否所有子复选框都被选中
-const isAllSelected = computed(() => logFileTypes.value.length === cleanLogFileTypes.value.length);
+const windowHeight = ref(window.innerHeight)
 
-// 计算属性：是否有部分子复选框被选中
-const isIndeterminate = computed(() => cleanLogFileTypes.value.length > 0 && !isAllSelected.value);
+const handleResize = debounce(() => {
+  windowHeight.value = window.innerHeight
+}, 200)
 
-// 监听子复选框的变化，更新全选框的状态
-watch(cleanLogFileTypes, () => {
-  allSelected.value = isAllSelected.value;
-  indeterminate.value = isIndeterminate.value;
-});
-
-// 全选框的点击事件
-const toggleAll = () => {
-  if (allSelected.value) {
-    cleanLogFileTypes.value = [...logFileTypes.value]; // 选中所有
-  } else {
-    cleanLogFileTypes.value = []; // 取消所有
+onMounted(async () => {
+  if (globalStore.room.id === 0) {
+    return
   }
-  indeterminate.value = false; // 取消 indeterminate 状态
-};
+  getCleanInfo()
+  window.addEventListener('resize', handleResize)
+})
 
-// 子复选框的点击事件
-const updateAllSelected = () => {
-  allSelected.value = isAllSelected.value;
-  indeterminate.value = isIndeterminate.value;
-};
-
-const headers = ref([
-  { title: "日志类型", value: "name"},
-  { title: "日志大小", value: "size" },
-  { title: "日志数量", value: "num" },
-])
-
-const logsInfoLoading = ref(false)
-const logsInfoTablePage = ref(1)
-const logsInfoTableRows = ref(0)
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>
-
-<style scoped>
-</style>

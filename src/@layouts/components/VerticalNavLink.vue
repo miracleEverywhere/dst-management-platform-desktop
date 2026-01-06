@@ -1,6 +1,4 @@
 <script setup>
-import NavItems from "@/layouts/components/NavItems.vue";
-
 const props = defineProps({
   item: {
     type: null,
@@ -15,15 +13,16 @@ const props = defineProps({
     :class="{ disabled: item.disable }"
   >
     <Component
-      v-ripple
       :is="item.to ? 'RouterLink' : 'a'"
+      v-ripple
       :to="item.to"
       :href="item.href"
       :target="item.target"
     >
-      <VIcon
+      <v-icon
+        size="18"
         :icon="item.icon || 'ri-checkbox-blank-circle-line'"
-        class="nav-item-icon" size="20"
+        class="nav-item-icon"
       />
       <!-- 👉 Title -->
       <span class="nav-item-title">

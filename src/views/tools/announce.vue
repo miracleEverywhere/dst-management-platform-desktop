@@ -1,236 +1,402 @@
 <template>
-  <v-card height="870">
-    <template #title>
-      <div class="card-header">
-        <span>定时通知</span>
-        <v-btn @click="addAnnounce">新增</v-btn>
-      </div>
-    </template>
-    <template #text>
-      <v-sheet border rounded>
-        <v-data-table :headers="headers" :items="announceData" :loading="loading" hide-default-footer>
-          <!-- 是否激活 -->
-          <template v-slot:item.enable="{ item }">
-            <v-chip :color="item.enable ? 'primary' : 'error'" label>
-              {{ item.enable ? "启用" : "禁用" }}
-            </v-chip>
-          </template>
-
-          <!-- 操作列 -->
-          <template v-slot:item.actions="{ item }">
-            <v-btn class="mr-2" variant="text" @click="openAnnounceUpdate(item)">更新</v-btn>
-            <v-btn color="error" variant="text" @click="handleAnnounceDelete(item)">删除</v-btn>
-          </template>
-        </v-data-table>
-      </v-sheet>
-    </template>
-  </v-card>
-  <v-dialog v-model="addDialogVisible" width="600">
-    <v-card>
-      <v-card-title class="font-weight-bold">新增通知</v-card-title>
-      <v-card-text>
-        <v-sheet class="mx-auto pa-4">
-          <v-form ref="announceFormRef" :rules="announceFormRules">
-            <v-text-field v-model="announceForm.name" :disabled="announceAction==='put'"  class="mb-4" label="名称"></v-text-field>
-            <v-switch v-model="announceForm.enable" :label="announceForm.enable ? '启用' : '禁用'" class="mb-4"
-                      inset></v-switch>
-            <v-text-field v-model="announceForm.content" class="mb-4" label="内容"></v-text-field>
-            <v-text-field v-model="announceForm.frequency" label="频率" type="number">
-              <v-tooltip activator="parent" open-delay="300" scroll-strategy="close">
-                每次执行的间隔，单位：秒
-              </v-tooltip>
-            </v-text-field>
-          </v-form>
+  <!-- 游戏是否安装 -->
+  <template v-if="globalStore.gameVersion.local!==0">
+    <!-- 房间是否选择 -->
+    <template v-if="globalStore.room.id!==0">
+      <v-card>
+        <v-sheet
+          border
+          rounded
+        >
+          <v-data-table
+            :headers="headers"
+            :items="announces"
+            :loading="getAnnounceLoading"
+          >
+            <template #loading>
+              <v-skeleton-loader type="table-row@10" />
+            </template>
+            <template #top>
+              <v-toolbar flat>
+                <v-toolbar-title>
+                  <v-icon
+                    icon="ri-chat-smile-ai-3-line"
+                    start
+                  />
+                  <span v-if="!mobile">{{ t('tools.announce.title') }}</span>
+                </v-toolbar-title>
+                <v-btn
+                  prepend-icon="ri-add-line"
+                  color="success"
+                  @click="openAnnounceDialog"
+                >
+                  {{ t('tools.announce.add') }}
+                </v-btn>
+                <v-btn
+                  prepend-icon="ri-refresh-line"
+                  :loading="getAnnounceLoading"
+                  color="default"
+                  @click="getAnnounce"
+                >
+                  {{ t('tools.announce.refresh') }}
+                </v-btn>
+              </v-toolbar>
+            </template>
+            <template #item.status="{value}">
+              <v-chip
+                v-if="value"
+                label
+                color="success"
+              >
+                {{ t('tools.announce.form.status.y') }}
+              </v-chip>
+              <v-chip
+                v-else
+                label
+                color="error"
+              >
+                {{ t('tools.announce.form.status.n') }}
+              </v-chip>
+            </template>
+            <template #item.interval="{value}">
+              <v-chip label>
+                {{ value }}
+              </v-chip>
+            </template>
+            <template #item.content="{value}">
+              {{ truncateString(value, 40) }}
+            </template>
+            <template #item.actions="{ item }">
+              <v-btn
+                color="info"
+                append-icon="ri-arrow-drop-down-line"
+                variant="text"
+                :loading="deleteLoading"
+              >
+                {{ t('tools.announce.actions') }}
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item
+                      class="text-info"
+                      @click="openAnnounceDialog(item, true)"
+                    >
+                      <template #prepend>
+                        <v-icon
+                          icon="ri-edit-line"
+                          size="22"
+                        />
+                      </template>
+                      <v-list-item-title>
+                        {{ t('tools.announce.update') }}
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item
+                      class="text-error"
+                      @click="handleDelete(item.id)"
+                    >
+                      <template #prepend>
+                        <v-icon
+                          icon="ri-delete-bin-line"
+                          size="22"
+                        />
+                      </template>
+                      <v-list-item-title>
+                        {{ t('tools.announce.delete') }}
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-btn>
+            </template>
+          </v-data-table>
         </v-sheet>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn @click="addDialogVisible = false">取消</v-btn>
-        <v-btn color="primary" @click="handleAnnounce">确定</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-  <v-dialog v-model="deleteDialogVisible" width="400">
+      </v-card>
+    </template>
+    <template v-else>
+      <result
+        :title="t('global.noRoomSelected.title')"
+        :sub-title="t('global.noRoomSelected.subTitle')"
+        type="error"
+        :height="calculateContainerSize()"
+      >
+        <v-btn
+          to="/rooms"
+          class="mt-4"
+        >
+          {{ t('global.noRoomSelected.button') }}
+        </v-btn>
+      </result>
+    </template>
+  </template>
+  <template v-else>
+    <result
+      v-if="userStore.userInfo.role==='admin'"
+      :title="t('global.noGame.title')"
+      :sub-title="t('global.noGame.subTitle')"
+      :height="calculateContainerSize()"
+      type="error"
+    >
+      <v-btn
+        to="/install"
+        class="mt-4"
+      >
+        {{ t('global.noGame.button') }}
+      </v-btn>
+    </result>
+    <result
+      v-else
+      :title="t('global.noGameNoAdmin.title')"
+      :sub-title="t('global.noGameNoAdmin.subTitle')"
+      :height="calculateContainerSize()"
+      type="error"
+    />
+  </template>
+
+  <v-dialog
+    v-model="announceDialog"
+    :width="mobile?'90%':'60%'"
+  >
     <v-card>
-      <v-card-title class="font-weight-bold">删除通知</v-card-title>
-      <v-card-text>该操作将会永久删除且无法恢复，是否继续？</v-card-text>
-      <v-card-actions>
-        <v-btn size="small" variant="plain" @click="cancelDelete">取消</v-btn>
-        <v-btn color="primary" size="small" variant="tonal" @click="confirmDelete">确认</v-btn>
-      </v-card-actions>
+      <v-form
+        ref="announceFormRef"
+        class="ma-4"
+        @submit.prevent="handleSubmit"
+      >
+        <v-card-title>
+          <span>
+            {{ t('tools.announce.title') }}
+          </span>
+        </v-card-title>
+        <v-card-text class="my-8">
+          <v-row class="mb-8">
+            <v-radio-group
+              v-model="announceForm.status"
+              inline
+            >
+              <template #prepend>
+                <v-chip v-tooltip="t('tools.announce.form.status.tip')">
+                  {{ t('tools.announce.form.status.title') }}
+                </v-chip>
+              </template>
+              <v-radio
+                :label="t('tools.announce.form.status.y')"
+                :value="true"
+                class="mr-4"
+              />
+              <v-radio
+                :label="t('tools.announce.form.status.n')"
+                :value="false"
+                class="mr-4"
+              />
+            </v-radio-group>
+          </v-row>
+          <v-row class="mb-8">
+            <v-number-input
+              v-model="announceForm.interval"
+              v-tooltip="t('tools.announce.form.interval.tip')"
+              :label="t('tools.announce.form.interval.title')"
+              :min="1"
+              style="margin-bottom: -1.25rem"
+            >
+              <template #append-inner>
+                <div style="width: 50px">
+                  {{ t('tools.announce.form.interval.unit') }}
+                </div>
+              </template>
+            </v-number-input>
+          </v-row>
+          <v-row>
+            <v-text-field
+              v-model="announceForm.content"
+              v-tooltip="t('tools.announce.form.content.tip')"
+              :label="t('tools.announce.form.content.title')"
+              :rules="announceFormRules.content"
+            />
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="default"
+            variant="elevated"
+            :text="t('login.cancel')"
+            class="mr-4"
+            @click="announceDialog = false"
+          />
+          <v-btn
+            :text="t('login.submit')"
+            :loading="submitLoading"
+            variant="elevated"
+            type="submit"
+          />
+        </v-card-actions>
+      </v-form>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {showSnackbar} from "@/utils/snackbar";
-import toolsApi from "@/api/tools";
-import useGlobalStore from '@/plugins/pinia/global'
+import useGlobalStore from "@store/global.js"
+import useUserStore from "@store/user.js"
+import { useI18n } from "vue-i18n"
+import { useDisplay } from "vuetify/framework"
+import { debounce, deepCopy, generateUUID, truncateString } from "@/utils/tools.js"
+import toolsApi from "@/api/tools.js"
+import { showSnackbar } from "@/utils/snackbar.js"
 
-
-onMounted(() => {
-  getAnnounceData();
-});
 
 const globalStore = useGlobalStore()
+const userStore = useUserStore()
+const { t } = useI18n()
+const { mobile } = useDisplay()
+const windowHeight = ref(window.innerHeight)
+
+const announces = ref([])
+const getAnnounceLoading = ref(false)
+
+const getAnnounce = () => {
+  if (globalStore.room.id === 0) return
+  getAnnounceLoading.value = true
+
+  const reqForm = {
+    roomID: globalStore.room.id,
+  }
+
+  toolsApi.announce.get(reqForm).then(response => {
+    if (response.data !== "") {
+      announces.value = JSON.parse(response.data)
+    }
+  }).finally(() => {
+    getAnnounceLoading.value = false
+  })
+}
+
+const headers = [
+  { key: 'status', title: t('tools.announce.form.status.title') },
+  { key: 'interval', title: t('tools.announce.form.interval.title'), minWidth: 120 },
+  { key: 'content', title: t('tools.announce.form.content.title') },
+  { key: 'actions', title: t('tools.announce.actions') },
+]
+
+const announceDialog = ref(false)
+const isEdit = ref(false)
+
+const openAnnounceDialog = (row, edit=false) => {
+  if (edit) {
+    isEdit.value = true
+    announceForm.value = { ...row }
+  } else {
+    isEdit.value = false
+    announceForm.value = {
+      id: '',
+      status: true,
+      interval: 600,
+      content: '',
+    }
+  }
+  nextTick(() => {
+    if (announceFormRef.value) {
+      announceFormRef.value.resetValidation()
+    }
+  })
+  announceDialog.value = true
+}
+
+const announceFormRef = ref()
 
 const announceForm = ref({
-  name: "",
-  enable: true,
-  content: "",
-  frequency: 600,
-});
-const announceFormRules = {
-  name: [{required: true, message: "请输入名称", trigger: "blur"}],
-  enable: [{required: true, message: "请选择是否激活", trigger: "change"}],
-  content: [{required: true, message: "请输入通知内容", trigger: "blur"}],
-  frequency: [{required: true, message: "请输入通知频率", trigger: "blur"}],
-};
-// 弹窗相关
-const addDialogVisible = ref(false);
+  id: '',
+  status: true,
+  interval: 600,
+  content: '',
+})
 
-// 表单相关
-const announceFormRef = ref(null);
-const announceAction = ref("");
-
-// 新增通知
-const addAnnounce = () => {
-  // 重置表单数据
-  announceForm.value = {
-    name: "",
-    enable: true,
-    content: "",
-    frequency: 600,
-  };
-
-  // 显示对话框
-  announceAction.value = "post";
-  addDialogVisible.value = true;
-};
-
-const handleAnnounce = async () => {
-  // 表单验证
-  if (!announceFormRef.value) return;
-
-  try {
-    const {valid} = await announceFormRef.value.validate();
-
-    if (valid) {
-      if (announceForm.value.frequency < 1) {
-        showSnackbar("通知频率必须大于0", "warning");
-        return;
+const announceFormRules = ref({
+  content: [
+    value => {
+      if (value) {
+        if (value.includes('"') || value.includes("'")) {
+          return t('tools.announce.form.content.rule')
+        }
+        
+        return true
       }
-
-      switch (announceAction.value) {
-        case "post":
-          handleAnnouncePost();
-          break;
-        case "put":
-          handleAnnouncePut()
-          break;
-      }
-
-      // 关闭对话框
-      addDialogVisible.value = false;
-    }
-  } catch (error) {
-    console.error("表单验证错误", error);
-  }
-};
-
-// 新增通知
-const handleAnnouncePost = () => {
-  const reqForm = {
-    clusterName: globalStore.selectedDstCluster,
-    autoAnnounce: announceForm.value
-  }
-  toolsApi.announce.post(reqForm).then((response) => {
-    showSnackbar(response.message, "success");
-    getAnnounceData();
-  });
-};
-
-// 更新通知
-const handleAnnouncePut = () => {
-  const reqForm = {
-    clusterName: globalStore.selectedDstCluster,
-    autoAnnounce: announceForm.value
-  }
-  toolsApi.announce.put(reqForm).then((response) => {
-    showSnackbar(response.message, "success");
-    getAnnounceData();
-  });
-};
-
-const openAnnounceUpdate = (row) => {
-  announceForm.value = {...row}
-  announceAction.value = 'put'
-  addDialogVisible.value = true
-}
-
-// 删除通知
-const deleteDialogVisible = ref(false);
-const currentDeleteItem = ref(null);
-
-const handleAnnounceDelete = (form) => {
-  currentDeleteItem.value = form;
-  deleteDialogVisible.value = true;
-};
-
-const confirmDelete = () => {
-  if (!currentDeleteItem.value) return;
-
-  const reqForm = {
-    clusterName: globalStore.selectedDstCluster,
-    autoAnnounce: currentDeleteItem.value
-  }
-
-  toolsApi.announce.delete(reqForm).then(response => {
-    showSnackbar(response.message, "success");
-    getAnnounceData();
-  }).finally(() => {
-    deleteDialogVisible.value = false;
-    currentDeleteItem.value = null;
-  });
-};
-
-const cancelDelete = () => {
-  deleteDialogVisible.value = false;
-  currentDeleteItem.value = null;
-  showSnackbar('已取消操作', "info");
-};
-
-
-// 获取通知列表
-const loading = ref(false);
-const announceData = ref([]);
-
-function DEFAULT_HEADERS() {
-  return [
-    {
-      title: "名称",
-      align: "start",
-      key: "name",
+      
+      return t('tools.announce.form.content.required')
     },
-    {title: "是否激活", key: "enable"},
-    {title: "通知频率", key: "frequency"},
-    {title: "通知内容", key: "content"},
-    {title: "操作", key: "actions", sortable: false, width: "200px"},
-  ];
+  ],
+})
+
+const submitLoading = ref(false)
+
+const handleSubmit = async () => {
+  const { valid } = await announceFormRef.value.validate()
+  if (valid) {
+    announceForm.value.content = announceForm.value.content.replace(/['"]/g, '')
+    if (isEdit.value) {
+      // 编辑
+      for (let i = 0; i < announces.value.length; i++) {
+        if (announces.value[i].id === announceForm.value.id) {
+          announces.value[i] = announceForm.value
+          break
+        }
+      }
+    } else {
+      // 新建
+      submitLoading.value = true
+      announceForm.value.id = generateUUID()
+      announces.value.push(announceForm.value)
+    }
+
+    const reqForm = {
+      roomID: globalStore.room.id,
+      setting: JSON.stringify(announces.value),
+    }
+
+    toolsApi.announce.put(reqForm).then(response => {
+      showSnackbar(response.message)
+      announceDialog.value = false
+      getAnnounce()
+    }).finally(() => {
+      submitLoading.value = false
+    })
+  }
 }
 
-const headers = ref(DEFAULT_HEADERS());
-const getAnnounceData = () => {
-  loading.value = true;
+const deleteLoading = ref(false)
+
+const handleDelete = id => {
+  deleteLoading.value = true
+
+  const newAnnounces = announces.value.filter(item => item.id !== id)
+
   const reqForm = {
-    clusterName: globalStore.selectedDstCluster
+    roomID: globalStore.room.id,
+    setting: JSON.stringify(newAnnounces),
   }
-  toolsApi.announce.get(reqForm).then((response) => {
-      announceData.value = response.data;
-    }).finally(() => {
-      loading.value = false;
-    });
-};
+
+  toolsApi.announce.put(reqForm).then(response => {
+    showSnackbar(t('tools.announce.deleteMessage'))
+    getAnnounce()
+  }).finally(() => {
+    deleteLoading.value = false
+  })
+}
+
+
+const handleResize = debounce(() => {
+  windowHeight.value = window.innerHeight
+}, 200)
+
+const calculateContainerSize = () => {
+  // 64(navbar) + 37(tab header) + 20(card padding) + 16(card padding) = 137
+  const other = 150
+
+  return Math.max(2, Math.floor(windowHeight.value - other))
+}
+
+onMounted(() => {
+  getAnnounce()
+})
 </script>
 
-<style scoped></style>

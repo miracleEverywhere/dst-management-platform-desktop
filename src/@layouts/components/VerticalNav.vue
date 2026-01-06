@@ -1,11 +1,11 @@
 <template>
   <!-- eslint-disable vue/no-v-html -->
   <Component
-      :is="props.tag"
-      ref="refNav"
-      data-allow-mismatch
-      class="layout-vertical-nav"
-      :class="[
+    :is="props.tag"
+    ref="refNav"
+    data-allow-mismatch
+    class="layout-vertical-nav"
+    :class="[
       {
         'visible': isOverlayNavActive,
         'scrolled': isVerticalNavScrolled,
@@ -16,36 +16,27 @@
     <!-- 👉 Header -->
     <div class="nav-header">
       <slot name="nav-header">
-        <RouterLink
-            to="/"
-            class="app-logo app-title-wrapper"
-        >
-          <!--          <div-->
-          <!--            class="d-flex"-->
-          <!--            v-html="logo"-->
-          <!--          />-->
-
-          <!--          <h1 class="font-weight-medium leading-normal text-xl text-uppercase">-->
-          <!--            Materio-->
-          <!--          </h1>-->
-        </RouterLink>
+        <router-link
+          to="/"
+          class="app-logo app-title-wrapper"
+        />
       </slot>
     </div>
     <slot name="before-nav-items">
       <div class="vertical-nav-items-shadow" />
     </slot>
     <slot
-        name="nav-items"
-        :update-is-vertical-nav-scrolled="updateIsVerticalNavScrolled"
+      name="nav-items"
+      :update-is-vertical-nav-scrolled="updateIsVerticalNavScrolled"
     >
-      <PerfectScrollbar
-          tag="ul"
-          class="nav-items"
-          :options="{ wheelPropagation: false }"
-          @ps-scroll-y="handleNavScroll"
+      <perfect-scrollbar
+        tag="ul"
+        class="nav-items"
+        :options="{ wheelPropagation: false }"
+        @ps-scroll-y="handleNavScroll"
       >
         <slot />
-      </PerfectScrollbar>
+      </perfect-scrollbar>
     </slot>
     <slot name="after-nav-items" />
   </Component>
@@ -54,7 +45,8 @@
 <script setup>
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import { useDisplay } from 'vuetify'
-import logo from '@images/logo.svg?raw'
+
+// import logo from '@images/logo.svg?raw'
 
 const props = defineProps({
   tag: {

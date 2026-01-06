@@ -52,6 +52,12 @@ export default {
     density: 'comfortable',
     hideDetails: 'auto',
   },
+  VNumberInput: {
+    variant: 'outlined',
+    inset: true,
+    controlVariant: "stacked",
+    density: 'comfortable',
+  },
   VRadioGroup: {
     color: 'primary',
     density: 'comfortable',

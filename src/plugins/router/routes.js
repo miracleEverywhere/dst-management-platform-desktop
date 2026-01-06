@@ -1,94 +1,12 @@
-export const routes = [
-  { path: '/', redirect: '/dashboard' },
+export const staticRouter = [
   {
     path: '/',
-    component: () => import('@/layouts/default.vue'),
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index.vue'),
-      },
-      {
-        path: 'settings/room',
-        component: () => import('@/views/settings/room.vue'),
-      },
-      {
-        path: 'settings/player',
-        component: () => import('@/views/settings/player.vue'),
-      },
-      {
-        path: 'settings/mod',
-        component: () => import('@/views/settings/mod.vue'),
-      },
-      {
-        path: 'settings/import',
-        component: () => import('@/views/settings/import.vue'),
-      },
-      {
-        path: 'settings/system',
-        component: () => import('@/views/settings/system.vue'),
-      },
-      {
-        path: 'tools/backup',
-        component: () => import('@/views/tools/backup.vue'),
-      },
-      {
-        path: 'tools/announce',
-        component: () => import('@/views/tools/announce.vue'),
-      },
-      {
-        path: 'tools/install',
-        component: () => import('@/views/tools/install.vue'),
-      },
-      {
-        path: 'tools/statistics',
-        component: () => import('@/views/tools/statistics.vue'),
-      },
-      {
-        path: 'tools/metrics',
-        component: () => import('@/views/tools/metrics.vue'),
-      },
-      {
-        path: 'logs/world',
-        component: () => import('@/views/logs/world.vue'),
-      },
-      {
-        path: 'logs/chat',
-        component: () => import('@/views/logs/chat.vue'),
-      },
-      {
-        path: 'logs/access',
-        component: () => import('@/views/logs/access.vue'),
-      },
-      {
-        path: 'logs/runtime',
-        component: () => import('@/views/logs/runtime.vue'),
-      },
-      {
-        path: 'logs/steam',
-        component: () => import('@/views/logs/steam.vue'),
-      },
-      {
-        path: 'logs/clean',
-        component: () => import('@/views/logs/clean.vue'),
-      },
-      {
-        path: 'clusters',
-        component: () => import('@/views/clusters/index.vue'),
-      },
-      {
-        path: 'users',
-        component: () => import('@/views/users/index.vue'),
-      },
-    ],
-  },
-  {
-    path: '/',
+    redirect: '/rooms',
     component: () => import('@/layouts/blank.vue'),
     children: [
       {
-        path: 'config',
-        component: () => import('@/views/config/index.vue'),
+        path: '/login',
+        component: () => import('@/views/login/index.vue'),
       },
       {
         path: '/:pathMatch(.*)*',
@@ -97,3 +15,40 @@ export const routes = [
     ],
   },
 ]
+
+
+export const createDynamicRouter = (router, menus) => {
+  const dynamic = {
+    path: '/',
+    component: () => import('@/layouts/default.vue'),
+    children: [],
+  }
+
+  let modules = import.meta.glob("@/views/**/*.vue")
+
+  dynamic.children.push({
+    name: 'profile',
+    path: '/profile',
+    component: modules[`/src/views/profile/index.vue`],
+  })
+
+  for (let menu of menus) {
+    if (menu.type === 'group') {
+      for (let link of menu.links) {
+        dynamic.children.push({
+          name: link.component,
+          path: link.to,
+          component: modules[`/src/views/${link.component}.vue`],
+        })
+      }
+    } else {
+      dynamic.children.push({
+        name: menu.component,
+        path: menu.to,
+        component: modules[`/src/views/${menu.component}.vue`],
+      })
+    }
+  }
+
+  router.addRoute(dynamic)
+}

@@ -1,269 +1,339 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <div class="d-flex justify-space-between align-center">
-        <span>备份管理</span>
-        <div>
-          <v-dialog v-model="uploadDialogVisible" :persistent="uploadLoading" class="flex-wrap" max-width="65%">
-            <template v-slot:activator="{ props: activatorProps }">
-              <v-btn class="mr-2" color="warning" density="comfortable"
-                     v-bind="activatorProps" append-icon="ri-question-fill">
-                导入备份
-              </v-btn>
-            </template>
-            <template v-slot:default="{ isActive }">
-              <v-card title="导入备份" min-height="500">
-                <v-card-text>
-                  <template v-if="!uploadLoading">
-                    <v-alert color="warning" density="compact" class="mt-2 mb-2">
-                      请上传由饥荒管理平台生成的.tgz备份文件，并且集群名必须一致
-                    </v-alert>
-                    <v-file-upload density="default" icon="ri-upload-cloud-2-line"
-                                   @update:modelValue="handleUpload">
-                    </v-file-upload>
-                  </template>
-                  <template v-else>
-                    <sc-loading>上传中，请稍后</sc-loading>
-                  </template>
-                </v-card-text>
-              </v-card>
-            </template>
-          </v-dialog>
-          <v-btn color="info" class="mr-2" density="comfortable" :loading="manualBackupLoading" @click="handleManualBackup">
-            立即备份
-          </v-btn>
-          <v-btn color="error" class="mr-2" density="comfortable"
-                 :loading="multipleDeleteLoading" @click="handleMultiDelete">
-            批量删除
-          </v-btn>
-        </div>
-      </div>
-    </v-card-title>
-    <v-card-text>
-      <v-progress-linear v-model="diskUsage" rounded :indeterminate="getInfoLoading"
-                         height="20" color="info" class="mt-4">
-        <span>磁盘使用率: {{diskUsage.toFixed(2)}}%</span>
-      </v-progress-linear>
-
-      <v-sheet border rounded class="mt-6">
-        <v-data-table v-model="multipleSelection" :items="backupFiles"
-                      return-object show-select
-                      :loading="getInfoLoading" :headers="headers">
+  <!-- 游戏是否安装 -->
+  <template v-if="globalStore.gameVersion.local!==0">
+    <!-- 房间是否选择 -->
+    <template v-if="globalStore.room.id!==0">
+      <v-sheet
+        border
+        rounded
+      >
+        <v-data-table
+          v-model="selectedFiles"
+          show-select
+          return-object
+          :headers="headers"
+          :items="backupFiles"
+          :loading="getBackupFilesLoading"
+        >
           <template #loading>
-            <v-skeleton-loader type="table-row@10"></v-skeleton-loader>
+            <v-skeleton-loader type="table-row@10" />
           </template>
-
-          <template #item.createTime="{item}">
-            {{item.createTime}}
+          <template #top>
+            <v-toolbar flat>
+              <v-toolbar-title>
+                <v-icon
+                  icon="ri-save-2-line"
+                  start
+                />
+                <span v-if="!mobile">{{ t('tools.backup.title') }}</span>
+              </v-toolbar-title>
+              <v-btn
+                prepend-icon="ri-add-line"
+                color="success"
+                :loading="createBackupLoading"
+                @click="createBackup"
+              >
+                {{ t('tools.backup.backup') }}
+              </v-btn>
+              <v-btn
+                prepend-icon="ri-delete-bin-5-line"
+                color="error"
+                :disabled="selectedFiles.length===0"
+                :loading="singleDeleteLoading"
+                @click="multiDeleteBackup"
+              >
+                {{ t('tools.backup.multiDelete') }}
+              </v-btn>
+              <v-btn
+                v-if="!mobile"
+                prepend-icon="ri-refresh-line"
+                :loading="getBackupFilesLoading"
+                color="default"
+                @click="getBackupFiles"
+              >
+                {{ t('platform.user.table.refresh') }}
+              </v-btn>
+            </v-toolbar>
           </template>
-          <template #item.cycles="{item}">
-            <v-chip label>{{item.cycles}}</v-chip>
+          <template #item.gameName="{ value }">
+            <v-chip
+              label
+              color="primary"
+            >
+              {{ value }}
+            </v-chip>
           </template>
-          <template #item.size="{item}">
-            {{formatBytes(item.size)}}
+          <template #item.cycles="{ value }">
+            <v-chip
+              label
+              color="info"
+            >
+              {{ value }}
+            </v-chip>
           </template>
-          <template v-slot:item.actions="{item}">
-            <v-menu open-on-hover>
-              <template v-slot:activator="{ props }">
-                <v-btn append-icon="ri-arrow-down-s-line" color="info" v-bind="props" variant="text">
-                  操作
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item title="下载" @click="handleDownload(item)">
-                </v-list-item>
-                <v-list-item title="恢复" @click="">
-                  <v-dialog activator="parent" max-width="40%">
-                    <template #default="{isActive}">
-                      <v-card>
-                        <v-card-title>
-                          请确认
-                        </v-card-title>
-                        <v-card-text>
-                          <v-alert prominent variant="text" type="info" :color="colors.grey.darken1" class="mt-4">
-                            是否执行 恢复 操作？
-                          </v-alert>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-btn @click="isActive.value = false">取消</v-btn>
-                          <v-btn @click="handleRestore(item)" :loading="restoreLoading">确定</v-btn>
-                        </v-card-actions>
-                      </v-card>
+          <template #item.size="{ value }">
+            <v-chip
+              label
+              color="success"
+            >
+              {{ formatBytes(value) }}
+            </v-chip>
+          </template>
+          <template #item.timestamp="{ value }">
+            <v-chip
+              label
+              color="default"
+            >
+              {{ timestamp2time(value) }}
+            </v-chip>
+          </template>
+          <template #item.actions="{ item }">
+            <v-btn
+              color="info"
+              append-icon="ri-arrow-drop-down-line"
+              variant="text"
+              :loading="actionButtonLoading"
+            >
+              {{ t('tools.backup.actions') }}
+              <v-menu activator="parent">
+                <v-list>
+                  <v-list-item
+                    class="text-success"
+                    @click="restore(item.fileName)"
+                  >
+                    <template #prepend>
+                      <v-icon
+                        icon="ri-device-recover-line"
+                        size="22"
+                      />
                     </template>
-                  </v-dialog>
-                </v-list-item>
-                <v-list-item title="删除" @click="">
-                  <v-dialog activator="parent" max-width="40%">
-                    <template #default="{isActive}">
-                      <v-card>
-                        <v-card-title>
-                          请确认
-                        </v-card-title>
-                        <v-card-text>
-                          <v-alert prominent variant="text" type="info" :color="colors.grey.darken1" class="mt-4">
-                            是否执行 删除 操作？
-                          </v-alert>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-btn @click="isActive.value = false">取消</v-btn>
-                          <v-btn @click="handleDelete(item)" :loading="deleteLoading">确定</v-btn>
-                        </v-card-actions>
-                      </v-card>
+                    <v-list-item-title>
+                      {{ t('tools.backup.restore') }}
+                    </v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    class="text-info"
+                    @click="downloadBackup(item.fileName)"
+                  >
+                    <template #prepend>
+                      <v-icon
+                        icon="ri-download-line"
+                        size="22"
+                      />
                     </template>
-                  </v-dialog>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+                    <v-list-item-title>
+                      {{ t('tools.backup.download') }}
+                    </v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    class="text-error"
+                    @click="deleteBackup(item.fileName)"
+                  >
+                    <template #prepend>
+                      <v-icon
+                        icon="ri-delete-bin-line"
+                        size="22"
+                      />
+                    </template>
+                    <v-list-item-title>
+                      {{ t('tools.backup.delete') }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-btn>
           </template>
         </v-data-table>
       </v-sheet>
-    </v-card-text>
-  </v-card>
-
-
+    </template>
+    <template v-else>
+      <result
+        :title="t('global.noRoomSelected.title')"
+        :sub-title="t('global.noRoomSelected.subTitle')"
+        type="error"
+        :height="calculateContainerSize()"
+      >
+        <v-btn
+          to="/rooms"
+          class="mt-4"
+        >
+          {{ t('global.noRoomSelected.button') }}
+        </v-btn>
+      </result>
+    </template>
+  </template>
+  <template v-else>
+    <result
+      v-if="userStore.userInfo.role==='admin'"
+      :title="t('global.noGame.title')"
+      :sub-title="t('global.noGame.subTitle')"
+      :height="calculateContainerSize()"
+      type="error"
+    >
+      <v-btn
+        to="/install"
+        class="mt-4"
+      >
+        {{ t('global.noGame.button') }}
+      </v-btn>
+    </result>
+    <result
+      v-else
+      :title="t('global.noGameNoAdmin.title')"
+      :sub-title="t('global.noGameNoAdmin.subTitle')"
+      :height="calculateContainerSize()"
+      type="error"
+    />
+  </template>
 </template>
 
 <script setup>
-import {showSnackbar} from '@/utils/snackbar'
-import useGlobalStore from '@/plugins/pinia/global'
-import toolsApi from '@/api/tools'
-import {deepCopy, formatBytes} from "@/utils/tools";
-import colors from "vuetify/util/colors";
-import ElectronApi from "@/utils/electronApi";
-import settingApi from "@/api/setting";
+import toolsApi from "@/api/tools.js"
+import useGlobalStore from "@store/global.js"
+import { useI18n } from "vue-i18n"
+import { debounce, formatBytes, timestamp2time } from "@/utils/tools.js"
+import { showSnackbar } from "@/utils/snackbar.js"
+import { useDisplay } from "vuetify/framework"
+import useUserStore from "@store/user.js"
 
-onMounted(() => {
-  getInfo()
-})
 
 const globalStore = useGlobalStore()
-
+const userStore = useUserStore()
+const { t } = useI18n()
+const { mobile } = useDisplay()
+const windowHeight = ref(window.innerHeight)
+const getBackupFilesLoading = ref(false)
 const backupFiles = ref([])
-const diskUsage = ref(0)
-const getInfoLoading = ref(false)
 
-const getInfo = () => {
+const getBackupFiles = () => {
+  if (globalStore.room.id === 0) return
+  getBackupFilesLoading.value = true
+
   const reqForm = {
-    clusterName: globalStore.selectedDstCluster
+    roomID: globalStore.room.id,
   }
-  getInfoLoading.value = true
+
   toolsApi.backup.get(reqForm).then(response => {
-    backupFiles.value = response.data.backupFiles
-    diskUsage.value = response.data.diskUsage
+    backupFiles.value = response.data
+    backupFiles.value.sort((a, b) => b.timestamp - a.timestamp)
   }).finally(() => {
-    getInfoLoading.value = false
+    getBackupFilesLoading.value = false
   })
 }
 
-const headers = ref([
-  {title: '创建时间', key: 'createTime'},
-  {title: '天数', key: 'cycles'},
-  {title: '文件大小', key: 'size'},
-  {title: '操作', key: 'actions'},
-])
+const selectedFiles = ref([])
 
-const actionsLoading = ref(false)
-const handleDownload = (row) => {
-  let url = `${globalStore.url}/download/backup/${globalStore.selectedDstCluster}/${row.name}?authorization=${globalStore.token}&&clusterName=${globalStore.selectedDstCluster}&&lang=zh`
-  console.log(url)
-  ElectronApi.download.file(url, row.name)
+const headers = [
+  { key: 'gameName', title: t('tools.backup.gameName') },
+  { key: 'cycles', title: t('tools.backup.cycles') },
+  { key: 'size', title: t('tools.backup.size') },
+  { key: 'timestamp', title: t('tools.backup.timestamp') },
+  { key: 'actions', title: t('tools.backup.actions') },
+]
+
+const actionButtonLoading = ref(false)
+
+const createBackupLoading = ref(false)
+
+const createBackup = () => {
+  createBackupLoading.value = true
+
+  const reqForm = {
+    roomID: globalStore.room.id,
+  }
+
+  toolsApi.backup.post(reqForm).then(response => {
+    getBackupFiles()
+    showSnackbar(response.message)
+  }).finally(() => {
+    createBackupLoading.value = false
+  })
+}
+
+const singleDeleteLoading = ref(false)
+
+const deleteBackup = filename => {
+  singleDeleteLoading.value = true
+  actionButtonLoading.value = true
+
+  const reqForm = {
+    roomID: globalStore.room.id,
+    filenames: [filename],
+  }
+
+  toolsApi.backup.delete(reqForm).then(response => {
+    getBackupFiles()
+    showSnackbar(t('tools.backup.deleteMessage1')+response.data+t('tools.backup.deleteMessage2'))
+  }).finally(() => {
+    singleDeleteLoading.value = false
+    actionButtonLoading.value = false
+  })
+}
+
+const multiDeleteBackup = () => {
+  singleDeleteLoading.value = true
+  actionButtonLoading.value = true
+
+  const reqForm = {
+    roomID: globalStore.room.id,
+    filenames: selectedFiles.value.map(item => item.fileName),
+  }
+
+  toolsApi.backup.delete(reqForm).then(response => {
+    getBackupFiles()
+    selectedFiles.value = []
+    showSnackbar(t('tools.backup.deleteMessage1')+response.data+t('tools.backup.deleteMessage2'))
+  }).finally(() => {
+    singleDeleteLoading.value = false
+    actionButtonLoading.value = false
+  })
 }
 
 const restoreLoading = ref(false)
-const handleRestore = (row) => {
+
+const restore = filename => {
+  actionButtonLoading.value = true
   restoreLoading.value = true
+
   const reqForm = {
-    clusterName: globalStore.selectedDstCluster,
-    name: row.name
+    roomID: globalStore.room.id,
+    filename: filename,
   }
-  toolsApi.backupRestore.post(reqForm).then(response => {
+
+  toolsApi.backup.restore.post(reqForm).then(response => {
     showSnackbar(response.message)
-  }).catch(() => {
   }).finally(() => {
     restoreLoading.value = false
-    getInfo()
+    actionButtonLoading.value = false
   })
 }
 
-const deleteLoading = ref(false)
-const handleDelete = (row) => {
-  deleteLoading.value = true
+const downloadBackup = filename => {
+  actionButtonLoading.value = true
+
   const reqForm = {
-    clusterName: globalStore.selectedDstCluster,
-    name: row.name
+    roomID: globalStore.room.id,
+    filename: filename,
   }
-  toolsApi.backup.delete(reqForm).then(response => {
-    showSnackbar(response.message)
-  }).catch(() => {
-  }).finally(() => {
-    deleteLoading.value = false
-    getInfo()
+
+  toolsApi.backup.download.download(reqForm, "dmp_backup.zip").finally(() => {
+    actionButtonLoading.value = false
   })
 }
 
-const multipleSelection = ref([])
-const multipleDeleteLoading = ref(false)
-const handleMultiDelete = () => {
-  const reqForm = {
-    clusterName: globalStore.selectedDstCluster,
-    names: []
-  }
-  if (multipleSelection.value.length === 0) {
-    showSnackbar('请选择要删除的备份文件', 'error')
-    return
-  }
-  multipleDeleteLoading.value = true
-  for (let file of multipleSelection.value) {
-    reqForm.names.push(file.name)
-  }
-  toolsApi.multiDelete.delete(reqForm).then(response => {
-    showSnackbar(response.message)
-    multipleSelection.value = []
-  }).catch(() => {
-  }).finally(() => {
-    multipleDeleteLoading.value = false
-    getInfo()
-  })
+const handleResize = debounce(() => {
+  windowHeight.value = window.innerHeight
+}, 200)
+
+const calculateContainerSize = () => {
+  // 64(navbar) + 37(tab header) + 20(card padding) + 16(card padding) = 137
+  const other = 150
+
+  return Math.max(2, Math.floor(windowHeight.value - other))
 }
 
-const manualBackupLoading = ref(false)
-const handleManualBackup = () => {
-  manualBackupLoading.value = true
-  const reqForm = {
-    clusterName: globalStore.selectedDstCluster
-  }
-  toolsApi.backup.post(reqForm).then(response => {
-    showSnackbar(response.message)
-  }).finally(() => {
-    manualBackupLoading.value = false
-    getInfo()
-  })
-}
-
-const uploadLoading = ref(false)
-const uploadDialogVisible = ref(false)
-const uploadRef = ref()
-const checkUploadFile = (param) => {
-  const zipPattern = /\.tgz$/i;
-  return zipPattern.test(param.name);
-}
-const handleUpload = (file) => {
-  if (!checkUploadFile(file)) {
-    showSnackbar('请上传tgz文件', 'error')
-    uploadDialogVisible.value = false
-    return
-  }
-  uploadLoading.value = true
-  const formData = new FormData()
-  formData.append('file', file)
-  formData.append('clusterName', globalStore.selectedDstCluster)
-  toolsApi.backupImport.post(formData).then(response => {
-    getInfo()
-    showSnackbar(response.message)
-  }).finally(() => {
-    uploadDialogVisible.value = false
-    uploadLoading.value = false
-  })
-}
-
+onMounted(() => {
+  getBackupFiles()
+})
 </script>
+

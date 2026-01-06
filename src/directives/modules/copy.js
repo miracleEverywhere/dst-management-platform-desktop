@@ -1,30 +1,32 @@
-import {showSnackbar} from "@/utils/snackbar";
+import { showSnackbar } from "@/utils/snackbar"
 
 
 export default {
-    mounted(el, binding) {
-        el.$value = binding.value
-        el.handler = () => {
-            const textarea = document.createElement('textarea')
-            textarea.readOnly = 'readonly'
-            textarea.style.position = 'absolute'
-            textarea.style.left = '-9999px'
-            textarea.value = el.$value
-            document.body.appendChild(textarea)
-            textarea.select()
-            textarea.setSelectionRange(0, textarea.value.length)
-            const result = document.execCommand('Copy')
-            if (result) {
-                showSnackbar('复制成功')
-            }
-            document.body.removeChild(textarea)
-        }
-        el.addEventListener('click', el.handler)
-    },
-    updated(el, binding){
-        el.$value = binding.value
-    },
-    unmounted(el){
-        el.removeEventListener('click', el.handler)
+  mounted(el, binding) {
+    el.$value = binding.value
+    el.handler = () => {
+      const textarea = document.createElement('textarea')
+
+      textarea.readOnly = 'readonly'
+      textarea.style.position = 'absolute'
+      textarea.style.left = '-9999px'
+      textarea.value = el.$value
+      document.body.appendChild(textarea)
+      textarea.select()
+      textarea.setSelectionRange(0, textarea.value.length)
+
+      const result = document.execCommand('Copy')
+      if (result) {
+        showSnackbar(textarea.value)
+      }
+      document.body.removeChild(textarea)
     }
+    el.addEventListener('click', el.handler)
+  },
+  updated(el, binding){
+    el.$value = binding.value
+  },
+  unmounted(el){
+    el.removeEventListener('click', el.handler)
+  },
 }

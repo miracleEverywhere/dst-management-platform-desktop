@@ -3,13 +3,13 @@ import { VBtn } from 'vuetify/components/VBtn'
 import defaults from './defaults'
 import { icons } from './icons'
 import { themes } from './theme'
+import { zhHans, en } from "vuetify/locale"
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
-
-import { pl, zhHans } from 'vuetify/locale'
 
 // Styles
 import '@core/scss/template/libs/vuetify/index.scss'
 import 'vuetify/styles'
+
 
 export default function (app) {
   const vuetify = createVuetify({
@@ -27,8 +27,7 @@ export default function (app) {
     },
     locale: {
       locale: 'zhHans',
-      fallback: 'sv',
-      messages: { zhHans, pl },
+      messages: { zhHans, en },
     },
   })
 

@@ -46,29 +46,29 @@ const moreList = [
 </script>
 
 <template>
-  <VCard>
-    <VCardText class="d-flex align-center">
-      <VAvatar
+  <v-card>
+    <v-card-text class="d-flex align-center">
+      <v-avatar
         v-if="props.icon"
         size="40"
         :color="props.color"
         class="elevation-2"
       >
-        <VIcon
+        <v-icon
           :icon="props.icon"
           size="24"
         />
-      </VAvatar>
+      </v-avatar>
 
-      <VSpacer />
+      <v-spacer />
 
-      <MoreBtn
+      <more-btn
         class="me-n3 mt-n1"
         :menu-list="moreList"
       />
-    </VCardText>
+    </v-card-text>
 
-    <VCardText>
+    <v-card-text>
       <h6 class="text-h6 mb-1">
         {{ props.title }}
       </h6>
@@ -90,6 +90,6 @@ const moreList = [
       <div class="text-body-2">
         {{ props.subtitle }}
       </div>
-    </VCardText>
-  </VCard>
+    </v-card-text>
+  </v-card>
 </template>

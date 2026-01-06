@@ -1,10 +1,7 @@
 <template>
-  <log type="steam"/>
+  <single-log type="steam" />
 </template>
 
 <script setup>
-import log from "./components/log.vue"
+import SingleLog from "@/views/logs/components/singleLog.vue"
 </script>
-
-<style scoped>
-</style>

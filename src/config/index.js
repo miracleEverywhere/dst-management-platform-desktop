@@ -1,7 +1,12 @@
-export const PINIA_PREFIX = "dmp-"
+export const PiniaPrefix = "dmp-"
 
-export const DB_KEY = {
-  configs: 'configs',
-  theme: 'theme',
-  selectedDstCluster: 'selectedDstCluster',
+export const Version = "v3.0.4"
+
+export const ApiVersion = "v3"
+
+export const GamePortFactor = {
+  serverPort: 11000,
+  masterPort: 21000,
+  masterServerPort: 31000,
+  authenticationPort: 41000,
 }

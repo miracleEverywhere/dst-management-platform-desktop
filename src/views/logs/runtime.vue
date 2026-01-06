@@ -1,10 +1,7 @@
 <template>
-  <log type="runtime"/>
+  <single-log type="runtime" />
 </template>
 
 <script setup>
-import log from '@/views/logs/components/log.vue'
+import SingleLog from "@/views/logs/components/singleLog.vue"
 </script>
-
-<style scoped>
-</style>

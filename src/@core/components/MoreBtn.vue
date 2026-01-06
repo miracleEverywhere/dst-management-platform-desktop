@@ -16,20 +16,20 @@ const props = defineProps({
 </script>
 
 <template>
-  <IconBtn>
-    <VIcon
+  <icon-btn>
+    <v-icon
       :size="iconSize"
       icon="ri-more-2-line"
     />
 
-    <VMenu
+    <v-menu
       v-if="props.menuList"
       activator="parent"
     >
-      <VList
+      <v-list
         :items="props.menuList"
         :item-props="props.itemProps"
       />
-    </VMenu>
-  </IconBtn>
+    </v-menu>
+  </icon-btn>
 </template>

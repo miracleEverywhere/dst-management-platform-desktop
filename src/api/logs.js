@@ -1,50 +1,42 @@
-import http from "@/utils/axios.js";
+import http from "@/utils/axios"
 
 export default {
-  logValue: {
-    url: `/logs/log_value`,
+  content: {
+    url: `/logs/content`,
     get: async function (data) {
-      return await http.get(this.url, data);
-    }
-  },
-  install: {
-    url: `/tools/install`,
-    post: async function (data) {
-      return await http.post(this.url, data);
-    }
-  },
-  download: {
-    url: `/logs/download`,
-    post: async function (data) {
-      return await http.post(this.url, data);
-    }
-  },
-  historical: {
-    logFile: {
-      url: `/logs/historical/log_file`,
-      get: async function (data) {
-        return await http.get(this.url, data);
-      }
+      return await http.get(this.url, data)
     },
-    log: {
-      url: `/logs/historical/log`,
+  },
+  history: {
+    list: {
+      url: `/logs/history/list`,
       get: async function (data) {
-        return await http.get(this.url, data);
-      }
+        return await http.get(this.url, data)
+      },
+    },
+    content: {
+      url: `/logs/history/content`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
     },
   },
   clean: {
-    status: {
-      url: `/logs/status`,
-      get: async function (data) {
-        return await http.get(this.url, data);
-      }
+    url: `/logs/clean`,
+    delete: async function (data) {
+      return await http.delete(this.url, data)
     },
-    clean: {
-      url: `/logs/clean`,
-      post: async function (data) {
-        return await http.post(this.url, data);
-      }
-    }
+    info: {
+      url: `/logs/clean/info`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+    },
+  },
+  download: {
+    url: `/logs/download`,
+    download: async function (data, saveName) {
+      return await http.download(this.url, data, saveName)
+    },
   },
 }

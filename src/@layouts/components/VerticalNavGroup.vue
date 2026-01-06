@@ -1,5 +1,37 @@
+<template>
+  <li
+    class="nav-group"
+    :class="isOpen && 'open'"
+  >
+    <div
+      class="nav-group-label"
+      @click="handleClick"
+    >
+      <v-icon
+        :icon="item.icon || 'ri-checkbox-blank-circle-line'"
+        class="nav-item-icon"
+      />
+      <span class="nav-item-title">{{ item.title }}</span>
+      <span
+        class="nav-item-badge"
+        :class="item.badgeClass"
+      >
+        {{ item.badgeContent }}
+      </span>
+      <v-icon
+        icon="ri-arrow-right-s-line"
+        class="nav-group-arrow"
+      />
+    </div>
+    <div class="nav-group-children-wrapper">
+      <ul class="nav-group-children">
+        <slot />
+      </ul>
+    </div>
+  </li>
+</template>
+
 <script setup>
-const router = useRouter();
 const props = defineProps({
   item: {
     type: Object,
@@ -13,6 +45,8 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle'])
 
+const router = useRouter()
+
 const handleClick = () => {
   emit('toggle')
   if (props.item.to === '/dashboard') {
@@ -20,40 +54,6 @@ const handleClick = () => {
   }
 }
 </script>
-
-<template>
-  <li
-    class="nav-group"
-    :class="isOpen && 'open'"
-  >
-    <div
-      class="nav-group-label"
-      @click="handleClick"
-    >
-      <VIcon
-        :icon="item.icon || 'ri-checkbox-blank-circle-line'"
-        class="nav-item-icon"
-      />
-      <span class="nav-item-title">{{ item.title }}</span>
-      <span
-        class="nav-item-badge"
-        :class="item.badgeClass"
-      >
-        {{ item.badgeContent }}
-      </span>
-      <VIcon
-        v-if="item.to !== '/dashboard'"
-        icon="ri-arrow-right-s-line"
-        class="nav-group-arrow"
-      />
-    </div>
-    <div class="nav-group-children-wrapper">
-      <ul class="nav-group-children">
-        <slot />
-      </ul>
-    </div>
-  </li>
-</template>
 
 <style lang="scss">
 .layout-vertical-nav {
