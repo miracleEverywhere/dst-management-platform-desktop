@@ -12,8 +12,8 @@
 import { useTheme } from 'vuetify'
 import useGlobalStore from "@store/global"
 import { useI18n } from "vue-i18n"
-import ElectronApi from "@/utils/electronApi";
-import {DB_KEY} from "@/config";
+import ElectronApi from "@/utils/electronApi"
+import { DB_KEY } from "@/config"
 
 const props = defineProps({
   themes: {

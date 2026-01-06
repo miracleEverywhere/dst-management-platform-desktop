@@ -16,7 +16,7 @@ export default class ElectronApi {
     },
     clear() {
       window.electronAPI.clearStoreValue()
-    }
+    },
   }
   static window = {
     dashboard() {
@@ -32,7 +32,7 @@ export default class ElectronApi {
   static download = {
     file(url, name) {
       window.electronAPI.downloadFile(url, name)
-    }
+    },
   }
-  electronAPI;
+  electronAPI
 }

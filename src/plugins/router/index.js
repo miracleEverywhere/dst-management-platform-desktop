@@ -8,7 +8,7 @@ const router = createRouter({
 })
 
 if (window.electronAPI) {
-  window.electronAPI.onNavigate((path) => {
+  window.electronAPI.onNavigate(path => {
     router.push(path).catch(() => {})
   })
 }

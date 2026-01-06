@@ -32,7 +32,7 @@ const globalStore = defineStore("global", {
         ip: '',
         port: '',
         inEntry: true,
-      }
+      },
     }
   },
   actions: {},

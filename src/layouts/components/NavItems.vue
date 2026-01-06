@@ -66,7 +66,7 @@ const menus = [
     "to": "/rooms",
     "component": "rooms/index",
     "icon": "ri-instance-line",
-    "links": null
+    "links": null,
   },
   {
     "id": 2,
@@ -76,7 +76,7 @@ const menus = [
     "to": "/dashboard",
     "component": "dashboard/index",
     "icon": "ri-function-ai-line",
-    "links": null
+    "links": null,
   },
   {
     "id": 3,
@@ -95,7 +95,7 @@ const menus = [
         "to": "/game/base",
         "component": "game/base",
         "icon": "ri-sword-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 302,
@@ -105,7 +105,7 @@ const menus = [
         "to": "/game/mod",
         "component": "game/mod",
         "icon": "ri-rocket-2-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 303,
@@ -115,9 +115,9 @@ const menus = [
         "to": "/game/player",
         "component": "game/player",
         "icon": "ri-ghost-line",
-        "links": null
-      }
-    ]
+        "links": null,
+      },
+    ],
   },
   {
     "id": 6,
@@ -136,7 +136,7 @@ const menus = [
         "to": "/tools/backup",
         "component": "tools/backup",
         "icon": "ri-save-2-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 602,
@@ -146,7 +146,7 @@ const menus = [
         "to": "/tools/announce",
         "component": "tools/announce",
         "icon": "ri-chat-smile-ai-3-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 603,
@@ -156,9 +156,9 @@ const menus = [
         "to": "/tools/map",
         "component": "tools/map",
         "icon": "ri-road-map-line",
-        "links": null
-      }
-    ]
+        "links": null,
+      },
+    ],
   },
   {
     "id": 7,
@@ -177,7 +177,7 @@ const menus = [
         "to": "/logs/game",
         "component": "logs/game",
         "icon": "ri-game-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 702,
@@ -187,7 +187,7 @@ const menus = [
         "to": "/logs/chat",
         "component": "logs/chat",
         "icon": "ri-chat-smile-3-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 703,
@@ -197,7 +197,7 @@ const menus = [
         "to": "/logs/download",
         "component": "logs/download",
         "icon": "ri-download-2-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 704,
@@ -207,7 +207,7 @@ const menus = [
         "to": "/logs/steam",
         "component": "logs/steam",
         "icon": "ri-steam-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 705,
@@ -217,7 +217,7 @@ const menus = [
         "to": "/logs/access",
         "component": "logs/access",
         "icon": "ri-code-box-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 706,
@@ -227,7 +227,7 @@ const menus = [
         "to": "/logs/runtime",
         "component": "logs/runtime",
         "icon": "ri-terminal-box-line",
-        "links": null
+        "links": null,
       },
       {
         "id": 707,
@@ -237,9 +237,9 @@ const menus = [
         "to": "/logs/clean",
         "component": "logs/clean",
         "icon": "ri-file-shred-line",
-        "links": null
-      }
-    ]
+        "links": null,
+      },
+    ],
   },
   {
     "id": 4,
@@ -249,7 +249,7 @@ const menus = [
     "to": "/upload",
     "component": "upload/index",
     "icon": "ri-contacts-book-upload-line",
-    "links": null
+    "links": null,
   },
   {
     "id": 5,
@@ -259,7 +259,7 @@ const menus = [
     "to": "/install",
     "component": "install/index",
     "icon": "ri-import-line",
-    "links": null
+    "links": null,
   },
   {
     "id": 8,
@@ -269,8 +269,8 @@ const menus = [
     "to": "/platform",
     "component": "platform/index",
     "icon": "ri-vip-crown-2-line",
-    "links": null
-  }
+    "links": null,
+  },
 ]
 
 // 当前展开的菜单组ID

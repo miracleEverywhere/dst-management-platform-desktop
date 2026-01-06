@@ -12,11 +12,18 @@
   </div>
   <div>
     <v-row dense>
-      <v-col v-for="dmp in dmps" cols="12" sm="6">
-        <dmp :dmp="dmp"/>
+      <v-col
+        v-for="dmp in dmps"
+        cols="12"
+        sm="6"
+      >
+        <dmp :dmp="dmp" />
       </v-col>
-      <v-col cols="12" sm="6">
-        <dmp/>
+      <v-col
+        cols="12"
+        sm="6"
+      >
+        <dmp />
       </v-col>
     </v-row>
   </div>
@@ -28,10 +35,10 @@ import Github from "@/layouts/components/GitHub.vue"
 import LangSelect from "@/layouts/components/LangSelect.vue"
 import Document from "@/layouts/components/Document.vue"
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue"
-import ElectronApi from "@/utils/electronApi";
-import {DB_KEY} from "@/config";
-import useGlobalStore from "@/plugins/store/global";
-import Dmp from "@/views/entry/components/dmp.vue";
+import ElectronApi from "@/utils/electronApi"
+import { DB_KEY } from "@/config"
+import useGlobalStore from "@store/global"
+import Dmp from "@/views/entry/components/dmp.vue"
 
 const globalStore = useGlobalStore()
 
@@ -50,8 +57,6 @@ onMounted(() => {
   // ElectronApi.store.clear()
   getDmps()
 })
-
-
 </script>
 
 <style lang="scss" scoped>

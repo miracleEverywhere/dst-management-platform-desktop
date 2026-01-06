@@ -55,8 +55,8 @@ export default defineConfig({
     svgLoader(),
     electron({
       // 主进程入口文件
-      entry: 'electron/main.js'
-    })
+      entry: 'electron/main.js',
+    }),
   ],
   define: { 'process.env': {} },
   resolve: {

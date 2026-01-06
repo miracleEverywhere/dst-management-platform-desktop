@@ -14,6 +14,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "lint": "eslint . -c .eslintrc.cjs --fix --ext .ts,.js,.cjs,.vue,.tsx,.jsx",
     "preview": "vite preview",
     "build:icons": "tsx src/plugins/iconify/build-icons.js",
     "electron:build": "vite build && electron-builder"

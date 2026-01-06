@@ -27,8 +27,8 @@
 import { useI18n } from "vue-i18n"
 import useGlobalStore from "@store/global"
 import { useLocale } from "vuetify"
-import ElectronApi from "@/utils/electronApi";
-import {DB_KEY} from "@/config";
+import ElectronApi from "@/utils/electronApi"
+import { DB_KEY } from "@/config"
 
 const i18n = useI18n()
 const { current } = useLocale()

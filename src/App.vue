@@ -10,9 +10,9 @@ import useGlobalStore from '@store/global'
 import { useI18n } from "vue-i18n"
 import { getBrowserLang } from "@/utils/tools.js"
 import { useLocale } from "vuetify/framework"
-import ElectronApi from "@/utils/electronApi";
-import {DB_KEY} from "@/config";
-import {useTheme} from "vuetify";
+import ElectronApi from "@/utils/electronApi"
+import { DB_KEY } from "@/config"
+import { useTheme } from "vuetify"
 
 
 const i18n = useI18n()
@@ -46,15 +46,15 @@ const initI18n = () => {
 const initTheme = () => {
   // const {name: themeName, global: globalTheme} = useTheme();
   const theme = useTheme()
-  let dbTheme = ElectronApi.store.get(DB_KEY.theme);
-  const globalStore = useGlobalStore();
+  let dbTheme = ElectronApi.store.get(DB_KEY.theme)
+  const globalStore = useGlobalStore()
 
   if (dbTheme) {
     // globalTheme.name.value = theme;
     theme.change(dbTheme)
-    globalStore.theme = dbTheme;
+    globalStore.theme = dbTheme
   } else {
-    ElectronApi.store.set(DB_KEY.theme, "light");
+    ElectronApi.store.set(DB_KEY.theme, "light")
   }
 }
 
