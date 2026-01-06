@@ -5,8 +5,8 @@ export const staticRouter = [
     component: () => import('@/layouts/blank.vue'),
     children: [
       {
-        path: '/login',
-        component: () => import('@/views/login/index.vue'),
+        path: '/entry',
+        component: () => import('@/views/entry/index.vue'),
       },
       {
         path: '/:pathMatch(.*)*',

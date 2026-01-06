@@ -6,6 +6,7 @@ import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import vuetify from 'vite-plugin-vuetify'
 import svgLoader from 'vite-svg-loader'
+import electron from 'vite-plugin-electron'
 
 // import { compression } from 'vite-plugin-compression2'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
@@ -52,6 +53,10 @@ export default defineConfig({
       },
     }),
     svgLoader(),
+    electron({
+      // 主进程入口文件
+      entry: 'electron/main.js'
+    })
   ],
   define: { 'process.env': {} },
   resolve: {
