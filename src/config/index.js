@@ -10,3 +10,10 @@ export const GamePortFactor = {
   masterServerPort: 31000,
   authenticationPort: 41000,
 }
+
+export const DB_KEY = {
+  dmps: 'dmps',
+  theme: 'theme',
+  language: 'language',
+  selectedDstCluster: 'selectedRoomID',
+}

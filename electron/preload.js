@@ -3,7 +3,7 @@ const {contextBridge, ipcRenderer} = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
   openDashboardWindow: () => ipcRenderer.send('open-dashboard-window'),
-  openConfigWindow: () => ipcRenderer.send('open-config-window'),
+  openEntryWindow: () => ipcRenderer.send('open-entry-window'),
   reloadWindow: () => ipcRenderer.send('reload-window'),
 
   readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),

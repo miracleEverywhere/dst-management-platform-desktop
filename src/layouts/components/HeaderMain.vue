@@ -63,7 +63,6 @@ import { useI18n } from "vue-i18n"
 import { useDisplay } from "vuetify"
 import { truncateString } from "@/utils/tools.js"
 import useGlobalStore from "@store/global"
-import useDesktopStore from "@store/desktop"
 import platformApi from "@/api/platform.js"
 import roomApi from "@/api/room.js"
 
@@ -71,7 +70,6 @@ import roomApi from "@/api/room.js"
 const { t } = useI18n()
 const { mobile } = useDisplay()
 const globalStore = useGlobalStore()
-const desktopStore = useDesktopStore()
 
 const gameVersion = ref({
   local: 0,
@@ -114,7 +112,7 @@ const getColor = () => {
 }
 
 onMounted(async () => {
-  if (desktopStore.inEntry) {
+  if (globalStore.entry.inEntry) {
     return
   }
   await getGameVersion()

@@ -249,7 +249,7 @@ ipcMain.on('open-dashboard-window', () => {
   });
 })
 
-ipcMain.on('open-config-window', () => {
+ipcMain.on('open-entry-window', () => {
   needShownWin = winEntry
   winDashboard.hide()
   winEntry.reload()

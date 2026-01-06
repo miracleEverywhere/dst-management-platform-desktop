@@ -28,6 +28,11 @@ const globalStore = defineStore("global", {
         noTip: false, // 是否要提醒
         closeVersion: '', // 点击时的最新版本
       },
+      entry: {
+        ip: '',
+        port: '',
+        inEntry: true,
+      }
     }
   },
   actions: {},

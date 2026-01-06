@@ -27,6 +27,8 @@
 import { useI18n } from "vue-i18n"
 import useGlobalStore from "@store/global"
 import { useLocale } from "vuetify"
+import ElectronApi from "@/utils/electronApi";
+import {DB_KEY} from "@/config";
 
 const i18n = useI18n()
 const { current } = useLocale()
@@ -63,6 +65,7 @@ watch(() => globalStore.language, () => {
 const handleChangeLanguage = lang => {
   i18n.locale.value = lang
   globalStore.language = lang
+  ElectronApi.store.set(DB_KEY.language, lang)
 
   switch (lang) {
   case 'zh':

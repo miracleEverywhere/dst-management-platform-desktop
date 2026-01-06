@@ -12,6 +12,8 @@
 import { useTheme } from 'vuetify'
 import useGlobalStore from "@store/global"
 import { useI18n } from "vue-i18n"
+import ElectronApi from "@/utils/electronApi";
+import {DB_KEY} from "@/config";
 
 const props = defineProps({
   themes: {
@@ -39,6 +41,7 @@ const {
 onMounted(() => {
   if (globalStore.theme === "") {
     globalStore.theme = theme.global.name.value
+    ElectronApi.store.set(DB_KEY.theme, theme.global.name.value)
   } else {
     theme.change(globalStore.theme)
     document.documentElement.className = globalStore.theme
@@ -52,6 +55,7 @@ const changeTheme = async event => {
 
     theme.change(nextTheme)
     globalStore.theme = nextTheme
+    ElectronApi.store.set(DB_KEY.theme, nextTheme)
     document.documentElement.className = nextTheme
   }
 
