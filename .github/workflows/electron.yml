@@ -36,19 +36,19 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         if: matrix.os == 'macos-latest'
-        run: vite build && electron-builder
+        run: npm run electron:build
 
       - name: build-win
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         if: matrix.os == 'windows-latest'
-        run: vite build && electron-builder
+        run: npm run electron:build
 
       - name: build-linux
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         if: matrix.os == 'ubuntu-latest'
-        run: vite build && electron-builder
+        run: npm run electron:build
 
       - name: release
         uses: softprops/action-gh-release@v1
