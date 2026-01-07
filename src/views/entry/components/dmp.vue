@@ -55,10 +55,10 @@
               </v-chip>
               <div style="margin-top: 10px">
                 <v-chip label color="info" prepend-icon="ri-instance-line">
-                  房间数 {{overviewData.roomCount}}
+                  {{t('entry.rooms')}} {{overviewData.roomCount}}
                 </v-chip>
                 <v-chip label color="info" prepend-icon="ri-gamepad-line" class="ml-2">
-                  世界数 {{overviewData.worldCount}}
+                  {{t('entry.worlds')}} {{overviewData.worldCount}}
                 </v-chip>
               </div>
             </div>
@@ -86,7 +86,7 @@
               rounded
               style="margin-left: 20px"
             >
-              内存
+              {{t('entry.mem')}}
             </v-progress-circular>
           </v-col>
         </v-row>
@@ -95,14 +95,14 @@
           style="margin-top: 25px"
           @click="handleGotoDashboard"
         >
-          进入
+          {{t('entry.enter')}}
         </v-btn>
       </v-card-text>
       <v-dialog
         v-model="dialogEdit"
         width="auto"
       >
-        <v-card title="编辑">
+        <v-card :title="t('entry.edit')">
           <v-card-text>
             <v-form
               fast-fail
@@ -129,9 +129,8 @@
                     <v-text-field
                       v-model.number="addForm.port"
                       :rules="addFormRules.port"
-                      label="端口"
+                      :label="t('entry.port')"
                       required
-                      clearable
                     />
                   </v-col>
                   <v-col
@@ -141,7 +140,7 @@
                     <v-text-field
                       v-model="addForm.token"
                       :rules="addFormRules.token"
-                      label="令牌"
+                      :label="t('entry.token')"
                       required
                       type="password"
                       clearable
@@ -153,7 +152,7 @@
                   >
                     <v-text-field
                       v-model="addForm.remark"
-                      label="备注"
+                      :label="t('entry.remark')"
                       clearable
                     />
                   </v-col>
@@ -168,7 +167,7 @@
                       type="submit"
                       :loading="loading"
                     >
-                      提交
+                      {{ t('entry.submit') }}
                     </v-btn>
                   </v-col>
                   <v-col
@@ -182,7 +181,7 @@
                       color="white"
                       @click="dialogEdit=false"
                     >
-                      取消
+                      {{ t('entry.cancel') }}
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -194,7 +193,7 @@
     </template>
     <template v-else>
       <v-card-title>
-        点击新建
+        {{t('entry.clickCreate')}}
       </v-card-title>
       <v-card-text>
         <v-card variant="tonal">
@@ -213,15 +212,13 @@
               persistent
               @after-enter="initDialog(false)"
             >
-              <v-card title="新建">
+              <v-card :title="t('entry.create')">
                 <v-card-text>
-                  <!-- 删除这里的 "123" 文本节点 -->
                   <v-form
                     fast-fail
                     @submit.prevent="handleAdd"
                   >
                     <v-container max-width="500">
-                      <!-- 添加 container 保持一致性 -->
                       <v-row>
                         <v-col
                           cols="12"
@@ -230,7 +227,7 @@
                           <v-text-field
                             v-model="addForm.ip"
                             :rules="addFormRules.ip"
-                            label="IP/域名"
+                            label="IP"
                             required
                             clearable
                           />
@@ -242,7 +239,7 @@
                           <v-text-field
                             v-model.number="addForm.port"
                             :rules="addFormRules.port"
-                            label="端口"
+                            :label="t('entry.port')"
                             required
                             clearable
                           />
@@ -254,7 +251,7 @@
                           <v-text-field
                             v-model="addForm.token"
                             :rules="addFormRules.token"
-                            label="令牌"
+                            :label="t('entry.token')"
                             required
                             type="password"
                             clearable
@@ -264,7 +261,7 @@
                               open-delay="0"
                               scroll-strategy="close"
                             >
-                              请前往网页版饥荒管理平台，点击 工具-令牌 进行创建
+                              {{t('entry.tokenTip')}}
                             </v-tooltip>
                           </v-text-field>
                         </v-col>
@@ -274,7 +271,7 @@
                         >
                           <v-text-field
                             v-model="addForm.remark"
-                            label="备注"
+                            :label="t('entry.remark')"
                             clearable
                           />
                         </v-col>
@@ -289,7 +286,7 @@
                             type="submit"
                             :loading="loading"
                           >
-                            提交
+                            {{t('entry.submit')}}
                           </v-btn>
                         </v-col>
                         <v-col
@@ -303,7 +300,7 @@
                             color="white"
                             @click="dialog=false"
                           >
-                            取消
+                            {{t('entry.cancel')}}
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -329,6 +326,8 @@ import { DB_KEY } from "@/config"
 import { sleep } from "@antfu/utils"
 import dashboardApi from "@/api/dashboard.js"
 import platformApi from "@/api/platform";
+import { useI18n } from "vue-i18n"
+
 
 const props = defineProps({
   dmp: {
@@ -345,6 +344,7 @@ const props = defineProps({
 
 const globalStore = useGlobalStore()
 const userStore = useUserStore()
+const { t } = useI18n()
 
 const dmp = computed(() => {
   return {
@@ -368,29 +368,29 @@ const addFormRules = {
     value => {
       if (value) return true
       
-      return '请输入IP/域名'
+      return t('entry.validate.ip')
     },
   ],
   port: [
     value => {
       if (value) {
         if (typeof value !== 'number' || isNaN(value)) {
-          return '请输入数字'
+          return t('entry.validate.port')
         }
 
         // 检查是否为整数
         if (!Number.isInteger(value)) {
-          return '请输入整数'
+          return t('entry.validate.port')
         }
 
         // 检查端口号范围
         if (value >= 0 && value <= 65535) {
           return true
         } else {
-          return '端口范围：1-65535'
+          return t('entry.validate.port')
         }
       } else {
-        return '请输入端口'
+        return t('entry.validate.port')
       }
     },
   ],
@@ -398,7 +398,7 @@ const addFormRules = {
     value => {
       if (value) return true
       
-      return '请输入令牌'
+      return t('entry.validate.token')
     },
   ],
 }
@@ -434,7 +434,7 @@ const handleAdd = async event => {
 
   const parsedToken = parseJwt(addForm.value.token)
   if (parsedToken === null) {
-    showSnackbar('令牌解析失败，请输入正确的令牌', 'error')
+    showSnackbar(t('entry.validate.token'), 'error')
     loading.value = false
     
     return
@@ -442,7 +442,7 @@ const handleAdd = async event => {
 
   const role = parsedToken.payload.role
   if (role !== 'admin') {
-    showSnackbar('仅支持管理员创建的令牌', 'error')
+    showSnackbar(t('entry.validate.token'), 'error')
     loading.value = false
     
     return
@@ -462,7 +462,7 @@ const handleAdd = async event => {
   }
 
   ElectronApi.store.append(DB_KEY.dmps, newConfig)
-  showSnackbar('新建成功', 'success')
+  showSnackbar(t('entry.createSuccess'), 'success')
   dialog.value = false
   loading.value = false
   await sleep(2000)
@@ -502,7 +502,7 @@ const handleUpdate = async event => {
     console.log(dbValue)
   }
   ElectronApi.store.set(DB_KEY.dmps, dbValue)
-  showSnackbar('更新成功', 'success')
+  showSnackbar(t('entry.updateSuccess'), 'success')
   dialogEdit.value = false
   await sleep(2000)
   location.reload()
@@ -517,11 +517,11 @@ const handleDelete = async () => {
     // 2. 使用 splice 方法删除目标对象
     dbValue.splice(targetIndex, 1) // 从 targetIndex 开始删除 1 个元素
     ElectronApi.store.set(DB_KEY.dmps, dbValue)
-    showSnackbar('删除成功', 'success')
+    showSnackbar(t('entry.deleteSuccess'), 'success')
     await sleep(2000)
     location.reload()
   } else {
-    showSnackbar('删除失败', 'error')
+    showSnackbar(t('entry.deleteFail'), 'error')
   }
 }
 
@@ -529,17 +529,17 @@ const menu = ref(false)
 
 const menuItems = ref([
   {
-    title: '刷 新',
+    title: t('entry.refresh'),
     color: 'info',
     icon: 'ri-refresh-line',
   },
   {
-    title: '编 辑',
+    title: t('entry.edit'),
     color: 'primary',
     icon: 'ri-edit-2-line',
   },
   {
-    title: '删 除',
+    title: t('entry.delete'),
     color: 'error',
     icon: 'ri-delete-bin-line',
   },
