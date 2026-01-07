@@ -9,7 +9,9 @@
     <h3>:star2: 实现同时管理多个DMP的桌面软件 :star2:</h3>
 </div>
 
----
+### 注意
+
+使用该软件前，需要先部署[饥荒管理平台](https://github.com/miracleEverywhere/dst-management-platform-api)
 
 ### MacOS 如果遇到 xxx 已损坏，解决方法：
 打开终端，输入以下代码，需要输入开机密码
