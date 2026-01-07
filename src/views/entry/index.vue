@@ -8,7 +8,7 @@
       <document />
       <lang-select />
       <navbar-theme-switcher />
-      <refresh/>
+      <refresh />
     </div>
   </div>
   <div>
@@ -40,7 +40,7 @@ import ElectronApi from "@/utils/electronApi"
 import { DB_KEY } from "@/config"
 import useGlobalStore from "@store/global"
 import Dmp from "@/views/entry/components/dmp.vue"
-import Refresh from "@/layouts/components/Refresh.vue";
+import Refresh from "@/layouts/components/Refresh.vue"
 
 const globalStore = useGlobalStore()
 

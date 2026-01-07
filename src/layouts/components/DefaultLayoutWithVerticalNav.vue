@@ -22,9 +22,9 @@
 
         <lang-select />
 
-        <navbar-theme-switcher/>
+        <navbar-theme-switcher />
 
-        <refresh/>
+        <refresh />
 
         <goto-entry />
       </div>
@@ -64,8 +64,8 @@ import Document from "@/layouts/components/Document.vue"
 import NavHeader from "@/layouts/components/NavHeader.vue"
 import HeaderMain from "@/layouts/components/headerMain.vue"
 import { useDisplay } from "vuetify/framework"
-import GotoEntry from "@/layouts/components/GotoEntry.vue";
-import Refresh from "@/layouts/components/Refresh.vue";
+import GotoEntry from "@/layouts/components/GotoEntry.vue"
+import Refresh from "@/layouts/components/Refresh.vue"
 
 const { mobile } = useDisplay()
 </script>

@@ -7,9 +7,10 @@ const Store = require('electron-store')
 
 const store = new Store({
   defaults: {
-    theme: 'light' // 默认跟随系统
-  }
+    theme: 'light', // 默认跟随系统
+  },
 })
+
 let winEntry, winDashboard, needShownWin
 let tray
 
@@ -128,8 +129,8 @@ const createWinEntry = () => {
   })
 
   nativeTheme.on('updated', () => {
-    updateAllWindowsTheme();
-  });
+    updateAllWindowsTheme()
+  })
 }
 
 const createWinDashboard = () => {
@@ -185,23 +186,23 @@ const createWinDashboard = () => {
   })
 
   nativeTheme.on('updated', () => {
-    updateAllWindowsTheme();
-  });
+    updateAllWindowsTheme()
+  })
 }
 
 function updateAllWindowsTheme() {
-  const theme = store.get('theme', 'light');
-  const actualTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
+  const theme = store.get('theme', 'light')
+  const actualTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
 
   BrowserWindow.getAllWindows().forEach(window => {
     if (window && !window.isDestroyed()) {
       // 发送主题更新事件到渲染进程
       window.webContents.send('theme-changed', {
         preference: theme,
-        actual: actualTheme
-      });
+        actual: actualTheme,
+      })
     }
-  });
+  })
 }
 
 
@@ -277,9 +278,11 @@ app.on('activate', () => {
 })
 
 function applyStoredTheme() {
-  const theme = store.get('theme', 'light');
-  nativeTheme.themeSource = theme;
-  return theme;
+  const theme = store.get('theme', 'light')
+
+  nativeTheme.themeSource = theme
+  
+  return theme
 }
 
 ipcMain.on('open-dashboard-window', () => {
@@ -402,6 +405,7 @@ ipcMain.handle('show-save-dialog', async (event, options) => {
 
 ipcMain.handle('theme-change', (_, theme) => {
   nativeTheme.themeSource = theme
+  
   return nativeTheme.shouldUseDarkColors
 })
 

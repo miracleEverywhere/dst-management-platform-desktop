@@ -49,6 +49,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     }
   },
 
-  themeChange: (theme) => ipcRenderer.invoke('theme-change', theme),
+  themeChange: theme => ipcRenderer.invoke('theme-change', theme),
 
 })

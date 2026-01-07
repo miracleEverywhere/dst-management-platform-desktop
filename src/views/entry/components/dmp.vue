@@ -54,11 +54,20 @@
                 http://{{ dmp.ip }}:{{ dmp.port }}
               </v-chip>
               <div style="margin-top: 10px">
-                <v-chip label color="info" prepend-icon="ri-instance-line">
-                  {{t('entry.rooms')}} {{overviewData.roomCount}}
+                <v-chip
+                  label
+                  color="info"
+                  prepend-icon="ri-instance-line"
+                >
+                  {{ t('entry.rooms') }} {{ overviewData.roomCount }}
                 </v-chip>
-                <v-chip label color="info" prepend-icon="ri-gamepad-line" class="ml-2">
-                  {{t('entry.worlds')}} {{overviewData.worldCount}}
+                <v-chip
+                  label
+                  color="info"
+                  prepend-icon="ri-gamepad-line"
+                  class="ml-2"
+                >
+                  {{ t('entry.worlds') }} {{ overviewData.worldCount }}
                 </v-chip>
               </div>
             </div>
@@ -86,7 +95,7 @@
               rounded
               style="margin-left: 20px"
             >
-              {{t('entry.mem')}}
+              {{ t('entry.mem') }}
             </v-progress-circular>
           </v-col>
         </v-row>
@@ -95,7 +104,7 @@
           style="margin-top: 25px"
           @click="handleGotoDashboard"
         >
-          {{t('entry.enter')}}
+          {{ t('entry.enter') }}
         </v-btn>
       </v-card-text>
       <v-dialog
@@ -193,7 +202,7 @@
     </template>
     <template v-else>
       <v-card-title>
-        {{t('entry.clickCreate')}}
+        {{ t('entry.clickCreate') }}
       </v-card-title>
       <v-card-text>
         <v-card variant="tonal">
@@ -261,7 +270,7 @@
                               open-delay="0"
                               scroll-strategy="close"
                             >
-                              {{t('entry.tokenTip')}}
+                              {{ t('entry.tokenTip') }}
                             </v-tooltip>
                           </v-text-field>
                         </v-col>
@@ -286,7 +295,7 @@
                             type="submit"
                             :loading="loading"
                           >
-                            {{t('entry.submit')}}
+                            {{ t('entry.submit') }}
                           </v-btn>
                         </v-col>
                         <v-col
@@ -300,7 +309,7 @@
                             color="white"
                             @click="dialog=false"
                           >
-                            {{t('entry.cancel')}}
+                            {{ t('entry.cancel') }}
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -325,7 +334,7 @@ import ElectronApi from "@/utils/electronApi"
 import { DB_KEY } from "@/config"
 import { sleep } from "@antfu/utils"
 import dashboardApi from "@/api/dashboard.js"
-import platformApi from "@/api/platform";
+import platformApi from "@/api/platform"
 import { useI18n } from "vue-i18n"
 
 
@@ -594,6 +603,7 @@ const sysInfo = ref({
   cpu: -1,
   memory: -1,
 })
+
 const needContinue = ref(true)
 
 const getCpuMemStatusLoading = ref(true)
@@ -633,6 +643,7 @@ const getRoomBasic = () => {
 }
 
 let intervalId = null
+
 const startRequests = () => {
   intervalId = setInterval(() => {
     if (needContinue.value) {
@@ -641,6 +652,7 @@ const startRequests = () => {
     }
   }, 5000)
 }
+
 const cancelRequests = () => {
   if (intervalId) {
     clearInterval(intervalId)
@@ -655,8 +667,8 @@ onMounted(() => {
 
 
 onBeforeUnmount(() => {
-  cancelRequests();
-  window.removeEventListener('beforeunload', cancelRequests);
+  cancelRequests()
+  window.removeEventListener('beforeunload', cancelRequests)
 })
 </script>
 

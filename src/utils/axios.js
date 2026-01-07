@@ -22,6 +22,7 @@ instance.interceptors.request.use(
     }
 
     config.baseURL = `http://${globalStore.entry.ip}:${globalStore.entry.port}/${ApiVersion}`
+
     const token = globalStore.entry.token
 
     // 如果 token 存在，将其添加到请求头中
