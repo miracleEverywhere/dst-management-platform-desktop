@@ -32,7 +32,7 @@
 
 <script setup>
 import NavHeader from "@/layouts/components/NavHeader.vue"
-import Github from "@/layouts/components/GitHub.vue"
+import Github from "@/layouts/components/Github.vue"
 import LangSelect from "@/layouts/components/LangSelect.vue"
 import Document from "@/layouts/components/Document.vue"
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue"
