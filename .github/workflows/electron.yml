@@ -25,25 +25,25 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
-        run: npm install
+        run: pnpm install
 
       - name: build-mac
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         if: matrix.os == 'macos-latest'
-        run: npm run electron:build
+        run: vite build && electron-builder
 
       - name: build-win
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         if: matrix.os == 'windows-latest'
-        run: npm run electron:build
+        run: vite build && electron-builder
 
       - name: build-linux
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         if: matrix.os == 'ubuntu-latest'
-        run: npm run electron:build
+        run: vite build && electron-builder
 
       - name: release
         uses: softprops/action-gh-release@v1
