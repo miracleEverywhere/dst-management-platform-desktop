@@ -59,10 +59,10 @@ import NavItems from '@/layouts/components/NavItems.vue'
 import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import LangSelect from '@/layouts/components/LangSelect.vue'
-import Github from "@/layouts/components/GitHub.vue"
+import Github from "@/layouts/components/Github.vue"
 import Document from "@/layouts/components/Document.vue"
 import NavHeader from "@/layouts/components/NavHeader.vue"
-import HeaderMain from "@/layouts/components/headerMain.vue"
+import HeaderMain from "@/layouts/components/HeaderMain.vue"
 import { useDisplay } from "vuetify/framework"
 import GotoEntry from "@/layouts/components/GotoEntry.vue"
 import Refresh from "@/layouts/components/Refresh.vue"
