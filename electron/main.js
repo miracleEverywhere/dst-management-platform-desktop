@@ -153,10 +153,10 @@ const createWinDashboard = () => {
   applyStoredTheme()
 
   if (process.env.VITE_DEV_SERVER_URL) {
-    winDashboard.loadURL(`${process.env.VITE_DEV_SERVER_URL}#/dashboard`)
+    winDashboard.loadURL(`${process.env.VITE_DEV_SERVER_URL}#/rooms`)
     winDashboard.webContents.openDevTools({ mode: 'detach' })
   } else {
-    winDashboard.loadFile(join(__dirname, '../dist/index.html'), { hash: '#/dashboard' })
+    winDashboard.loadFile(join(__dirname, '../dist/index.html'), { hash: '#/rooms' })
   }
 
   const menuConfig = Menu.buildFromTemplate(template)
