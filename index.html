@@ -18,8 +18,6 @@
             src="/dmp.svg"
             alt="SVG Image"
             style="width: 100px; height: auto;"
-            onload="console.log('Logo loaded')"
-            onerror="console.log('Logo load error')"
           >
       </div>
       <div class="loading">
@@ -37,8 +35,6 @@
 
       document.documentElement.style.setProperty('--initial-loader-bg', loaderColor)
       document.documentElement.style.setProperty('--initial-loader-color', primaryColor)
-
-      console.log('Loading colors', { loaderColor, primaryColor })
     })()
   </script>
 </body>

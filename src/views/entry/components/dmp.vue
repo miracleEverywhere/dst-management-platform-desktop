@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card style="min-height: 260px">
     <template v-if="dmp.id!==undefined">
       <v-card-item>
         <v-card-title>
@@ -53,7 +53,14 @@
                 />
                 http://{{ dmp.ip }}:{{ dmp.port }}
               </v-chip>
-              <div style="margin-top: 10px" />
+              <div style="margin-top: 10px">
+                <v-chip label color="info" prepend-icon="ri-instance-line">
+                  房间数 {{overviewData.roomCount}}
+                </v-chip>
+                <v-chip label color="info" prepend-icon="ri-gamepad-line" class="ml-2">
+                  世界数 {{overviewData.worldCount}}
+                </v-chip>
+              </div>
             </div>
           </v-col>
           <v-col
@@ -61,18 +68,22 @@
             sm="5"
           >
             <v-progress-circular
+              :model-value="sysInfo.cpu.toFixed(1)"
+              :indeterminate="getCpuMemStatusLoading"
               :size="60"
               :width="5"
-              color="primary"
-              :model-value="12"
+              :color="getProgressColor(sysInfo.cpu)"
+              rounded
             >
               CPU
             </v-progress-circular>
             <v-progress-circular
+              :model-value="sysInfo.memory.toFixed(1)"
+              :indeterminate="getCpuMemStatusLoading"
               :size="60"
               :width="5"
-              color="warning"
-              :model-value="45"
+              :color="getProgressColor(sysInfo.memory)"
+              rounded
               style="margin-left: 20px"
             >
               内存
@@ -316,6 +327,8 @@ import useUserStore from "@store/user"
 import ElectronApi from "@/utils/electronApi"
 import { DB_KEY } from "@/config"
 import { sleep } from "@antfu/utils"
+import dashboardApi from "@/api/dashboard.js"
+import platformApi from "@/api/platform";
 
 const props = defineProps({
   dmp: {
@@ -410,7 +423,6 @@ const initDialog = edit => {
 }
 
 const handleAdd = async event => {
-  console.log(1)
   loading.value = true
 
   const results = await event
@@ -419,7 +431,6 @@ const handleAdd = async event => {
     
     return
   }
-  console.log(2)
 
   const parsedToken = parseJwt(addForm.value.token)
   if (parsedToken === null) {
@@ -428,7 +439,6 @@ const handleAdd = async event => {
     
     return
   }
-  console.log(3)
 
   const role = parsedToken.payload.role
   if (role !== 'admin') {
@@ -437,7 +447,6 @@ const handleAdd = async event => {
     
     return
   }
-  console.log(4)
 
   globalStore.entry.inEntry = true
   globalStore.entry.ip = addForm.value.ip
@@ -453,7 +462,6 @@ const handleAdd = async event => {
   }
 
   ElectronApi.store.append(DB_KEY.dmps, newConfig)
-  console.log(5)
   showSnackbar('新建成功', 'success')
   dialog.value = false
   loading.value = false
@@ -488,7 +496,6 @@ const handleUpdate = async event => {
   // 1. 找到目标对象的索引
   const targetIndex = dbValue.findIndex(item => item.id === newConfig.id)
 
-  console.log(dbValue)
   if (targetIndex !== -1) {
     // 2. 直接修改数组中对应索引的对象
     dbValue[targetIndex] = { ...dbValue[targetIndex], ...newConfig }
@@ -554,12 +561,102 @@ const handleMenuClick = index => {
 }
 
 const handleGotoDashboard = () => {
+  needContinue.value = false
+
   globalStore.entry.ip = dmp.value.ip
-  globalStore.entry.port = dmp.value.ip
+  globalStore.entry.port = dmp.value.port
+  globalStore.entry.token = dmp.value.token
   globalStore.entry.inEntry = false
-  userStore.token = dmp.value.token
+
+  userStore.userInfo.role = 'admin'
 
   ElectronApi.window.dashboard()
 }
+
+const getProgressColor = n => {
+  if (n >= 0 && n < 25) {
+    return 'success'
+  }
+  if (n >= 25 && n < 50) {
+    return 'info'
+  }
+  if (n >= 50 && n < 75) {
+    return 'warning'
+  }
+  if (n >= 75) {
+    return 'error'
+  }
+
+  return 'primary'
+}
+
+const sysInfo = ref({
+  cpu: -1,
+  memory: -1,
+})
+const needContinue = ref(true)
+
+const getCpuMemStatusLoading = ref(true)
+
+const getCpuMemStatus = () => {
+  globalStore.entry.ip = dmp.value.ip
+  globalStore.entry.port = dmp.value.port
+  globalStore.entry.token = dmp.value.token
+  dashboardApi.info.sys.get().then(response => {
+    sysInfo.value = response.data
+    getCpuMemStatusLoading.value = false
+  }).catch(() => {
+    needContinue.value = false
+  })
+}
+
+const overviewData = ref({
+  runningTime: undefined,
+  memory: undefined,
+  roomCount: 0,
+  worldCount: 0,
+  userCount: undefined,
+  uidCount: undefined,
+  maxCpu: undefined,
+  maxMemory: undefined,
+  maxNetUp: undefined,
+  maxNetDown: undefined,
+})
+
+const getRoomBasic = () => {
+  globalStore.entry.ip = dmp.value.ip
+  globalStore.entry.port = dmp.value.port
+  globalStore.entry.token = dmp.value.token
+  platformApi.overview.get().then(response => {
+    overviewData.value = response.data
+  })
+}
+
+let intervalId = null
+const startRequests = () => {
+  intervalId = setInterval(() => {
+    if (needContinue.value) {
+      getCpuMemStatus()
+      getRoomBasic()
+    }
+  }, 5000)
+}
+const cancelRequests = () => {
+  if (intervalId) {
+    clearInterval(intervalId)
+    intervalId = null
+  }
+}
+
+onMounted(() => {
+  globalStore.entry.inEntry = true
+  startRequests()
+})
+
+
+onBeforeUnmount(() => {
+  cancelRequests();
+  window.removeEventListener('beforeunload', cancelRequests);
+})
 </script>
 

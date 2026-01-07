@@ -8,10 +8,11 @@
       <document />
       <lang-select />
       <navbar-theme-switcher />
+      <refresh/>
     </div>
   </div>
   <div>
-    <v-row dense>
+    <v-row class="ma-4">
       <v-col
         v-for="dmp in dmps"
         cols="12"
@@ -39,6 +40,7 @@ import ElectronApi from "@/utils/electronApi"
 import { DB_KEY } from "@/config"
 import useGlobalStore from "@store/global"
 import Dmp from "@/views/entry/components/dmp.vue"
+import Refresh from "@/layouts/components/Refresh.vue";
 
 const globalStore = useGlobalStore()
 

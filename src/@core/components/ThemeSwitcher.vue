@@ -42,9 +42,11 @@ onMounted(() => {
   if (globalStore.theme === "") {
     globalStore.theme = theme.global.name.value
     ElectronApi.store.set(DB_KEY.theme, theme.global.name.value)
+    ElectronApi.window.themeChange(theme.global.name.value)
   } else {
     theme.change(globalStore.theme)
     document.documentElement.className = globalStore.theme
+    ElectronApi.window.themeChange(globalStore.theme)
   }
 })
 
@@ -57,6 +59,7 @@ const changeTheme = async event => {
     globalStore.theme = nextTheme
     ElectronApi.store.set(DB_KEY.theme, nextTheme)
     document.documentElement.className = nextTheme
+    ElectronApi.window.themeChange(nextTheme)
   }
 
   // 启动视图过渡

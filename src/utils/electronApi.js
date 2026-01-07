@@ -28,6 +28,9 @@ export default class ElectronApi {
     reload() {
       window.electronAPI.reloadWindow()
     },
+    themeChange(theme) {
+      window.electronAPI.themeChange(theme)
+    }
   }
   static download = {
     file(url, name) {

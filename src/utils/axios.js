@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { showSnackbar } from '@/utils/snackbar'
-import { getToken } from "@/utils/tools"
 import useUserStore from "@store/user"
 import { ApiVersion } from "@/config"
 import useGlobalStore from "@store/global.js"
@@ -8,20 +7,27 @@ import useGlobalStore from "@store/global.js"
 
 // 创建一个 axios 实例
 const instance = axios.create({
-  baseURL: ApiVersion,
+  baseURL: '',
   timeout: 600000, // 请求超时时间
 })
 
 // 请求拦截器：在请求发送之前添加 token
 instance.interceptors.request.use(
   config => {
-    const token = getToken()
+    const globalStore = useGlobalStore()
+
+    if (!globalStore.entry.ip || globalStore.entry.ip.trim() === '') {
+      // 直接返回一个被拒绝的 Promise，阻止请求发送
+      return Promise.reject(new Error('IP address is empty'))
+    }
+
+    config.baseURL = `http://${globalStore.entry.ip}:${globalStore.entry.port}/${ApiVersion}`
+    const token = globalStore.entry.token
 
     // 如果 token 存在，将其添加到请求头中
     if (token) {
       config.headers['X-DMP-TOKEN'] = token
     }
-    const globalStore = useGlobalStore()
 
     config.headers["X-I18n-Lang"] = globalStore.language
 

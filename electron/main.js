@@ -1,11 +1,15 @@
-const { app, ipcMain, BrowserWindow, Menu, Tray, shell, dialog, net } = require('electron')
+const { app, ipcMain, BrowserWindow, Menu, Tray, shell, dialog, net, nativeTheme } = require('electron')
 const { join } = require('path')
 const path = require('path')
 const fs = require('fs')
 const Store = require('electron-store')
 
 
-const store = new Store()
+const store = new Store({
+  defaults: {
+    theme: 'light' // 默认跟随系统
+  }
+})
 let winEntry, winDashboard, needShownWin
 let tray
 
@@ -92,6 +96,8 @@ const createWinEntry = () => {
     },
   })
 
+  applyStoredTheme()
+
   if (process.env.VITE_DEV_SERVER_URL) {
     winEntry.loadURL(`${process.env.VITE_DEV_SERVER_URL}#/entry`)
 
@@ -120,6 +126,10 @@ const createWinEntry = () => {
     winEntry.show()
     needShownWin = winEntry
   })
+
+  nativeTheme.on('updated', () => {
+    updateAllWindowsTheme();
+  });
 }
 
 const createWinDashboard = () => {
@@ -139,6 +149,8 @@ const createWinDashboard = () => {
       preload: join(__dirname, 'preload.js'),
     },
   })
+
+  applyStoredTheme()
 
   if (process.env.VITE_DEV_SERVER_URL) {
     winDashboard.loadURL(`${process.env.VITE_DEV_SERVER_URL}#/dashboard`)
@@ -171,6 +183,25 @@ const createWinDashboard = () => {
   winDashboard.on('closed', () => {
     winDashboard = null
   })
+
+  nativeTheme.on('updated', () => {
+    updateAllWindowsTheme();
+  });
+}
+
+function updateAllWindowsTheme() {
+  const theme = store.get('theme', 'light');
+  const actualTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
+
+  BrowserWindow.getAllWindows().forEach(window => {
+    if (window && !window.isDestroyed()) {
+      // 发送主题更新事件到渲染进程
+      window.webContents.send('theme-changed', {
+        preference: theme,
+        actual: actualTheme
+      });
+    }
+  });
 }
 
 
@@ -244,6 +275,12 @@ app.on('before-quit', () => {
 app.on('activate', () => {
   if (needShownWin) needShownWin.show()
 })
+
+function applyStoredTheme() {
+  const theme = store.get('theme', 'light');
+  nativeTheme.themeSource = theme;
+  return theme;
+}
 
 ipcMain.on('open-dashboard-window', () => {
   needShownWin = winDashboard
@@ -361,5 +398,10 @@ ipcMain.handle('show-save-dialog', async (event, options) => {
   })
 
   return { canceled, filePath }
+})
+
+ipcMain.handle('theme-change', (_, theme) => {
+  nativeTheme.themeSource = theme
+  return nativeTheme.shouldUseDarkColors
 })
 
