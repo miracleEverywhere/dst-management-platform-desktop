@@ -243,6 +243,24 @@
     :cancel-button="false"
     @confirm="reloadPage"
   />
+  <confirm-box
+    v-model="updateSuccessDialog"
+    type="success"
+    :title="t('install.install.updateSuccess')"
+    :content="t('install.install.updateSuccess')"
+    :confirm-text="t('install.install.confirm')"
+    :cancel-button="false"
+    @confirm="reloadPage"
+  />
+  <confirm-box
+    v-model="updateErrorDialog"
+    type="error"
+    :title="t('install.install.updateFail')"
+    :content="t('install.install.updateFail')"
+    :confirm-text="t('install.install.confirm')"
+    :cancel-button="false"
+    @confirm="reloadPage"
+  />
 </template>
 
 <script setup>
@@ -337,7 +355,7 @@ const handleUpdate = async () => {
   await connectWebSocket()
 
   await sleep(2000)
-  await sendCommand('cd ~/steamcmd ; ./steamcmd.sh +login anonymous +force_install_dir ~/dst +app_update 343050 validate +quit')
+  await sendCommand('bash manual_update.sh')
 }
 
 const windowHeight = ref(window.innerHeight)
@@ -411,7 +429,7 @@ const handleResize = () => {
 
 const calculateContainerSize = () => {
   const other = 120
-  
+
   return Math.max(2, Math.floor(windowHeight.value - other))
 }
 
@@ -432,7 +450,7 @@ const sendResizeMessage = () => {
 const sendCommand = command => {
   if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
     console.error('WebSocket未连接')
-    
+
     return
   }
 
@@ -443,6 +461,8 @@ const sendCommand = command => {
 
 const installSuccessDialog = ref(false)
 const installErrorDialog = ref(false)
+const updateSuccessDialog = ref(false)
+const updateErrorDialog = ref(false)
 
 const reloadPage = () => {
   window.location.reload()
@@ -455,6 +475,8 @@ const connectWebSocket = () => {
   const wsUrl = `${protocol}//${window.location.host}/v3/platform/webssh?token=${token}`
   const regexSuccess = /==>dmp@@ 安装完成 @@dmp<==/
   const regexFail = /==>dmp@@ 安装失败 @@dmp<==/
+  const regexUpdateSuccess = /==>dmp@@ 更新完成 @@dmp<==/
+  const regexUpdateFail = /==>dmp@@ 更新失败 @@dmp<==/
 
   ws.value = new WebSocket(wsUrl)
 
@@ -482,6 +504,12 @@ const connectWebSocket = () => {
         }
         if (str.match(regexFail)) {
           installErrorDialog.value = true
+        }
+        if (str.match(regexUpdateSuccess)) {
+          updateSuccessDialog.value = true
+        }
+        if (str.match(regexUpdateFail)) {
+          updateErrorDialog.value = true
         }
       }
       reader.readAsText(event.data)

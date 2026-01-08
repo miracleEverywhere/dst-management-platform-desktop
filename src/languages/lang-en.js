@@ -573,6 +573,8 @@ export default {
       success: 'Game Install Success',
       fail: 'Game Install Failed',
       confirm: 'Got it',
+      updateSuccess: 'Game Update Success',
+      updateFail: 'Game Update Failed',
     },
   },
   platform: {

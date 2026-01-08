@@ -572,6 +572,8 @@ export default {
       success: '游戏安装成功',
       fail: '游戏安装失败',
       confirm: '我知道了',
+      updateSuccess: '游戏更新成功',
+      updateFail: '游戏更新失败',
     },
   },
   platform: {
