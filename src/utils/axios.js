@@ -70,6 +70,10 @@ instance.interceptors.response.use(
   },
   error => {
     // 响应错误处理
+    if (error.message === 'IP address is empty') {
+      // 不处理 IP 为空
+      return Promise.reject(error)
+    }
     const status = Number(error?.response?.data?.status ?? error?.response?.data?.code ?? error?.response?.status ?? error?.data?.code)
     if (status === 420) {
       const userStore = useUserStore()
