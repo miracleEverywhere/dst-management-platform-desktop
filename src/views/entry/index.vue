@@ -14,7 +14,7 @@
   <div>
     <v-row class="ma-4">
       <v-col
-        v-for="dmp in dmps"
+        v-for="(dmp, i) in dmps"
         cols="12"
         sm="6"
       >

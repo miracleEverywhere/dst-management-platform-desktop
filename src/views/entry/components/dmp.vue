@@ -349,6 +349,10 @@ const props = defineProps({
       remark: undefined,
     }),
   },
+  idx: {
+    type: Number,
+    default: 0,
+  },
 })
 
 const globalStore = useGlobalStore()
@@ -570,12 +574,12 @@ const handleMenuClick = index => {
 }
 
 const handleGotoDashboard = () => {
+  globalStore.entry.inEntry = false
   needContinue.value = false
 
   globalStore.entry.ip = dmp.value.ip
   globalStore.entry.port = dmp.value.port
   globalStore.entry.token = dmp.value.token
-  globalStore.entry.inEntry = false
 
   userStore.userInfo.role = 'admin'
 
@@ -645,8 +649,9 @@ const getRoomBasic = () => {
 let intervalId = null
 
 const startRequests = () => {
-  intervalId = setInterval(() => {
-    if (needContinue.value) {
+  intervalId = setInterval(async () => {
+    if (needContinue.value && globalStore.entry.inEntry) {
+      await sleep(50 * props.idx)
       getCpuMemStatus()
       getRoomBasic()
     }
