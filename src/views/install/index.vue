@@ -274,6 +274,7 @@ import platformApi from "@/api/platform.js"
 import { sleep } from "@antfu/utils"
 import { useI18n } from "vue-i18n"
 import { showSnackbar } from "@/utils/snackbar.js"
+import ElectronApi from "@/utils/electronApi";
 
 // 响应式数据
 const terminalContainer = ref(null)
@@ -465,14 +466,14 @@ const updateSuccessDialog = ref(false)
 const updateErrorDialog = ref(false)
 
 const reloadPage = () => {
-  window.location.reload()
+  ElectronApi.window.reload()
 }
 
 // 连接WebSocket
 const connectWebSocket = () => {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  const token = getToken()
-  const wsUrl = `${protocol}//${window.location.host}/v3/platform/webssh?token=${token}`
+  const token = globalStore.entry.token
+  const wsUrl = `${protocol}//${globalStore.entry.ip}:${globalStore.entry.port}/v3/platform/webssh?token=${token}`
   const regexSuccess = /==>dmp@@ 安装完成 @@dmp<==/
   const regexFail = /==>dmp@@ 安装失败 @@dmp<==/
   const regexUpdateSuccess = /==>dmp@@ 更新完成 @@dmp<==/
