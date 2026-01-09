@@ -666,6 +666,7 @@ const cancelRequests = () => {
 }
 
 onMounted(() => {
+  if (props.dmp.ip===undefined) return
   globalStore.entry.inEntry = true
   startRequests()
 })
