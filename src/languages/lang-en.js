@@ -11,6 +11,8 @@ export default {
     dark: "Dark",
     profile: "Profile",
     logout: "Logout",
+    refresh: 'Refresh Page',
+    backEntry: 'Back to dmp select page',
     noRoomSelected: {
       title: 'No Room Selected',
       subTitle: 'Please go to the Rooms page, select a room, and then proceed with the configuration',

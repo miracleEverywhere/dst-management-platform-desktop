@@ -11,6 +11,8 @@ export default {
     dark: "黑暗",
     profile: "个人中心",
     logout: "退出平台",
+    refresh: '刷新页面',
+    backEntry: '返回饥荒管理平台选择页',
     noRoomSelected: {
       title: '未选择房间',
       subTitle: '请前往房间总览页面，选择一个房间再执行配置',
