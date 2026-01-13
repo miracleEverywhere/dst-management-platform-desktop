@@ -1,5 +1,6 @@
 <template>
   <v-btn
+    v-tooltip="t('global.backEntry')"
     icon="ri-logout-box-r-line"
     color="default"
     variant="text"
@@ -17,8 +18,6 @@ import useGlobalStore from "@store/global"
 const { t } = useI18n()
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
-const userInfo = userStore.userInfo
-const avatarImage = ref()
 
 const handleOut = () => {
   globalStore.entry = {
