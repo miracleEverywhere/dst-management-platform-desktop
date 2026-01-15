@@ -256,6 +256,34 @@ export default {
           copy: '复制',
           thanks: '感谢B站长鸽门徒提供的饥荒表情字体',
         },
+        lan: {
+          name: '局域网模式',
+          tip: '顾名思义',
+          enable: '开启',
+          disable: '关闭',
+        },
+        offline: {
+          name: '离线模式',
+          tip: '顾名思义',
+          enable: '开启',
+          disable: '关闭',
+        },
+        steamGroupID: {
+          name: 'Steam群组ID',
+          tip: '顾名思义',
+        },
+        steamGroupOnly: {
+          name: '仅Steam群组',
+          tip: '只有Steam群组内的成员才能加入游戏',
+          enable: '开启',
+          disable: '关闭',
+        },
+        steamGroupAdmins: {
+          name: '群组默认管理',
+          tip: 'Steam群组成员默认为管理员',
+          enable: '开启',
+          disable: '关闭',
+        },
       },
       step2: {
         oneClickSet: {

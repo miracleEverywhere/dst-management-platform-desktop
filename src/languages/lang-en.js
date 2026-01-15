@@ -256,6 +256,34 @@ export default {
           copy: 'Copy',
           thanks: 'Thanks to Bilibili user 长鸽门徒 for providing the DST emoji font',
         },
+        lan: {
+          name: 'Lan Only',
+          tip: 'As the name suggests',
+          enable: 'Enable',
+          disable: 'Disable',
+        },
+        offline: {
+          name: 'Offline',
+          tip: 'As the name suggests',
+          enable: 'Enable',
+          disable: 'Disable',
+        },
+        steamGroupID: {
+          name: 'Steam Group ID',
+          tip: 'As the name suggests',
+        },
+        steamGroupOnly: {
+          name: 'Steam Group Only',
+          tip: 'Only members within the Steam group can join the game',
+          enable: 'Enable',
+          disable: 'Disable',
+        },
+        steamGroupAdmins: {
+          name: 'Group Members Admin',
+          tip: 'Steam group members are admin by default',
+          enable: 'Enable',
+          disable: 'Disable',
+        },
       },
       step2: {
         oneClickSet: {
