@@ -333,7 +333,11 @@ const calculateContainerSize = () => {
 }
 
 onMounted(() => {
+  window.addEventListener('resize', handleResize)
   getBackupFiles()
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 

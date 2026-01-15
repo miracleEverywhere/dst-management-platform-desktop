@@ -55,6 +55,7 @@ export default {
     toolsAnnounce: '定时通知',
     toolsMap: '地图预览',
     toolsToken: '平台令牌',
+    toolsSnapshot: '游戏存档',
     logs: '日志管理',
     logsGame: '游戏日志',
     logsChat: '聊天日志',
@@ -1022,6 +1023,25 @@ export default {
       },
       create: '创建',
       noSelected: '请选择令牌时效',
+    },
+    snapshot: {
+      title: '存档管理',
+      expansion: {
+        title: '存档管理功能介绍',
+        text1: '① 如果你的游戏无法启动，并且不是模组报错，那有可能就是坏档了。',
+        text2: '② 你可以删除最新的存档快照文件，来实现回档功能，点击下方删除即可。',
+        text3: '③ 删除操作会执行以下步骤：1.关闭游戏(出错会跳过) 2.删除对应的存档文件(出错会返回错误) 3.启动游戏(出错会跳过)。',
+        text4: '④ 如果房间中有世界没有部署在当前饥荒管理平台下，请登录对应的饥荒管理平台，同步删除对应的存档文件，保证多台机器下的存档文件一致。',
+      },
+      table: {
+        header: {
+          name: '存档名',
+          size: '大小',
+          modTime: '创建时间',
+          actions: '操作',
+        },
+        delete: '删除',
+      },
     },
   },
   upload: {

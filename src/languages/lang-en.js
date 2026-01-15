@@ -55,6 +55,7 @@ export default {
     toolsAnnounce: 'Announce',
     toolsMap: 'Map',
     toolsToken: 'DMP Token',
+    toolsSnapshot: 'Snapshot',
     logs: 'Logs',
     logsGame: 'Game',
     logsChat: 'Chat',
@@ -1023,6 +1024,25 @@ export default {
       },
       create: 'Create',
       noSelected: 'Please select the expiration',
+    },
+    snapshot: {
+      title: 'Snapshot',
+      expansion: {
+        title: 'Snapshot Manager Introduction',
+        text1: '① If your game cannot start, and it\'s not a mod error, it could be a corrupted snapshot file.',
+        text2: '② You can delete the latest save snapshot file to achieve rollback, click delete below.',
+        text3: '③ The deletion operation will perform the following steps: 1. Shutdown the game (will skip if an error occurs) 2. Delete the corresponding snapshot file (will return an error if an error occurs) 3. Start the game (will skip if an error occurs).',
+        text4: '④ If a world in the room is not deployed under the current DMP, please log in to the corresponding DMP and synchronize the deletion of the corresponding snapshot file to ensure consistency of snapshot files across multiple machines.',
+      },
+      table: {
+        header: {
+          name: 'File Name',
+          size: 'Size',
+          modTime: 'Create Time',
+          actions: 'Action',
+        },
+        delete: 'Delete',
+      },
     },
   },
   upload: {

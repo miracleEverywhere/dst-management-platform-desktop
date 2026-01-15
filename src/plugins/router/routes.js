@@ -37,6 +37,10 @@ export const routes = [
         component: () => import('@/views/tools/map.vue'),
       },
       {
+        path: 'tools/snapshot',
+        component: () => import('@/views/tools/snapshot.vue'),
+      },
+      {
         path: 'logs/game',
         component: () => import('@/views/logs/game.vue'),
       },

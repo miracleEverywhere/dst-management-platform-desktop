@@ -396,7 +396,11 @@ const calculateContainerSize = () => {
 }
 
 onMounted(() => {
+  window.addEventListener('resize', handleResize)
   getAnnounce()
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 
