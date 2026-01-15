@@ -308,6 +308,112 @@
         />
       </v-col>
     </v-row>
+    <!-- lan offline -->
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-radio-group
+          v-model="roomForm.lan"
+          inline
+        >
+          <template #prepend>
+            <v-chip v-tooltip="t('game.base.step1.lan.tip')">
+              {{ t('game.base.step1.lan.name') }}
+            </v-chip>
+          </template>
+          <v-radio
+            :label="t('game.base.step1.lan.enable')"
+            :value="true"
+            class="mr-4"
+          />
+          <v-radio
+            :label="t('game.base.step1.lan.disable')"
+            :value="false"
+            class="mr-4"
+          />
+        </v-radio-group>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-radio-group
+          v-model="roomForm.offline"
+          inline
+        >
+          <template #prepend>
+            <v-chip v-tooltip="t('game.base.step1.offline.tip')">
+              {{ t('game.base.step1.offline.name') }}
+            </v-chip>
+          </template>
+          <v-radio
+            :label="t('game.base.step1.offline.enable')"
+            :value="true"
+            class="mr-4"
+          />
+          <v-radio
+            :label="t('game.base.step1.offline.disable')"
+            :value="false"
+            class="mr-4"
+          />
+        </v-radio-group>
+      </v-col>
+    </v-row>
+    <!-- steam群组ID -->
+    <v-row>
+      <v-col>
+        <v-text-field
+          v-model="roomForm.steamGroupID"
+          v-tooltip="t('game.base.step1.steamGroupID.tip')"
+          :label="t('game.base.step1.steamGroupID.name')"
+        />
+      </v-col>
+    </v-row>
+    <!-- steam群组设置 -->
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-radio-group
+          v-model="roomForm.steamGroupOnly"
+          :disabled="roomForm.steamGroupID===''"
+          inline
+        >
+          <template #prepend>
+            <v-chip v-tooltip="t('game.base.step1.steamGroupOnly.tip')">
+              {{ t('game.base.step1.steamGroupOnly.name') }}
+            </v-chip>
+          </template>
+          <v-radio
+            :label="t('game.base.step1.steamGroupOnly.enable')"
+            :value="true"
+            class="mr-4"
+          />
+          <v-radio
+            :label="t('game.base.step1.steamGroupOnly.disable')"
+            :value="false"
+            class="mr-4"
+          />
+        </v-radio-group>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-radio-group
+          v-model="roomForm.steamGroupAdmins"
+          :disabled="roomForm.steamGroupID===''"
+          inline
+        >
+          <template #prepend>
+            <v-chip v-tooltip="t('game.base.step1.steamGroupAdmins.tip')">
+              {{ t('game.base.step1.steamGroupAdmins.name') }}
+            </v-chip>
+          </template>
+          <v-radio
+            :label="t('game.base.step1.steamGroupAdmins.enable')"
+            :value="true"
+            class="mr-4"
+          />
+          <v-radio
+            :label="t('game.base.step1.steamGroupAdmins.disable')"
+            :value="false"
+            class="mr-4"
+          />
+        </v-radio-group>
+      </v-col>
+    </v-row>
   </v-form>
   <v-dialog
     v-model="emojiDialog"
@@ -435,6 +541,11 @@ const roomForm = ref({
   masterIP: '127.0.0.1',
   masterPort: 0,
   clusterKey: '',
+  lan: false,
+  offline: false,
+  steamGroupOnly: false,
+  steamGroupID: '',
+  steamGroupAdmins: false,
 })
 
 const roomFormRules = ref({
