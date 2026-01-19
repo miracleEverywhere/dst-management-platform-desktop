@@ -310,7 +310,10 @@
     </v-row>
     <!-- lan offline -->
     <v-row>
-      <v-col cols="12" md="6">
+      <v-col
+        cols="12"
+        md="6"
+      >
         <v-radio-group
           v-model="roomForm.lan"
           inline
@@ -332,7 +335,10 @@
           />
         </v-radio-group>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col
+        cols="12"
+        md="6"
+      >
         <v-radio-group
           v-model="roomForm.offline"
           inline
@@ -367,7 +373,10 @@
     </v-row>
     <!-- steam群组设置 -->
     <v-row>
-      <v-col cols="12" md="6">
+      <v-col
+        cols="12"
+        md="6"
+      >
         <v-radio-group
           v-model="roomForm.steamGroupOnly"
           :disabled="roomForm.steamGroupID===''"
@@ -390,7 +399,10 @@
           />
         </v-radio-group>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col
+        cols="12"
+        md="6"
+      >
         <v-radio-group
           v-model="roomForm.steamGroupAdmins"
           :disabled="roomForm.steamGroupID===''"
@@ -530,7 +542,7 @@ const roomForm = ref({
   gameMode: '',
   customGameMode: '',
   pvp: false,
-  maxPlayer: 2,
+  maxPlayer: 6,
   maxRollBack: 10,
   modInOne: false,
   modData: '',
