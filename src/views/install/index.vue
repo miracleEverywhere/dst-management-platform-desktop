@@ -274,7 +274,7 @@ import platformApi from "@/api/platform.js"
 import { sleep } from "@antfu/utils"
 import { useI18n } from "vue-i18n"
 import { showSnackbar } from "@/utils/snackbar.js"
-import ElectronApi from "@/utils/electronApi";
+import ElectronApi from "@/utils/electronApi"
 
 // 响应式数据
 const terminalContainer = ref(null)
