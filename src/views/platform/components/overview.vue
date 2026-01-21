@@ -4,7 +4,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.memoryTip')">
         <template #prepend>
           <v-icon
             color="primary"
@@ -25,7 +25,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.runningTimeTip')">
         <template #prepend>
           <v-icon
             color="primary"
@@ -46,7 +46,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.roomCountTip')">
         <template #prepend>
           <v-icon
             color="primary"
@@ -71,7 +71,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.worldCountTip')">
         <template #prepend>
           <v-icon
             color="primary"
@@ -96,7 +96,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.userCountTip')">
         <template #prepend>
           <v-icon
             color="primary"
@@ -121,7 +121,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.uidCountTip')">
         <template #prepend>
           <v-icon
             color="primary"
@@ -146,7 +146,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.maxCpuTip')">
         <template #prepend>
           <v-icon
             color="primary"
@@ -167,7 +167,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.maxMemoryTip')">
         <template #prepend>
           <v-icon
             color="primary"
@@ -188,7 +188,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.maxNetUpTip')">
         <template #prepend>
           <v-icon
             color="primary"
@@ -209,7 +209,7 @@
       cols="12"
       md="6"
     >
-      <v-card>
+      <v-card v-tooltip="t('platform.overview.maxNetDownTip')">
         <template #prepend>
           <v-icon
             color="primary"
