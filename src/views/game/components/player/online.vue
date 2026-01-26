@@ -49,7 +49,7 @@
           label
           color="success"
         >
-          {{ getDstRoleName(value, globalStore.language) }}
+          {{ getDstRoleName(value, globalStore.language) || t('game.player.online.noSelected') }}
         </v-chip>
       </template>
       <template #item.actions="{ item }">
