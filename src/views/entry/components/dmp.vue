@@ -472,6 +472,8 @@ const handleAdd = async event => {
     port: addForm.value.port,
     token: addForm.value.token,
     remark: addForm.value.remark,
+    selectedRoomID: 0,
+    selectedRoomName: '',
   }
 
   ElectronApi.store.append(DB_KEY.dmps, newConfig)
@@ -577,6 +579,7 @@ const handleGotoDashboard = () => {
   globalStore.entry.inEntry = false
   needContinue.value = false
 
+  globalStore.entry.id = dmp.value.id
   globalStore.entry.ip = dmp.value.ip
   globalStore.entry.port = dmp.value.port
   globalStore.entry.token = dmp.value.token

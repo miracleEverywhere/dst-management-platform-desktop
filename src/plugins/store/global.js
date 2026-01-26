@@ -29,6 +29,7 @@ const globalStore = defineStore("global", {
         closeVersion: '', // 点击时的最新版本
       },
       entry: {
+        id: '',
         ip: '',
         port: '',
         token: '',

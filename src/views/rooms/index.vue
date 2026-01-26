@@ -351,6 +351,8 @@ import { debounce, parseModLua, truncateString } from "@/utils/tools"
 import { showSnackbar } from "@/utils/snackbar"
 import { useRouter } from "vue-router"
 import eventBus from '@/utils/eventBus'
+import ElectronApi from "@/utils/electronApi"
+import { DB_KEY } from "@/config"
 
 
 const { mobile } = useDisplay()
@@ -423,6 +425,18 @@ const toggleMenu = () => {
 const selectRoom = room => {
   globalStore.room.id = room.id
   globalStore.room.gameName = room.gameName
+
+  const dmps = ElectronApi.store.get(DB_KEY.dmps) || []
+
+  for (let i = 0; i < dmps.length; i++) {
+    if (dmps[i].id === globalStore.entry.id) {
+      dmps[i].selectedRoomID = room.id
+      dmps[i].selectedRoomName = room.gameName
+      break
+    }
+  }
+
+  ElectronApi.store.set(DB_KEY.dmps, dmps)
 }
 
 const gotoDashboard = async room => {

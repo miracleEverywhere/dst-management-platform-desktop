@@ -65,6 +65,8 @@ import { truncateString } from "@/utils/tools.js"
 import useGlobalStore from "@store/global"
 import platformApi from "@/api/platform.js"
 import roomApi from "@/api/room.js"
+import ElectronApi from "@/utils/electronApi"
+import { DB_KEY } from "@/config"
 
 
 const { t } = useI18n()
@@ -111,10 +113,22 @@ const getColor = () => {
   return 'success'
 }
 
+const setRoomStore = () => {
+  const dmps =ElectronApi.store.get(DB_KEY.dmps) || []
+
+  for (let dmp of dmps) {
+    if (dmp.id === globalStore.entry.id) {
+      globalStore.room.id = dmp.selectedRoomID
+      globalStore.room.gameName = dmp.selectedRoomName
+    }
+  }
+}
+
 onMounted(async () => {
   if (globalStore.entry.inEntry) {
     return
   }
+  setRoomStore()
   await getGameVersion()
   getRoomBasic()
 })

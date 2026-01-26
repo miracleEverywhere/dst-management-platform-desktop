@@ -15,5 +15,4 @@ export const DB_KEY = {
   dmps: 'dmps',
   theme: 'theme',
   language: 'language',
-  selectedDstCluster: 'selectedRoomID',
 }
