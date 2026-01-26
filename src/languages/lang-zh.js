@@ -536,6 +536,7 @@ export default {
           block: '添加黑名单',
           white: '添加预留位',
         },
+        noSelected: '未选择',
       },
       list: {
         adminlist: '管理员',

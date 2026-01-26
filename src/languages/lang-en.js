@@ -537,6 +537,7 @@ export default {
           block: 'Add Block List',
           white: 'Add White List',
         },
+        noSelected: 'No Selected',
       },
       list: {
         adminlist: 'Admin',
