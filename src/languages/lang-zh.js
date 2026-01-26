@@ -128,7 +128,7 @@ export default {
             gameMode: '游戏模式',
             worldNum: '世界个数',
             modNum: '模组个数',
-            playerNum: '最大玩家数',
+            playerNum: '玩家个数',
           },
           right: {
             chartTitle: '60分钟最大玩家数',
