@@ -216,7 +216,7 @@
                           color="info"
                           label
                         >
-                          {{ room.maxPlayer }}
+                          ({{ getCurrentPlayersNum(room.players) }}/{{ room.maxPlayer }})
                         </v-chip>
                       </v-col>
                     </v-row>
@@ -513,6 +513,16 @@ const deleteRoom = () => {
   }).finally(() => {
     deleteRoomLoading.value = false
   })
+}
+
+const getCurrentPlayersNum = players => {
+  if (players.length === 0) {
+    return 0
+  }
+
+  const last = players.at(-1)?.playerInfo || []
+
+  return last.length
 }
 
 const cardRef = ref()
