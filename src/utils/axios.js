@@ -74,19 +74,6 @@ instance.interceptors.response.use(
       // 不处理 IP 为空
       return Promise.reject(error)
     }
-    const status = Number(error?.response?.data?.status ?? error?.response?.data?.code ?? error?.response?.status ?? error?.data?.code)
-    if (status === 420) {
-      const userStore = useUserStore()
-
-      showSnackbar(error?.response?.data?.message || error?.data?.message || "登录状态已失效", 'error')
-      userStore.clearStore().finally(() => {
-        if (window.location.hash !== '#/login') {
-          window.location.href = '/#/login'
-        }
-      })
-      
-      return Promise.reject(error)
-    }
 
     error.data = error.data || {}
     if (error.data.message) {
