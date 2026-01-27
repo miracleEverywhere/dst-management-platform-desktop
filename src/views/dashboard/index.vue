@@ -383,7 +383,10 @@
                       {{ t('dashboard.card1.item.players') }}
                     </v-chip>
                     <v-chip>
-                      <v-tooltip v-if="baseInfo.players.map(user => user.nickname).join(', ')!==''">
+                      <v-tooltip
+                        v-if="baseInfo.players.map(user => user.nickname).join(', ')!==''"
+                        activator="parent"
+                      >
                         {{ baseInfo.players.map(user => user.nickname).join(', ') }}
                       </v-tooltip>
                       ({{ baseInfo.players?.length || 0 }}/{{ baseInfo.room.maxPlayer }})

@@ -112,6 +112,9 @@ const cpuOption = ref({
   },
   tooltip: {
     trigger: 'axis',
+    formatter: function(params) {
+      return `${params[0].value} %</b>`
+    },
   },
   xAxis: {
     type: 'category',
@@ -162,6 +165,9 @@ const memoryOption = ref({
   },
   tooltip: {
     trigger: 'axis',
+    formatter: function(params) {
+      return `${params[0].value} %</b>`
+    },
   },
   xAxis: {
     type: 'category',
@@ -212,6 +218,9 @@ const diskOption = ref({
   },
   tooltip: {
     trigger: 'axis',
+    formatter: function(params) {
+      return `${params[0].value} %</b>`
+    },
   },
   xAxis: {
     type: 'category',
@@ -262,6 +271,9 @@ const netUplinkOption = ref({
   },
   tooltip: {
     trigger: 'axis',
+    formatter: function(params) {
+      return `${params[0].value} KB/s</b>`
+    },
   },
   xAxis: {
     type: 'category',
@@ -312,6 +324,9 @@ const netDownlinkOption = ref({
   },
   tooltip: {
     trigger: 'axis',
+    formatter: function(params) {
+      return `${params[0].value} KB/s</b>`
+    },
   },
   xAxis: {
     type: 'category',

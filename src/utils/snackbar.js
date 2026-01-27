@@ -1,5 +1,6 @@
 // src/utils/snackbar.js
 import { ref } from 'vue'
+import { sleep } from "@/utils/tools"
 
 // 定义 Snackbar 的状态
 const snackbar = ref(false)
@@ -14,7 +15,9 @@ const icon = ref('ri-checkbox-circle-fill')
  * @param message 要显示的内容
  * @param type 默认值为success，一共有4种：[success, info, warning, error]
  */
-export function showSnackbar(message, type = 'success') {
+export async function showSnackbar(message, type = 'success') {
+  snackbar.value = false
+  await sleep(200)
   snackbar.value = true
   color.value = type
   text.value = message

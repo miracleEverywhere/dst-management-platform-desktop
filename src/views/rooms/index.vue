@@ -216,6 +216,12 @@
                           color="info"
                           label
                         >
+                          <v-tooltip
+                            v-if="getCurrentPlayersNum(room.players)!==0"
+                            activator="parent"
+                          >
+                            {{ getCurrentPlayersNickname(room.players) }}
+                          </v-tooltip>
                           ({{ getCurrentPlayersNum(room.players) }}/{{ room.maxPlayer }})
                         </v-chip>
                       </v-col>
@@ -537,6 +543,16 @@ const getCurrentPlayersNum = players => {
   const last = players.at(-1)?.playerInfo || []
 
   return last.length
+}
+
+const getCurrentPlayersNickname = players => {
+  if (players.length === 0) {
+    return ''
+  }
+
+  const last = players.at(-1)?.playerInfo || []
+
+  return last.map(user => user.nickname).join(', ')
 }
 
 const cardRef = ref()
