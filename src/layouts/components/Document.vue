@@ -4,15 +4,19 @@
     icon="ri-book-marked-line"
     color="default"
     variant="text"
-    href="https://miraclesses.top/"
-    target="_blank"
     rel="noopener noreferrer"
+    @click="openDocument"
   />
 </template>
 
 <script setup>
 import { useI18n } from "vue-i18n"
+import ElectronApi from "@/utils/electronApi"
 
 const { t } = useI18n()
+
+const openDocument = () => {
+  ElectronApi.browser.open("https://miraclesses.top/")
+}
 </script>
 

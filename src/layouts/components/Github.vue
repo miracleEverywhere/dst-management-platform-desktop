@@ -4,15 +4,19 @@
     icon="ri-github-line"
     color="default"
     variant="text"
-    href="https://github.com/miracleEverywhere/dst-management-platform-api"
-    target="_blank"
     rel="noopener noreferrer"
+    @click="openGithub"
   />
 </template>
 
 <script setup>
 import { useI18n } from "vue-i18n"
+import ElectronApi from "@/utils/electronApi"
 
 const { t } = useI18n()
+
+const openGithub = () => {
+  ElectronApi.browser.open("https://github.com/miracleEverywhere/dst-management-platform-desktop")
+}
 </script>
 
