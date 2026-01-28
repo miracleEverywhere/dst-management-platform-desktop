@@ -177,6 +177,8 @@ const activeTabName = ref('online')
 const uidmap = ref([])
 
 const getUidmap = () => {
+  if (globalStore.room.id===0) return
+
   const reqForm = {
     roomID: globalStore.room.id,
   }
