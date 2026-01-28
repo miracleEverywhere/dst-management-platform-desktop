@@ -101,6 +101,7 @@
         </v-row>
         <v-btn
           block
+          :disabled="sysInfo.cpu===-1"
           style="margin-top: 25px"
           @click="handleGotoDashboard"
         >
