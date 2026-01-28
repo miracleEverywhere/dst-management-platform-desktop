@@ -37,5 +37,10 @@ export default class ElectronApi {
       window.electronAPI.downloadFile(url, name)
     },
   }
+  static browser = {
+    open(url) {
+      window.electronAPI.openBrowser(url)
+    },
+  }
   electronAPI
 }
