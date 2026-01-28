@@ -5,6 +5,8 @@ export default {
     noRoom: 'None',
     gameVersion: 'Game: ',
     dmpVersion: 'DMP: ',
+    current: 'Current: ',
+    latest: 'Latest: ',
     github: "Click to check the source code on GitHub",
     document: "Check the Documents",
     light: "Light",

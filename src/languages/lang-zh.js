@@ -5,6 +5,8 @@ export default {
     noRoom: '未选择',
     gameVersion: '游戏版本: ',
     dmpVersion: '平台版本: ',
+    current: '当前版本: ',
+    latest: '最新版本: ',
     github: "点击访问Github源码",
     document: "查看文档",
     light: "明亮",
