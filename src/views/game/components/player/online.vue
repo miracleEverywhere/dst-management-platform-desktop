@@ -162,7 +162,7 @@ const handleList = (uid, listType, actionType) => {
 
   const reqForm = {
     roomID: globalStore.room.id,
-    uid: uid,
+    uids: [uid],
     listType: listType,
     actionType: actionType,
   }
