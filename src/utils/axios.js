@@ -3,6 +3,7 @@ import { showSnackbar } from '@/utils/snackbar'
 import useUserStore from "@store/user"
 import { ApiVersion } from "@/config"
 import useGlobalStore from "@store/global.js"
+import ElectronApi from "@/utils/electronApi"
 
 
 // 创建一个 axios 实例
@@ -58,8 +59,18 @@ instance.interceptors.response.use(
       const userStore = useUserStore()
 
       showSnackbar(response.data.message || "服务器偷偷跑到火星去玩了", 'error')
-      await userStore.clearStore()
-      window.location.href = '/#/login'
+
+      const globalStore = useGlobalStore()
+      if (!globalStore.entry.inEntry) {
+        globalStore.entry = {
+          ip: '',
+          port: '',
+          token: '',
+          inEntry: true,
+        }
+        userStore.clearStore()
+        ElectronApi.window.entry()
+      }
 
       return Promise.reject(response.data)
     } else {
