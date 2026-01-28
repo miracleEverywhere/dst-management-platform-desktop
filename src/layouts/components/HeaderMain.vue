@@ -52,6 +52,11 @@
         class="mr-4"
         prepend-icon="ri-game-2-line"
       >
+        <v-tooltip activator="parent">
+          {{ t('global.current') + gameVersion.local }}
+          <br>
+          {{ t('global.latest') + gameVersion.server }}
+        </v-tooltip>
         {{ t('global.gameVersion') + gameVersion.local }}
       </v-chip>
     </div>
