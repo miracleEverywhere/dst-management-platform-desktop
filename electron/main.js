@@ -409,3 +409,7 @@ ipcMain.handle('theme-change', (_, theme) => {
   return nativeTheme.shouldUseDarkColors
 })
 
+ipcMain.handle('open-browser', async (_, {url}) => {
+  await shell.openExternal(url)
+})
+
