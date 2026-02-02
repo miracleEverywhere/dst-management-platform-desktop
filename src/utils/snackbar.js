@@ -28,7 +28,7 @@ export async function showSnackbar(message, type = 'success') {
     icon.value = 'ri-error-warning-fill'
   }
   if (type === 'error') {
-    color.value = '#f56c6c'
+    // color.value = '#f56c6c'
     icon.value = 'ri-close-circle-fill'
   }
   if (type === 'info') {
