@@ -9,14 +9,19 @@
     :min-width="0"
   >
     <v-card>
-      <div class="d-flex justify-start align-center px-4" style="min-height: 40px">
-        <v-icon :icon="icon" :color="color"/>
+      <div
+        class="d-flex justify-start align-center px-4"
+        style="min-height: 40px"
+      >
+        <v-icon
+          :icon="icon"
+          :color="color"
+        />
         <span :class="textClass()">
           {{ text }}
         </span>
       </div>
     </v-card>
-
   </v-snackbar>
 </template>
 
