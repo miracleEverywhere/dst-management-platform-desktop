@@ -751,6 +751,10 @@ export default {
           title: 'Update Check Time',
           tip: 'At this scheduled time, check if the game requires an update, and if so, perform the update',
         },
+        autoUpdateRestart: {
+          title: 'Restart After Updating',
+          tip: 'After the game update is complete, restart all rooms',
+        },
       },
       noChange: 'Settings No Changed',
       fetching: 'Fetching',

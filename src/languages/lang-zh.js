@@ -748,7 +748,11 @@ export default {
         },
         autoUpdateSetting: {
           title: '自动更新时间',
-          tip: '在这个时间，查询游戏是否需要更新，如需，则更',
+          tip: '在这个时间，查询游戏是否需要更新，如过需要更新，则进行更新',
+        },
+        autoUpdateRestart: {
+          title: '更新后重启',
+          tip: '游戏更新完成后，重启所有的房间',
         },
       },
       noChange: '配置未修改',
