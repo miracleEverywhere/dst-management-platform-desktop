@@ -58,14 +58,13 @@
           <v-col>
             <v-radio-group
               v-model="globalSettingsForm.UIDMaintainEnable"
-              v-tooltip="t('platform.settings.form.UIDMaintainEnable.tip')"
               inline
               color="primary"
             >
               <template #prepend>
-                <span>
+                <v-chip v-tooltip="t('platform.settings.form.UIDMaintainEnable.tip')">
                   {{ t('platform.settings.form.UIDMaintainEnable.title') }}
-                </span>
+                </v-chip>
               </template>
               <v-radio
                 :label="t('game.base.step4.form.backupClean.enable')"
@@ -92,14 +91,13 @@
           <v-col>
             <v-radio-group
               v-model="globalSettingsForm.sysMetricsEnable"
-              v-tooltip="t('platform.settings.form.sysMetricsEnable.tip')"
               inline
               color="primary"
             >
               <template #prepend>
-                <span>
+                <v-chip v-tooltip="t('platform.settings.form.sysMetricsEnable.tip')">
                   {{ t('platform.settings.form.sysMetricsEnable.title') }}
-                </span>
+                </v-chip>
               </template>
               <v-radio
                 :label="t('game.base.step4.form.backupClean.enable')"
@@ -146,14 +144,13 @@
           <v-col>
             <v-radio-group
               v-model="globalSettingsForm.autoUpdateEnable"
-              v-tooltip="t('platform.settings.form.autoUpdateEnable.tip')"
               inline
               color="primary"
             >
               <template #prepend>
-                <span>
+                <v-chip v-tooltip="t('platform.settings.form.autoUpdateEnable.tip')">
                   {{ t('platform.settings.form.autoUpdateEnable.title') }}
-                </span>
+                </v-chip>
               </template>
               <v-radio
                 :label="t('game.base.step4.form.backupClean.enable')"
@@ -187,6 +184,29 @@
             </v-text-field>
           </v-col>
           <v-spacer v-if="!mobile" />
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-radio-group
+              v-model="globalSettingsForm.autoUpdateRestart"
+              inline
+              color="primary"
+            >
+              <template #prepend>
+                <v-chip v-tooltip="t('platform.settings.form.autoUpdateRestart.tip')">
+                  {{ t('platform.settings.form.autoUpdateRestart.title') }}
+                </v-chip>
+              </template>
+              <v-radio
+                :label="t('game.base.step4.form.backupClean.enable')"
+                :value="true"
+              />
+              <v-radio
+                :label="t('game.base.step4.form.backupClean.disable')"
+                :value="false"
+              />
+            </v-radio-group>
+          </v-col>
         </v-row>
       </v-card-text>
     </v-form>
@@ -228,6 +248,7 @@ const globalSettingsFormOld = ref({
   sysMetricsSetting: undefined,
   autoUpdateEnable: false,
   autoUpdateSetting: '',
+  autoUpdateRestart: false,
 })
 
 const globalSettingsForm = ref({
@@ -237,6 +258,7 @@ const globalSettingsForm = ref({
   sysMetricsSetting: undefined,
   autoUpdateEnable: false,
   autoUpdateSetting: '',
+  autoUpdateRestart: false,
 })
 
 const globalSettingsFormRules = ref({
