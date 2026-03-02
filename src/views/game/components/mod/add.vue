@@ -57,6 +57,21 @@
                     {{ t('game.mod.add.addClientModsDisabled') }}
                   </v-list-item-title>
                 </v-list-item>
+                <v-list-item
+                  :disabled="deleteAcfLoading"
+                  class="text-error"
+                  @click="deleteAcfDialog=true"
+                >
+                  <template #prepend>
+                    <v-icon
+                      icon="ri-delete-bin-line"
+                      size="22"
+                    />
+                  </template>
+                  <v-list-item-title>
+                    {{ t('game.mod.add.deleteAcf') }}
+                  </v-list-item-title>
+                </v-list-item>
               </v-list>
             </v-menu>
           </v-btn>
@@ -108,12 +123,42 @@
                   {{ mod.name }}
                 </v-chip>
               </v-card-text>
-              <v-card-actions v-else>
+              <v-card-text v-else>
                 <result
                   :height="230"
                   color="info"
                   :title="t('game.mod.setting.tip.fetching')"
                 />
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+          <v-dialog
+            v-model="deleteAcfDialog"
+            :persistent="deleteAcfLoading"
+            :width="mobile?'90%':'40%'"
+          >
+            <v-card>
+              <v-card-title>
+                {{ t('game.mod.add.deleteAcfTitle') }}
+              </v-card-title>
+              <v-card-text>
+                <v-alert
+                  color="info"
+                  border="start"
+                  variant="tonal"
+                  class="my-2"
+                >
+                  {{ t('game.mod.add.deleteAcfText') }}
+                </v-alert>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn
+                  :disabled="deleteAcfLoading"
+                  :loading="deleteAcfLoading"
+                  @click="handleDeleteAcf"
+                >
+                  {{ t('game.mod.add.deleteMod') }}
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -517,6 +562,24 @@ const handleDeleteMod = mod => {
     getDownloadedMods()
   }).finally(() => {
     deleteModLoading.value = false
+  })
+}
+
+const deleteAcfLoading = ref(false)
+const deleteAcfDialog = ref(false)
+
+const handleDeleteAcf = () => {
+  deleteAcfLoading.value = true
+
+  const reqFrom = {
+    roomID: globalStore.room.id,
+  }
+  modApi.delete.acf.delete(reqFrom).then(response => {
+    deleteAcfDialog.value = false
+    showSnackbar(response.message)
+    getDownloadedMods()
+  }).finally(() => {
+    deleteAcfLoading.value = false
   })
 }
 
