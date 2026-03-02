@@ -61,5 +61,11 @@ export default {
     post: async function(data){
       return await http.post(this.url, data)
     },
+    acf: {
+      url: `/mod/delete/acf`,
+      delete: async function(data){
+        return await http.delete(this.url, data)
+      },
+    },
   },
 }
