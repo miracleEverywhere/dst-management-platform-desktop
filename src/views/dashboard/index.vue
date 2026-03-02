@@ -997,7 +997,7 @@
                 {{ t('dashboard.card4.title') }}
               </v-card-title>
               <v-card-text>
-                <v-row class="mt-8">
+                <v-row class="mt-2">
                   <v-col cols="12">
                     <v-text-field
                       v-model="announceMsg"
@@ -1010,7 +1010,20 @@
                     />
                   </v-col>
                 </v-row>
-                <v-row class="my-8">
+                <v-row class="mt-2">
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="systemMsg"
+                      append-inner-icon="ri-send-plane-fill"
+                      class="w-100"
+                      :label="t('dashboard.card4.systemMsg')"
+                      clearable
+                      @click:append-inner="handleGameExec({type:'systemMsg',extra:systemMsg})"
+                      @keyup.enter="handleGameExec({type:'systemMsg',extra:systemMsg})"
+                    />
+                  </v-col>
+                </v-row>
+                <v-row class="my-2">
                   <v-col
                     cols="12"
                     md="3"
@@ -1302,6 +1315,7 @@ const handleGameExec = params => {
 }
 
 const announceMsg = ref('')
+const systemMsg = ref('')
 
 const consoleForm = ref({
   worlds: [],
