@@ -951,6 +951,7 @@ export default {
     card4: {
       title: 'Console',
       announce: 'Announce',
+      systemMsg: 'System Message',
       world: 'Worlds',
       cmd: 'Command',
     },

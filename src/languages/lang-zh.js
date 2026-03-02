@@ -949,7 +949,8 @@ export default {
     },
     card4: {
       title: '游戏指令',
-      announce: '公告内容',
+      announce: '游戏宣告',
+      systemMsg: '系统通知',
       world: '世界',
       cmd: '命令内容',
     },
