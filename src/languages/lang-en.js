@@ -504,6 +504,9 @@ export default {
         enableMultiFail: 'Enable Fail',
         enableMultiSuccess: 'Multi-Enable Success',
         addClientModsDisabled: 'Disable Client Mods',
+        deleteAcf: 'Delete ACF',
+        deleteAcfTitle: 'Delete Steam Acf file',
+        deleteAcfText: 'If you encounter a situation where mod downloads fail and you confirm there are no network issues, it may be due to corruption of the Acf file. Click the delete button to remove the Acf file for that room. Note that after deleting the Acf file all downloaded UGC mods will be automatically removed',
       },
       setting: {
         tabName: 'Setting',

@@ -503,6 +503,9 @@ export default {
         enableMultiFail: '启用失败',
         enableMultiSuccess: '批量启用成功',
         addClientModsDisabled: '禁本地',
+        deleteAcf: '删除ACF',
+        deleteAcfTitle: '删除Steam Acf文件',
+        deleteAcfText: '如果你遇到了模组下载失败的情况，并且确认网络无异常，那么可能就是Acf文件出现了损坏。点击删除按钮，可以删除当前房间的Acf文件。注意，删除Acf文件后，所有下载的UGC模组都会被自动删除',
       },
       setting: {
         tabName: '配置模组',
