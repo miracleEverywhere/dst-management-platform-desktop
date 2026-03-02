@@ -1967,6 +1967,24 @@ export const overrides = {
       en: 'trees',
     },
   },
+  tree_rock: {
+    configs: ["never", "rare", "uncommon", "default", "often", "mostly", "always", "insane"],
+    modelValue: 'default',
+    image: 'tree_rock_regrowth.png',
+    i18n: {
+      zh: '巨石枝',
+      en: 'tree_rock',
+    },
+  },
+  tree_rock_regrowth: {
+    configs: ["never", "veryslow", "slow", "default", "fast", "veryfast"],
+    modelValue: 'default',
+    image: 'tree_rock_regrowth.png',
+    i18n: {
+      zh: '巨石枝',
+      en: 'tree_rock_regrowth',
+    },
+  },
   tumbleweed: {
     configs: ["never", "rare", "uncommon", "default", "often", "mostly", "always", "insane"],
     modelValue: 'default',
@@ -2225,6 +2243,25 @@ export const overrides = {
     i18n: {
       zh: '火鸡之年',
       en: 'Year Of The Gobbler',
+    },
+  },
+  year_of_the_knight: {
+    configs: ["default", "enabled"],
+    customConfigsValue: {
+      default: {
+        zh: '默认',
+        en: 'Default',
+      },
+      enabled: {
+        zh: '总是',
+        en: 'enabled',
+      },
+    },
+    modelValue: 'default',
+    image: 'year_of_the_knight.png',
+    i18n: {
+      zh: '发条骑士之年',
+      en: 'Year Of The Knight',
     },
   },
   year_of_the_pig: {
@@ -3024,6 +3061,7 @@ export const groundWorldRule = {
     'year_of_the_bunnyman',
     'year_of_the_dragonfly',
     'year_of_the_snake',
+    'year_of_the_knight',
   ],
   survivors: [
     'extrastartingitems',
@@ -3233,6 +3271,7 @@ export const cavesWorldRule = {
   ],
   resourceRegrowth: [
     'regrowth', 'lightflier_flower_regrowth', 'flower_cave_regrowth', 'mushtree_regrowth', 'mushtree_moon_regrowth',
+    'evergreen_regrowth', 'reeds_regrowth', 'tree_rock_regrowth', 'twiggytrees_regrowth',
   ],
   creatures: [
     'pigs_setting',
@@ -3297,7 +3336,7 @@ export const cavesWorldGeneration = {
     'marshbush',
     'fern',
     'trees',
-
+    'tree_rock',
   ],
   creaturesAndSpawners: [
     'bunnymen', 'rocky', 'slurper', 'monkey', 'slurtles',
