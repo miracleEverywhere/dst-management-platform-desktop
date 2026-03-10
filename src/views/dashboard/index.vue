@@ -1001,7 +1001,7 @@
                   <v-col cols="12">
                     <v-text-field
                       v-model="announceMsg"
-                      append-inner-icon="ri-send-plane-fill"
+                      append-inner-icon="ri-send-ins-line"
                       class="w-100"
                       :label="t('dashboard.card4.announce')"
                       clearable
@@ -1014,7 +1014,7 @@
                   <v-col cols="12">
                     <v-text-field
                       v-model="systemMsg"
-                      append-inner-icon="ri-send-plane-fill"
+                      append-inner-icon="ri-send-ins-line"
                       class="w-100"
                       :label="t('dashboard.card4.systemMsg')"
                       clearable
@@ -1043,7 +1043,7 @@
                   >
                     <v-text-field
                       v-model="consoleForm.cmd"
-                      append-inner-icon="ri-send-plane-fill"
+                      append-inner-icon="ri-send-ins-line"
                       :label="t('dashboard.card4.cmd')"
                       clearable
                       :disabled="consoleForm.selectedWorldID===undefined"
