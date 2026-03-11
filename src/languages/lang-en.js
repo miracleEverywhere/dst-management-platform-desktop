@@ -123,6 +123,7 @@ export default {
             deactivate: 'Deactivate',
             delete: 'Delete',
             select: 'Select',
+            copy: 'Copy Info',
           },
         },
         text: {
