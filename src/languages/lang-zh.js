@@ -642,6 +642,8 @@ export default {
       maxNetUpTip: '一小时网络上行最大值',
       maxNetDown: '一小时网络下行最大值',
       maxNetDownTip: '一小时网络下行最大值',
+      gameVersionServer: '最新游戏版本号',
+      gameVersionLocal: '当前游戏版本号',
     },
     user: {
       dialogTitle: '新增用户',

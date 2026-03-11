@@ -643,6 +643,8 @@ export default {
       maxNetUpTip: 'Maximum network upload within one hour',
       maxNetDown: 'Maximum network download within one hour',
       maxNetDownTip: 'Maximum network download within one hour',
+      gameVersionServer: 'Latest Game Version',
+      gameVersionLocal: 'Current Game Version',
     },
     user: {
       dialogTitle: 'Add User',
