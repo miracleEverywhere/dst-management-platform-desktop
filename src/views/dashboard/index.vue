@@ -163,7 +163,7 @@
                     >
                       {{ t('dashboard.card1.item.gameMode') }}
                     </v-chip>
-                    <v-chip>{{ t(`game.base.step1.gameMode.modes.${baseInfo.room.gameMode}`) }}</v-chip>
+                    <v-chip>{{ t(`game.base.step1.gameMode.modes.${baseInfo.room.gameMode!=='custom'?baseInfo.room.gameMode:baseInfo.room.gameMode+'.name'}`) }}</v-chip>
                   </v-col>
                 </v-row>
                 <v-row>

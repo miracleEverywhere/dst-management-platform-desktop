@@ -82,6 +82,7 @@
             v-model="roomForm.customGameMode"
             :rules="roomFormRules.customGameMode"
             :label="t('game.base.step1.gameMode.modes.custom.label')"
+            density="compact"
           />
         </v-radio-group>
       </v-col>
