@@ -574,6 +574,7 @@ const handleDeleteAcf = () => {
   const reqFrom = {
     roomID: globalStore.room.id,
   }
+
   modApi.delete.acf.delete(reqFrom).then(response => {
     deleteAcfDialog.value = false
     showSnackbar(response.message)

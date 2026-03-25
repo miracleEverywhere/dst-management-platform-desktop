@@ -149,7 +149,7 @@ const getList = () => {
   }
 
   logsApi.history.list.get(reqForm).then(response => {
-    list.value = response.data
+    list.value = response.data || []
   })
 }
 

@@ -36,4 +36,10 @@ export default {
       },
     },
   },
+  chat: {
+    url: `/player/chat`,
+    get: async function (data) {
+      return await http.get(this.url, data)
+    },
+  },
 }

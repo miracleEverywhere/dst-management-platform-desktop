@@ -3270,8 +3270,15 @@ export const cavesWorldRule = {
     'rifts_frequency_cave',
   ],
   resourceRegrowth: [
-    'regrowth', 'lightflier_flower_regrowth', 'flower_cave_regrowth', 'mushtree_regrowth', 'mushtree_moon_regrowth',
-    'evergreen_regrowth', 'reeds_regrowth', 'tree_rock_regrowth', 'twiggytrees_regrowth',
+    'regrowth',
+    'lightflier_flower_regrowth',
+    'flower_cave_regrowth',
+    'mushtree_regrowth',
+    'mushtree_moon_regrowth',
+    'evergreen_regrowth',
+    'reeds_regrowth',
+    'tree_rock_regrowth',
+    'twiggytrees_regrowth',
   ],
   creatures: [
     'pigs_setting',

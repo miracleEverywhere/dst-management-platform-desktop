@@ -7,6 +7,7 @@
             v-model="search"
             :label="t('platform.user.search.label')"
             :placeholder="t('platform.user.search.placeholder')"
+            persistent-placeholder
             clearable
             @keyup.enter="getRoomsData({page: roomsData.page,
                                         itemsPerPage: roomsData.pageSize,

@@ -781,7 +781,7 @@
                       <v-card-title>
                         <span>{{ t('dashboard.card3.quickCmd.title') }}</span>
                         <v-chip
-                          v-if="quickCmdUid!==''"
+                          v-if="quickCmdUid!==''&&baseInfo.players.length"
                           label
                           color="success"
                           class="ml-2"
@@ -809,8 +809,8 @@
                             </v-radio-group>
                           </v-col>
                         </v-row>
-                        <v-row>
-                          <v-col>
+                        <v-row v-if="quickCmdType==='player'">
+                          <v-col v-if="baseInfo.players.length">
                             <v-btn
                               v-for="player in baseInfo.players"
                               variant="text"
@@ -820,12 +820,21 @@
                               {{ player.nickname }}
                             </v-btn>
                           </v-col>
+                          <v-col v-else>
+                            <v-text-field
+                              v-model="quickCmdUid"
+                              :label="t('dashboard.card3.quickCmd.playerUid')"
+                            />
+                          </v-col>
                         </v-row>
-                        <v-row>
-                          <v-col>
+                        <v-row v-if="quickCmdType==='player'">
+                          <v-col
+                            cols="12"
+                            md="6"
+                          >
                             <v-select
                               v-model="quickCmdPlayerId"
-                              :disabled="quickCmdUid===''||quickCmdType!=='player'"
+                              :disabled="quickCmdType!=='player'||quickCmdUid===''"
                               :items="quickCmdPlayerOptions"
                               :label="t('dashboard.card3.quickCmd.playerCmd')"
                               item-title="label"
@@ -833,10 +842,25 @@
                               @update:model-value="quickCmdPlayerGenerate"
                             />
                           </v-col>
-                          <v-spacer v-if="!mobile" />
+                          <v-col
+                            cols="12"
+                            md="6"
+                          >
+                            <v-select
+                              v-model="quickCmdGameWorldId"
+                              :label="t('dashboard.card4.world')"
+                              class="mr-1"
+                              item-title="worldName"
+                              item-value="id"
+                              :items="consoleForm.worlds"
+                            />
+                          </v-col>
                         </v-row>
-                        <v-row>
-                          <v-col>
+                        <v-row v-if="quickCmdType==='world'">
+                          <v-col
+                            cols="12"
+                            md="6"
+                          >
                             <v-select
                               v-model="quickCmdWorldId"
                               :disabled="quickCmdType!=='world'"
@@ -847,11 +871,24 @@
                               @update:model-value="quickCmdWorldGenerate"
                             />
                           </v-col>
-                          <v-spacer v-if="!mobile" />
+                          <v-col
+                            cols="12"
+                            md="6"
+                          >
+                            <v-select
+                              v-model="quickCmdGameWorldId"
+                              :label="t('dashboard.card4.world')"
+                              class="mr-1"
+                              item-title="worldName"
+                              item-value="id"
+                              :items="consoleForm.worlds"
+                            />
+                          </v-col>
                         </v-row>
                         <v-row>
                           <v-col>
                             <md-preview
+                              v-if="quickCmd"
                               :model-value="'```lua ::open'+'\n'+quickCmd"
                               :theme="editorTheme"
                               :language="editorLanguage"
@@ -861,12 +898,21 @@
                           </v-col>
                         </v-row>
                       </v-card-text>
-                      <v-card-actions>
+                      <v-card-actions class="ma-4">
                         <v-spacer />
                         <v-btn
                           variant="elevated"
-                          :text="t('dashboard.card3.quickCmd.insert')"
-                          @click="quickCmdInsert"
+                          color="x"
+                          :text="t('dashboard.card3.quickCmd.cancel')"
+                          class="px-4 mr-2"
+                          @click="quickCmdDialog=false"
+                        />
+                        <v-btn
+                          variant="elevated"
+                          :text="t('dashboard.card3.quickCmd.exec')"
+                          :disabled="quickCmd===''||quickCmdGameWorldId===''"
+                          class="px-4"
+                          @click="quickCmdExec"
                         />
                       </v-card-actions>
                     </v-card>
@@ -1388,7 +1434,7 @@ const customConnectionCodeFormRules = ref({
   ip: [
     value => {
       if (!value) return t('dashboard.card1.item.custom.ip.required')
-      
+
       return true
     },
   ],
@@ -1485,10 +1531,11 @@ const checkLobby = (isOpen=false) => {
 const quickCmdDialog = ref(false)
 const editorTheme = computed(() => globalStore.theme)
 const quickCmdType = ref('player')
-const quickCmdPlayerId = ref()
+const quickCmdPlayerId = ref() // 玩家命令ID
 const quickCmdUid = ref('')
-const quickCmdWorldId = ref()
+const quickCmdWorldId = ref() // 游戏命令ID
 const quickCmd = ref('')
+const quickCmdGameWorldId = ref() // 需要执行命令的游戏世界ID
 
 const quickCmdPlayerOptions = [
   {
@@ -1527,14 +1574,21 @@ const quickCmdPlayerOptions = [
     label: t('dashboard.card3.quickCmd.playerOptions.mapclear'),
     value: 8,
   },
+  {
+    label: t('dashboard.card3.quickCmd.playerOptions.kick'),
+    value: 9,
+  },
 ]
 
 const quickCmdPlayerGenerate = () => {
   if (!(/^KU_/.test(quickCmdUid.value))) {
-    koiMsgError(language.value === 'zh' ? '请输入正确的玩家UID' : 'Please input the correct player UID')
+    showSnackbar(t('dashboard.card3.quickCmd.playerUidError'), 'error')
+    quickCmdPlayerId.value = undefined
+    quickCmd.value = ''
     
     return
   }
+
   if (quickCmdPlayerId.value === 0) {
     quickCmd.value = `UserToPlayer('${quickCmdUid.value}').components.health:SetInvincible(true)`
   }
@@ -1562,6 +1616,9 @@ const quickCmdPlayerGenerate = () => {
   if (quickCmdPlayerId.value === 8) {
     quickCmd.value = `local p=UserToPlayer('${quickCmdUid.value}')if p then local s=2*TheWorld.Map:GetSize()for x=-s,s,32 do for z=-s,s,32 do p.player_classified.MapExplorer:RevealArea(x,0,z)end end end`
   }
+  if (quickCmdPlayerId.value === 9) {
+    quickCmd.value = `TheNet:Kick('${quickCmdUid.value}')`
+  }
 }
 
 const quickCmdWorldOptions = [
@@ -1581,6 +1638,14 @@ const quickCmdWorldOptions = [
     label: t('dashboard.card3.quickCmd.worldOptions.save'),
     value: 3,
   },
+  {
+    label: t('dashboard.card3.quickCmd.worldOptions.startRain'),
+    value: 4,
+  },
+  {
+    label: t('dashboard.card3.quickCmd.worldOptions.stopRain'),
+    value: 5,
+  },
 ]
 
 const quickCmdWorldGenerate = () => {
@@ -1596,14 +1661,21 @@ const quickCmdWorldGenerate = () => {
   if (quickCmdWorldId.value === 3) {
     quickCmd.value = `c_save()`
   }
+  if (quickCmdWorldId.value === 4) {
+    quickCmd.value = `TheWorld:PushEvent('ms_forceprecipitation')`
+  }
+  if (quickCmdWorldId.value === 5) {
+    quickCmd.value = `TheWorld:PushEvent('ms_forceprecipitation', false)`
+  }
 }
 
-const quickCmdInsert = () => {
-  consoleForm.value.cmd = quickCmd.value
+const quickCmdExec = () => {
   quickCmdDialog.value = false
-  quickCmd.value = ''
+
+  handleGameExec({ type: 'console', extra: quickCmd.value, worldID: quickCmdGameWorldId.value.id })
 
   // quickCmdUid.value = ''
+  quickCmd.value = ''
   quickCmdPlayerId.value = undefined
   quickCmdWorldId.value = undefined
 }
@@ -1677,6 +1749,7 @@ onMounted(async () => {
   dataGot.value = true
   getConnectionCode()
   consoleForm.value.worlds = baseInfo.value?.worlds || []
+  quickCmdGameWorldId.value = consoleForm.value.worlds[0]
   handleResize()
 
   // 添加事件监听

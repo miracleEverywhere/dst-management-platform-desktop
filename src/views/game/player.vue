@@ -22,6 +22,9 @@
         <v-tab value="whitelist">
           {{ t('game.player.list.whitelist') }}
         </v-tab>
+        <v-tab value="chat">
+          {{ t('game.player.chat.title') }}
+        </v-tab>
         <v-tab value="history">
           {{ t('game.player.history.tabName') }}
         </v-tab>
@@ -88,6 +91,18 @@
               list-type="whitelist"
               :uidmap="uidmap"
             />
+          </v-container>
+        </v-tabs-window-item>
+        <v-tabs-window-item value="chat">
+          <v-container
+            v-if="activeTabName==='chat'"
+            fluid
+            :height="calculateContainerSize()"
+            width="100%"
+            class="w-100"
+            style="overflow-y: auto"
+          >
+            <chat :height="calculateContainerSize()" />
           </v-container>
         </v-tabs-window-item>
         <v-tabs-window-item value="history">
@@ -166,6 +181,7 @@ import List from "@/views/game/components/player/list.vue"
 import playerApi from "@/api/player"
 import History from "@/views/game/components/player/history.vue"
 import Statistics from "@/views/game/components/player/statistics.vue"
+import Chat from "@/views/game/components/player/chat.vue"
 
 const globalStore = useGlobalStore()
 const userStore = useUserStore()

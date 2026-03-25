@@ -88,6 +88,7 @@
               v-model="inputValue"
               density="compact"
               :placeholder="t('game.player.list.placeholder')"
+              persistent-placeholder
               class="mt-2"
               @keyup.enter="handleInputConfirm"
               @blur="handleInputConfirm"
