@@ -191,102 +191,111 @@
     :width="mobile?'90%':'60%'"
   >
     <v-card>
-      <v-card-title>
-        {{ t('platform.rooms.dialog.title') }}
-      </v-card-title>
-      <v-card-text class="ma-4">
-        <v-row class="d-flex align-center">
-          <v-col>
-            <v-chip
-              label
-              color="info"
-              class="mr-4"
-            >
-              ID
-            </v-chip>
-            <span>
-              {{ detailForm.id }}
-            </span>
-          </v-col>
-        </v-row>
-        <v-row class="d-flex align-center">
-          <v-col>
-            <v-chip
-              label
-              color="info"
-              class="mr-4"
-            >
-              {{ t('platform.rooms.dialog.data.gameName') }}
-            </v-chip>
-            <span>
-              {{ detailForm.gameName }}
-            </span>
-          </v-col>
-        </v-row>
-        <v-row class="d-flex align-center">
-          <v-col>
-            <v-chip
-              label
-              color="info"
-              class="mr-4"
-            >
-              {{ t('platform.rooms.dialog.data.gameMode') }}
-            </v-chip>
-            <span>
-              {{ t(`game.base.step1.gameMode.modes.${detailForm.gameMode}`) }}
-            </span>
-          </v-col>
-        </v-row>
-        <v-row class="d-flex align-center">
-          <v-col>
-            <v-chip
-              label
-              color="info"
-              class="mr-4"
-            >
-              {{ t('platform.rooms.dialog.data.ports') }}
-            </v-chip>
-            <span>
-              {{ detailForm.ports.join(",") }}
-            </span>
-          </v-col>
-        </v-row>
-        <v-alert
-          v-if="detailForm.screens.length!==0"
-          color="primary"
-          density="compact"
-          class="mt-8 mb-4"
-        >
-          {{ t('platform.rooms.dialog.data.screenTip') }}
-        </v-alert>
-        <v-alert
-          v-if="detailForm.screens.length===0"
-          color="warning"
-          density="compact"
-          class="mt-8 mb-4"
-        >
-          {{ t('platform.rooms.dialog.data.noScreenTip') }}
-        </v-alert>
-        <v-row
-          v-for="screenName in detailForm.screens"
-          v-if="detailForm.screens.length!==0"
-        >
-          <v-col cols="6">
-            <v-chip label>
-              {{ screenName }}
-            </v-chip>
-          </v-col>
-          <v-col cols="6">
-            <v-btn
-              density="compact"
-              :loading="killLoading"
-              @click="killScreen(screenName)"
-            >
-              {{ t('platform.rooms.dialog.data.kill') }}
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-card-text>
+      <template v-if="!detailDialogLoading">
+        <v-card-title>
+          {{ t('platform.rooms.dialog.title') }}
+        </v-card-title>
+        <v-card-text class="ma-4">
+          <v-row class="d-flex align-center">
+            <v-col>
+              <v-chip
+                label
+                color="info"
+                class="mr-4"
+              >
+                ID
+              </v-chip>
+              <span>
+                {{ detailForm.id }}
+              </span>
+            </v-col>
+          </v-row>
+          <v-row class="d-flex align-center">
+            <v-col>
+              <v-chip
+                label
+                color="info"
+                class="mr-4"
+              >
+                {{ t('platform.rooms.dialog.data.gameName') }}
+              </v-chip>
+              <span>
+                {{ detailForm.gameName }}
+              </span>
+            </v-col>
+          </v-row>
+          <v-row class="d-flex align-center">
+            <v-col>
+              <v-chip
+                label
+                color="info"
+                class="mr-4"
+              >
+                {{ t('platform.rooms.dialog.data.gameMode') }}
+              </v-chip>
+              <span>
+                {{ t(`game.base.step1.gameMode.modes.${detailForm.gameMode}`) }}
+              </span>
+            </v-col>
+          </v-row>
+          <v-row class="d-flex align-center">
+            <v-col>
+              <v-chip
+                label
+                color="info"
+                class="mr-4"
+              >
+                {{ t('platform.rooms.dialog.data.ports') }}
+              </v-chip>
+              <span>
+                {{ detailForm.ports.join(",") }}
+              </span>
+            </v-col>
+          </v-row>
+          <v-alert
+            v-if="detailForm.screens.length!==0"
+            color="primary"
+            density="compact"
+            class="mt-8 mb-4"
+          >
+            {{ t('platform.rooms.dialog.data.screenTip') }}
+          </v-alert>
+          <v-alert
+            v-if="detailForm.screens.length===0"
+            color="warning"
+            density="compact"
+            class="mt-8 mb-4"
+          >
+            {{ t('platform.rooms.dialog.data.noScreenTip') }}
+          </v-alert>
+          <v-row
+            v-for="screenName in detailForm.screens"
+            v-if="detailForm.screens.length!==0"
+          >
+            <v-col cols="6">
+              <v-chip label>
+                {{ screenName }}
+              </v-chip>
+            </v-col>
+            <v-col cols="6">
+              <v-btn
+                density="compact"
+                :loading="killLoading"
+                @click="killScreen(screenName)"
+              >
+                {{ t('platform.rooms.dialog.data.kill') }}
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </template>
+      <template v-else>
+        <result
+          type="info"
+          :title="t('logs.fetching')"
+          :height="400"
+        />
+      </template>
     </v-card>
   </v-dialog>
   <confirm-box
@@ -310,6 +319,7 @@ import platformApi from "@/api/platform.js"
 import { parseModLua } from "@/utils/tools.js"
 import useGlobalStore from "@store/global.js"
 import { showSnackbar } from "@/utils/snackbar.js"
+import Result from "@/components/Result.vue"
 
 const { mobile } = useDisplay()
 const { t } = useI18n()
@@ -368,9 +378,16 @@ const detailDialogLoading = ref(false)
 const openDetailDialog = async row => {
   detailDialog.value = true
   detailDialogLoading.value = true
+  detailForm.value = {
+    id: undefined,
+    gameName: '',
+    gameMode: '',
+    ports: [],
+    screens: [],
+  }
 
   const reqForm = {
-    roomID: globalStore.room.id,
+    roomID: row.id,
   }
 
   const screens = []
