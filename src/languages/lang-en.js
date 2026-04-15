@@ -569,6 +569,7 @@ export default {
         tabName: 'Statistics',
         lineChart: {
           title: 'Online Players Count',
+          timeRangeTip: 'You can go to the Platform - Settings page to configure the data volume for this chart',
         },
         pieChart: {
           title: 'Online Time Top-10',
@@ -764,11 +765,20 @@ export default {
       title: 'Setting',
       submit: 'Submit',
       form: {
+        playerInfo: {
+          title: 'Player info',
+        },
         playerGetFrequency: {
           title: 'Player Get Frequency',
           tip: 'frequency to fetch the list of online players',
           required: 'Please enter the frequency for fetching online players',
           unit: 'Sec',
+        },
+        playerInfoSaveTime: {
+          title: 'Data retention period',
+          tip: 'The longer the time, the higher the memory usage',
+          required: 'Please enter the Data retention period',
+          unit: 'Day',
         },
         UIDMaintainEnable: {
           title: 'UID Map',

@@ -20,7 +20,7 @@
         <!-- 在线玩家获取频率 -->
         <v-alert
           color="primary"
-          :title="t('platform.settings.form.playerGetFrequency.title')"
+          :title="t('platform.settings.form.playerInfo.title')"
           density="compact"
           class="mt-4"
           variant="tonal"
@@ -39,6 +39,25 @@
               <template #append-inner>
                 <div style="width: 50px">
                   {{ t('platform.settings.form.playerGetFrequency.unit') }}
+                </div>
+              </template>
+            </v-number-input>
+          </v-col>
+          <v-spacer v-if="!mobile" />
+        </v-row>
+        <v-row class="mt-2">
+          <v-col>
+            <v-number-input
+              v-model="globalSettingsForm.playerInfoSaveTime"
+              v-tooltip="t('platform.settings.form.playerInfoSaveTime.tip')"
+              :rules="globalSettingsFormRules.playerInfoSaveTime"
+              :label="t('platform.settings.form.playerInfoSaveTime.title')"
+              :min="1"
+              style="margin-bottom: -1.25rem"
+            >
+              <template #append-inner>
+                <div style="width: 50px">
+                  {{ t('platform.settings.form.playerInfoSaveTime.unit') }}
                 </div>
               </template>
             </v-number-input>
@@ -243,6 +262,7 @@ const globalSettingsFormRef = ref()
 
 const globalSettingsFormOld = ref({
   playerGetFrequency: undefined,
+  playerInfoSaveTime: undefined,
   UIDMaintainEnable: false,
   sysMetricsEnable: false,
   sysMetricsSetting: undefined,
@@ -253,6 +273,7 @@ const globalSettingsFormOld = ref({
 
 const globalSettingsForm = ref({
   playerGetFrequency: undefined,
+  playerInfoSaveTime: undefined,
   UIDMaintainEnable: false,
   sysMetricsEnable: false,
   sysMetricsSetting: undefined,
@@ -285,6 +306,9 @@ const getGlobalSettings = () => {
   platformApi.globalSettings.get().then(response => {
     globalSettingsForm.value = response.data
     globalSettingsFormOld.value = deepCopy(globalSettingsForm.value)
+    if (globalSettingsForm.value.playerInfoSaveTime === 0) {
+      globalSettingsForm.value.playerInfoSaveTime = 1
+    }
   }).finally(() => {
     getGlobalSettingsLoading.value = false
   })

@@ -1,17 +1,37 @@
 <template>
   <v-card class="mb-8">
     <v-card-title>
-      <div class="card-header">
-        <span>
+      <div class="fcb">
+        <div v-if="!mobile">
           {{ t('game.player.statistics.lineChart.title') }}
-        </span>
-        <v-btn
-          :loading="getPlayerCountLoading"
-          color="default"
-          @click="getPlayerCount"
-        >
-          {{ t('platform.metrics.refresh') }}
-        </v-btn>
+        </div>
+        <div v-if="mobile" />
+
+        <div class="fcc">
+          <v-number-input
+            v-model="playerCountTimeRange"
+            v-tooltip="t('game.player.statistics.lineChart.timeRangeTip')"
+            density="compact"
+            width="120"
+            hide-details
+            :min="1"
+            :loading="getOnlineTimeLoading"
+            class="mr-4"
+          >
+            <template #append-inner>
+              <div>
+                {{ t('platform.settings.form.playerInfoSaveTime.unit') }}
+              </div>
+            </template>
+          </v-number-input>
+          <v-btn
+            :loading="getPlayerCountLoading"
+            color="default"
+            @click="getPlayerCount"
+          >
+            {{ t('platform.metrics.refresh') }}
+          </v-btn>
+        </div>
       </div>
     </v-card-title>
     <v-card-text>
@@ -24,17 +44,21 @@
   </v-card>
   <v-card>
     <v-card-title>
-      <div class="card-header">
-        <span>
+      <div class="fcb">
+        <div v-if="!mobile">
           {{ t('game.player.statistics.pieChart.title') }}
-        </span>
-        <v-btn
-          :loading="getOnlineTimeLoading"
-          color="default"
-          @click="getOnlineTime"
-        >
-          {{ t('platform.metrics.refresh') }}
-        </v-btn>
+        </div>
+        <div v-if="mobile" />
+
+        <div class="fcc">
+          <v-btn
+            :loading="getOnlineTimeLoading"
+            color="default"
+            @click="getOnlineTime"
+          >
+            {{ t('platform.metrics.refresh') }}
+          </v-btn>
+        </div>
       </div>
     </v-card-title>
     <v-card-text>
@@ -138,12 +162,14 @@ const optionPie = ref({
 })
 
 const getPlayerCountLoading = ref(false)
+const playerCountTimeRange = ref(1)
 
 const getPlayerCount = () => {
   getPlayerCountLoading.value = true
 
   const reqForm = {
     roomID: globalStore.room.id,
+    timeRange: playerCountTimeRange.value * 24 * 60 * 60,
   }
 
   playerApi.statistics.playerCount.get(reqForm).then(response => {

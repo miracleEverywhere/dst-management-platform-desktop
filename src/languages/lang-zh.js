@@ -568,6 +568,7 @@ export default {
         tabName: '玩家统计',
         lineChart: {
           title: '在线玩家数',
+          timeRangeTip: '可前往平台管理-平台设置页面配置该图表的数据量',
         },
         pieChart: {
           title: '在线时长Top-10',
@@ -763,14 +764,23 @@ export default {
       title: '平台设置',
       submit: '提交',
       form: {
+        playerInfo: {
+          title: '在线玩家信息',
+        },
         playerGetFrequency: {
-          title: '在线玩家获取频率',
+          title: '数据获取频率',
           tip: '隔多长时间，就获取一次在线玩家',
-          required: '请输入在线玩家获取频率',
+          required: '请输入数据获取频率',
           unit: '秒',
         },
+        playerInfoSaveTime: {
+          title: '数据保留时长',
+          tip: '时间越久，内存占用越多',
+          required: '请输入数据保留时长',
+          unit: '天',
+        },
         UIDMaintainEnable: {
-          title: '昵称字典维护',
+          title: '玩家昵称维护',
           tip: '打开后可以记录玩家的游戏昵称，让你更好的区分谁是谁',
         },
         sysMetricsEnable: {
