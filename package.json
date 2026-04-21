@@ -24,7 +24,7 @@
     "@iconify-json/bxl": "^1.1.10",
     "@vueuse/core": "^10.11.1",
     "@vueuse/math": "^10.11.1",
-    "axios": "^1.13.5",
+    "axios": "^1.15.1",
     "codemirror": "^5.65.5",
     "crypto-js": "^4.2.0",
     "echarts": "^5.5.1",
