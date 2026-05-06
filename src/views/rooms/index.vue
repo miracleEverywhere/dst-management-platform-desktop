@@ -375,7 +375,7 @@ import ElectronApi from "@/utils/electronApi"
 import { DB_KEY } from "@/config"
 import modApi from "@/api/mod.js"
 import dashboardApi from "@/api/dashboard.js"
-
+import {sleep} from "@antfu/utils"
 
 
 const { mobile } = useDisplay()
@@ -445,7 +445,7 @@ const toggleMenu = () => {
   eventBus.emit('toggleMenu', 3)
 }
 
-const selectRoom = room => {
+const selectRoom = async room => {
   globalStore.room.id = room.id
   globalStore.room.gameName = room.gameName
 
@@ -460,6 +460,9 @@ const selectRoom = room => {
   }
 
   ElectronApi.store.set(DB_KEY.dmps, dmps)
+
+  await sleep(200)
+  await gotoDashboard(room)
 }
 
 const gotoDashboard = async room => {

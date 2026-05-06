@@ -382,7 +382,7 @@
                     >
                       {{ t('dashboard.card1.item.players') }}
                     </v-chip>
-                    <v-chip>
+                    <v-chip class="cursor-default">
                       <v-tooltip
                         v-if="baseInfo.players.map(user => user.nickname).join(', ')!==''"
                         activator="parent"
