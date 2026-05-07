@@ -229,6 +229,7 @@
                         <v-chip
                           color="info"
                           label
+                          @click.stop="() => {}"
                         >
                           <v-tooltip
                             v-if="getCurrentPlayersNum(room.players)!==0"
@@ -375,7 +376,7 @@ import ElectronApi from "@/utils/electronApi"
 import { DB_KEY } from "@/config"
 import modApi from "@/api/mod.js"
 import dashboardApi from "@/api/dashboard.js"
-import {sleep} from "@antfu/utils"
+import { sleep } from "@antfu/utils"
 
 
 const { mobile } = useDisplay()
