@@ -16,6 +16,7 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 // 替代 vite-plugin-vuetify 的 styles.configFile 方案，避开其虚拟模块 tempFiles Map 的竞争条件
 function vuetifyConfigStyles(configFilePath) {
   let configFileAbsolute
+  
   return {
     name: 'vuetify:config-styles',
     enforce: 'pre',
@@ -26,6 +27,7 @@ function vuetifyConfigStyles(configFilePath) {
       if (!id.includes('node_modules/vuetify/')) return null
       if (!id.endsWith('.sass') && !id.endsWith('.scss')) return null
       const suffix = id.endsWith('.scss') ? ';\n' : '\n'
+      
       return `@use "${configFileAbsolute}"${suffix}${code}`
     },
   }
