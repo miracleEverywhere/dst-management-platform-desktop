@@ -373,6 +373,8 @@ const roomSettingToDB = () => {
     backupCleanSetting: roomSettingData.value.backupClean.setting,
     restartEnable: roomSettingData.value.restart.enable,
     restartSetting: roomSettingData.value.restart.setting,
+    resetEnable: roomSettingData.value.reset.enable,
+    resetSetting: JSON.stringify(roomSettingData.value.reset.setting),
     keepaliveEnable: roomSettingData.value.keepalive.enable,
     keepaliveSetting: roomSettingData.value.keepalive.setting,
     scheduledStartStopEnable: roomSettingData.value.scheduledStartStop.enable,
@@ -384,6 +386,10 @@ const roomSettingToDB = () => {
 }
 
 const DBToRoomSetting = data => {
+  if (data.resetSetting === "") {
+    // 新增字段，兼容旧版本
+    data.resetSetting = '{"force": false, "time": "06:10:00", "days": 3}'
+  }
   roomSettingData.value = {
     backup: {
       enable: data.backupEnable,
@@ -396,6 +402,10 @@ const DBToRoomSetting = data => {
     restart: {
       enable: data.restartEnable,
       setting: data.restartSetting,
+    },
+    reset: {
+      enable: data.resetEnable,
+      setting: JSON.parse(data.resetSetting),
     },
     keepalive: {
       enable: data.keepaliveEnable,

@@ -417,6 +417,21 @@ export default {
               time: 'It is recommended to schedule the restart during a time when no players are in the game. A restart announcement will be made in the game 15 minutes before the restart',
             },
           },
+          reset: {
+            name: 'Auto Reset',
+            enable: 'Enable',
+            disable: 'Disable',
+            force: 'Force Reset',
+            time: 'Reset Time',
+            days: 'Idle Reset Days',
+            unit: 'Day',
+            tip: {
+              name: 'reset on a regular schedule',
+              force: 'the worlds will reset daily at the set time',
+              time: 'reset worlds at this time',
+              days: 'Effective when forced reset is disabled; if no players enter the game for x consecutive days (real-world days, not in-game 8-minute days), a reset will be triggered',
+            },
+          },
           keepalive: {
             name: 'Keepalive',
             enable: 'Enable',

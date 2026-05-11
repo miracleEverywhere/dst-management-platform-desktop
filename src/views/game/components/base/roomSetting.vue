@@ -191,6 +191,105 @@
       </v-col>
       <v-spacer v-if="!mobile" />
     </v-row>
+    <!-- 自动重置 -->
+    <v-alert
+      color="primary"
+      :title="t('game.base.step4.form.reset.name')"
+      density="compact"
+      class="mt-8"
+      variant="tonal"
+      icon="ri-bookmark-fill"
+    />
+    <v-row class="mt-0">
+      <v-col>
+        <v-radio-group
+          v-model="roomSettingForm.reset.enable"
+          v-tooltip="t('game.base.step4.form.reset.tip.name')"
+          inline
+          color="primary"
+          class="mt-2"
+        >
+          <template #prepend>
+            <span>
+              {{ t('game.base.step4.form.reset.name') }}
+            </span>
+          </template>
+          <v-radio
+            :label="t('game.base.step4.form.reset.enable')"
+            :value="true"
+          />
+          <v-radio
+            :label="t('game.base.step4.form.reset.disable')"
+            :value="false"
+          />
+        </v-radio-group>
+      </v-col>
+      <v-spacer v-if="!mobile" />
+    </v-row>
+    <v-row class="mt-0 mb-2">
+      <v-col>
+        <v-radio-group
+          v-model="roomSettingForm.reset.setting.force"
+          v-tooltip="t('game.base.step4.form.reset.tip.force')"
+          inline
+          color="primary"
+          class="mt-2"
+        >
+          <template #prepend>
+            <span>
+              {{ t('game.base.step4.form.reset.force') }}
+            </span>
+          </template>
+          <v-radio
+            :label="t('game.base.step4.form.reset.enable')"
+            :value="true"
+          />
+          <v-radio
+            :label="t('game.base.step4.form.reset.disable')"
+            :value="false"
+          />
+        </v-radio-group>
+      </v-col>
+      <v-spacer v-if="!mobile" />
+    </v-row>
+    <v-row class="mt-0">
+      <v-col :cols="mobile?12:4">
+        <v-text-field
+          v-model="roomSettingForm.reset.setting.time"
+          v-tooltip="t('game.base.step4.form.reset.tip.time')"
+          :disabled="!roomSettingForm.reset.enable"
+          :label="t('game.base.step4.form.reset.time')"
+        >
+          <v-menu
+            :close-on-content-click="false"
+            activator="parent"
+          >
+            <v-time-picker
+              v-model="roomSettingForm.reset.setting.time"
+              use-seconds
+              format="24hr"
+            />
+          </v-menu>
+        </v-text-field>
+      </v-col>
+      <v-col :cols="mobile?12:4">
+        <v-number-input
+          v-model="roomSettingForm.reset.setting.days"
+          v-tooltip="t('game.base.step4.form.reset.tip.days')"
+          :disabled="!((!roomSettingForm.reset.setting.force)&&roomSettingForm.reset.enable)"
+          :label="t('game.base.step4.form.reset.days')"
+          :min="1"
+          style="margin-bottom: -1.25rem"
+        >
+          <template #append-inner>
+            <div style="width: 30px">
+              {{ t('game.base.step4.form.reset.unit') }}
+            </div>
+          </template>
+        </v-number-input>
+      </v-col>
+      <v-spacer v-if="!mobile" />
+    </v-row>
     <!-- 自动保活 -->
     <v-alert
       color="primary"
@@ -448,6 +547,14 @@ const roomSettingForm = ref({
   restart: {
     enable: false,
     setting: '06:30:00',
+  },
+  reset: {
+    enable: false,
+    setting: {
+      force: false, // 不看有没有玩家，在指定的时间直接重置
+      time: '06:10:00', // 仅在force为true时生效
+      days: 3,  // 如果force为false时生效，指服务器中超过3天(现实中的天)没有玩家，就重置
+    },
   },
   keepalive: {
     enable: false,
