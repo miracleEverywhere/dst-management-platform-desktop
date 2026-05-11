@@ -411,6 +411,14 @@ const getRooms = async () => {
   const response = await roomApi.list.get(reqForm.value)
 
   rooms.value = response.data.rows || []
+
+  if (rooms.value.length === 0) {
+    if (reqForm.value.page > 1) {
+      reqForm.value.page--
+      return getRooms()
+    }
+  }
+
   total.value = response.data.total
   getRoomsLoading.value = false
 }
