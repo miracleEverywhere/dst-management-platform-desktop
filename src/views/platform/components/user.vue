@@ -725,15 +725,15 @@ const dbRoomsToRooms = str =>
 
 const handleAction = (action, user) => {
   switch (action) {
-  case "update":
-    openUpdateUserDialog(user)
-    break
-  case "delete":
-    currentUsername.value = user.username
-    confirmVisible.value = true
-    break
-  default:
-    showSnackbar("牛哇", "error")
+    case "update":
+      openUpdateUserDialog(user)
+      break
+    case "delete":
+      currentUsername.value = user.username
+      confirmVisible.value = true
+      break
+    default:
+      showSnackbar("牛哇", "error")
   }
 }
 

@@ -49,6 +49,7 @@
                 variant="outlined"
                 @update:model-value="handleOptionChange(field.name, $event)"
               >
+                <!-- eslint-disable-next-line vue/no-template-shadow -->
                 <template #item="{ props, item }">
                   <v-list-item
                     v-tooltip="item.raw.hover"

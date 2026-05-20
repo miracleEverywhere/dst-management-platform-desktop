@@ -73,12 +73,12 @@ import useGlobalStore from "@store/global.js"
 import { useI18n } from "vue-i18n"
 
 const props = defineProps({
-  configs: { type: Array, default: ['undefined'] },
+  configs: { type: Array, default: () => ['undefined'] },
   modelValue: { type: String, default: 'undefined' },
   image: { type: String, default: 'undefined.png' },
-  i18n: { type: Object, default: { zh: '平台未识别', en: 'undefined' } },
+  i18n: { type: Object, default: () => ({ zh: '平台未识别', en: 'undefined' }) },
   name: { type: String, default: 'undefined' },
-  customConfigsValue: { type: Object, default: {} },
+  customConfigsValue: { type: Object, default: () => ({}) },
   defaultModelValue: { type: String, default: 'undefined' },
 })
 

@@ -415,6 +415,7 @@ const getRooms = async () => {
   if (rooms.value.length === 0) {
     if (reqForm.value.page > 1) {
       reqForm.value.page--
+
       return getRooms()
     }
   }
@@ -494,16 +495,16 @@ const generatePlayerList = players => {
 
 const handleAction = (actionType, row) => {
   switch (actionType) {
-  case 'activate':
-    activate(row)
-    break
-  case 'deactivate':
-    deactivate(row)
-    break
-  case 'delete':
-    deleteRoomID.value = row.id
-    confirmVisible.value = true
-    break
+    case 'activate':
+      activate(row)
+      break
+    case 'deactivate':
+      deactivate(row)
+      break
+    case 'delete':
+      deleteRoomID.value = row.id
+      confirmVisible.value = true
+      break
   }
 }
 
@@ -606,6 +607,7 @@ const handleResize = debounce(() => {
   }
 }, 200)
 
+// eslint-disable-next-line sonarjs/no-invariant-returns
 const copyToClipboard = async text => {
   try {
     await navigator.clipboard.writeText(text)
@@ -656,28 +658,28 @@ const generateGameInfo = async room => {
   let copyMessage = ''
 
   switch (globalStore.language) {
-  case 'zh':
-    info = info + `✅房间名称: ${room.gameName}\n`
-    info = info + `✅房间描述: ${room.description ? room.description : '无描述'}\n`
-    info = info + `✅游戏模式: ${t('game.base.step1.gameMode.modes.' + room.gameMode)}\n`
-    info = info + `✅模组个数: ${room.modInOne ? parseModLua(room.modData).length : parseModLua(room.worlds[0].modData).length}\n`
-    info = info + `✅玩家个数: ${getCurrentPlayersNum(room.players)}/${room.maxPlayer}\n`
-    info = info + `✅直连代码: ${connectionCode}\n`
-    info = info + `✅在线玩家: ${players ? players : '无在线玩家'}\n`
-    info = info + `✅模组信息: ${modInfo ? modInfo : '无模组'}\n`
-    copyMessage = '复制成功'
-    break
-  case 'en':
-    info = info + `✅Game Name: ${room.gameName}\n`
-    info = info + `✅Game Desc: ${room.description ? room.description : 'No Desc'}\n`
-    info = info + `✅Game Mode: ${t('game.base.step1.gameMode.modes.' + room.gameMode)}\n`
-    info = info + `✅Mods: ${room.modInOne ? parseModLua(room.modData).length : parseModLua(room.worlds[0].modData).length}\n`
-    info = info + `✅Players: ${getCurrentPlayersNum(room.players)}/${room.maxPlayer}\n`
-    info = info + `✅Code: ${connectionCode}\n`
-    info = info + `✅Online: ${players ? players : 'No Online Players'}\n`
-    info = info + `✅Mods: ${modInfo ? modInfo : 'No Mods'}\n`
-    copyMessage = 'Copy Success'
-    break
+    case 'zh':
+      info = info + `✅房间名称: ${room.gameName}\n`
+      info = info + `✅房间描述: ${room.description ? room.description : '无描述'}\n`
+      info = info + `✅游戏模式: ${t('game.base.step1.gameMode.modes.' + room.gameMode)}\n`
+      info = info + `✅模组个数: ${room.modInOne ? parseModLua(room.modData).length : parseModLua(room.worlds[0].modData).length}\n`
+      info = info + `✅玩家个数: ${getCurrentPlayersNum(room.players)}/${room.maxPlayer}\n`
+      info = info + `✅直连代码: ${connectionCode}\n`
+      info = info + `✅在线玩家: ${players ? players : '无在线玩家'}\n`
+      info = info + `✅模组信息: ${modInfo ? modInfo : '无模组'}\n`
+      copyMessage = '复制成功'
+      break
+    case 'en':
+      info = info + `✅Game Name: ${room.gameName}\n`
+      info = info + `✅Game Desc: ${room.description ? room.description : 'No Desc'}\n`
+      info = info + `✅Game Mode: ${t('game.base.step1.gameMode.modes.' + room.gameMode)}\n`
+      info = info + `✅Mods: ${room.modInOne ? parseModLua(room.modData).length : parseModLua(room.worlds[0].modData).length}\n`
+      info = info + `✅Players: ${getCurrentPlayersNum(room.players)}/${room.maxPlayer}\n`
+      info = info + `✅Code: ${connectionCode}\n`
+      info = info + `✅Online: ${players ? players : 'No Online Players'}\n`
+      info = info + `✅Mods: ${modInfo ? modInfo : 'No Mods'}\n`
+      copyMessage = 'Copy Success'
+      break
   }
 
   await copyToClipboard(info)

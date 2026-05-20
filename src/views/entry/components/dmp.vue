@@ -13,6 +13,7 @@
             v-model="menu"
             location="bottom end"
           >
+            <!-- eslint-disable-next-line vue/no-template-shadow -->
             <template #activator="{ props }">
               <v-btn
                 color="primary"

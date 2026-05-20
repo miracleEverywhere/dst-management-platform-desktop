@@ -236,7 +236,7 @@ const handleImport = file => {
     const fileContent = reader.result
 
     const uidsFile = fileContent.split('\n')
-    // eslint-disable-next-line sonarjs/no-unused-collection
+
     const uids = []
     for (let uid of uidsFile) {
       if (uid !== "") {

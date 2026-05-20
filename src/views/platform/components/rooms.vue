@@ -435,19 +435,19 @@ const killScreen = screenName => {
 
 const handleAction = (actionType, row) => {
   switch (actionType) {
-  case 'details':
-    openDetailDialog(row)
-    break
-  case 'activate':
-    activate(row)
-    break
-  case 'deactivate':
-    deactivate(row)
-    break
-  case 'delete':
-    currentRoomID.value = row.id
-    confirmVisible.value = true
-    break
+    case 'details':
+      openDetailDialog(row)
+      break
+    case 'activate':
+      activate(row)
+      break
+    case 'deactivate':
+      deactivate(row)
+      break
+    case 'delete':
+      currentRoomID.value = row.id
+      confirmVisible.value = true
+      break
   }
 }
 

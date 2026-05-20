@@ -9,10 +9,9 @@
 import useGlobalStore from '@store/global'
 import { useI18n } from "vue-i18n"
 import { getBrowserLang } from "@/utils/tools.js"
-import { useLocale } from "vuetify/framework"
+import { useLocale, useTheme  } from "vuetify/framework"
 import ElectronApi from "@/utils/electronApi"
 import { DB_KEY } from "@/config"
-import { useTheme } from "vuetify"
 
 
 const i18n = useI18n()
@@ -31,14 +30,14 @@ const initI18n = () => {
   } else {
     i18n.locale.value = globalStore.language
     switch (globalStore.language) {
-    case 'zh':
-      current.value = 'zhHans'
-      break
-    case 'en':
-      current.value = 'en'
-      break
-    default:
-      current.value = 'zhHans'
+      case 'zh':
+        current.value = 'zhHans'
+        break
+      case 'en':
+        current.value = 'en'
+        break
+      default:
+        current.value = 'zhHans'
     }
   }
 }

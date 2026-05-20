@@ -72,6 +72,7 @@
                 {{ t('game.mod.download.modInfo.detail') }}
               </v-btn>
             </template>
+            <!-- eslint-disable-next-line vue/no-unused-vars -->
             <template #default="{ isActive }">
               <v-card :title="props.mod.name">
                 <v-card-text>
@@ -231,6 +232,7 @@
                     </tbody>
                   </v-table>
                   <v-container height="30vh">
+                    <!-- eslint-disable-next-line vue/no-v-html -->
                     <div v-html="bbCodeParser.parse(props.mod.file_description)" />
                   </v-container>
                 </v-card-text>

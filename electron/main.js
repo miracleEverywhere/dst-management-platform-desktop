@@ -340,7 +340,7 @@ ipcMain.on('reload-window', () => {
 
 ipcMain.handle('download-file', async (event, { url, fileName }) => {
   return new Promise((resolve, reject) => {
-    const downloadsPath = app.getPath('downloads')
+    // const downloadsPath = app.getPath('downloads')
 
     // 处理文件名
     // const finalFileName = fileName || path.basename(url);

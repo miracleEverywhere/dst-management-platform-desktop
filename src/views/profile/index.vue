@@ -144,25 +144,25 @@ const avatarImage = ref()
 const avatarImageFull = ref()
 
 switch (userInfo.value.avatar) {
-case '1':
-  avatarImage.value = avatar1
-  avatarImageFull.value = avatar1full
-  break
-case '2':
-  avatarImage.value = avatar2
-  avatarImageFull.value = avatar2full
-  break
-case '3':
-  avatarImage.value = avatar3
-  avatarImageFull.value = avatar3full
-  break
-case '4':
-  avatarImage.value = avatar4
-  avatarImageFull.value = avatar4full
-  break
-default:
-  avatarImage.value = avatar1
-  avatarImageFull.value = avatar1full
+  case '1':
+    avatarImage.value = avatar1
+    avatarImageFull.value = avatar1full
+    break
+  case '2':
+    avatarImage.value = avatar2
+    avatarImageFull.value = avatar2full
+    break
+  case '3':
+    avatarImage.value = avatar3
+    avatarImageFull.value = avatar3full
+    break
+  case '4':
+    avatarImage.value = avatar4
+    avatarImageFull.value = avatar4full
+    break
+  default:
+    avatarImage.value = avatar1
+    avatarImageFull.value = avatar1full
 }
 
 const avatars = {

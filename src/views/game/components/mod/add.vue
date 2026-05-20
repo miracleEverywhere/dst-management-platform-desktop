@@ -376,17 +376,17 @@ const selectedMods = ref([])
 
 const handleModAction = (action, mod) => {
   switch (action) {
-  case "enable":
-    modEnable(mod)
-    break
-  case "update":
-    modUpdate(mod)
-    break
-  case "delete":
-    handleDeleteMod(mod)
-    break
-  default:
-    showSnackbar("牛哇", "error")
+    case "enable":
+      modEnable(mod)
+      break
+    case "update":
+      modUpdate(mod)
+      break
+    case "delete":
+      handleDeleteMod(mod)
+      break
+    default:
+      showSnackbar("牛哇", "error")
   }
 }
 
@@ -481,7 +481,7 @@ const preDownload = async () => {
     }
 
     try {
-      const res = await modApi.download.post(reqFrom)
+      await modApi.download.post(reqFrom)
 
       modList.value[i].color = 'success'
       preDownloadProgress.value = ((i+1) / modList.value.length) * 100

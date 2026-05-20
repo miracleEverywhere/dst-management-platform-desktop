@@ -665,7 +665,6 @@ const handleEmoji = e => {
     })
   } else {
     copyToClipboard(e).then(() => {
-      let message
       showSnackbar('复制成功')
       emojiDialog.value = false
     }).catch(() => {

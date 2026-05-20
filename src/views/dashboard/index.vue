@@ -928,6 +928,7 @@
                       :width="mobile?'90%':'60%'"
                       @after-enter="checkLobby"
                     >
+                      <!-- eslint-disable-next-line vue/no-unused-vars -->
                       <template #default="{ isActive }">
                         <v-card min-height="520">
                           <v-card-title>

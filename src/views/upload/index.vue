@@ -31,6 +31,7 @@
                   {{ t('upload.button') }}
                 </v-btn>
               </template>
+              <!-- eslint-disable-next-line vue/no-unused-vars -->
               <template #default="{ isActive }">
                 <v-card
                   :title="t('upload.dialog.title')"
