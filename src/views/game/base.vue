@@ -386,9 +386,23 @@ const roomSettingToDB = () => {
 }
 
 const DBToRoomSetting = data => {
+  if (data.backupSetting === "") {
+    data.backupSetting = JSON.stringify([{
+      time: '06:00:00',
+    }])
+  }
   if (data.resetSetting === "") {
-    // 新增字段，兼容旧版本
-    data.resetSetting = '{"force": false, "time": "06:10:00", "days": 3}'
+    data.resetSetting = JSON.stringify({
+      force: false,
+      time: "06:10:00",
+      days: 3,
+    })
+  }
+  if (data.scheduledStartStopSetting === "") {
+    data.scheduledStartStopSetting = JSON.stringify({
+      start: '07:00:00',
+      stop: '01:00:00',
+    })
   }
   roomSettingData.value = {
     backup: {
