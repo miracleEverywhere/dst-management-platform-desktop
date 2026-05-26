@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import path from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -28,7 +28,9 @@ function vuetifyConfigStyles(configFilePath) {
       if (!id.endsWith('.sass') && !id.endsWith('.scss')) return null
       const suffix = id.endsWith('.scss') ? ';\n' : '\n'
       
-      return `@use "${configFileAbsolute}" as *${suffix}${code}`
+      const fileUrl = pathToFileURL(configFileAbsolute).href
+
+      return `@use '${fileUrl}' as *${suffix}${code}`
     },
   }
 }
