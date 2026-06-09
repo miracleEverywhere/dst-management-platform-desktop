@@ -699,6 +699,7 @@ export default {
     },
     user: {
       dialogTitle: '新增用户',
+      dialogWarning: '从v3.1.5版本开始，饥荒管理平台使用bcrypt进行密码加密，请勿使用v3.1.5及以上版本App管理v3.1.4及以下版本，网页上操作无影响',
       form: {
         username: {
           title: '用户名',

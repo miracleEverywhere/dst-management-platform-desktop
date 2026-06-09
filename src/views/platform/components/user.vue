@@ -248,6 +248,15 @@
         <v-card-text class="my-2">
           <v-row>
             <v-col>
+              <v-alert
+                color="warning"
+                density="compact"
+                :text="t('platform.user.dialogWarning')"
+              ></v-alert>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
               <v-text-field
                 v-model="userForm.username"
                 v-tooltip="t('platform.user.form.username.tip')"
@@ -520,7 +529,6 @@ import avatar1 from "@images/avatars/avatar-1.png"
 import avatar2 from "@images/avatars/avatar-2.png"
 import avatar3 from "@images/avatars/avatar-3.png"
 import avatar4 from "@images/avatars/avatar-4.png"
-import { SHA512 } from "@/utils/tools.js"
 import { showSnackbar } from "@/utils/snackbar.js"
 import globalStore from "@store/global.js"
 import useUserStore from "@store/user.js"
@@ -698,7 +706,7 @@ const handleUserSubmit = async () => {
       nickname: userForm.value.nickname,
       role: userForm.value.role,
       avatar: userForm.value.avatar,
-      password: SHA512(userForm.value.password),
+      password: userForm.value.password,
       disabled: userForm.value.disabled,
       rooms: userForm.value.rooms.join(','),
       roomCreation: userForm.value.roomCreation,

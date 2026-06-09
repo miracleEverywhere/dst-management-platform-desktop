@@ -700,6 +700,7 @@ export default {
     },
     user: {
       dialogTitle: 'Add User',
+      dialogWarning: 'Starting from version v3.1.5, the Dont Starve management platform uses bcrypt for password encryption. Please do not use v3.1.5 or above App to manage v3.1.4 or below versions. Operations on the web page are not affected',
       form: {
         username: {
           title: 'Username',
