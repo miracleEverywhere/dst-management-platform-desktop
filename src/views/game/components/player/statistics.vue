@@ -27,7 +27,7 @@
           <v-btn
             :loading="getPlayerCountLoading"
             color="default"
-            @click="getPlayerCount"
+            @click="getPlayerCountV2"
           >
             {{ t('platform.metrics.refresh') }}
           </v-btn>
@@ -164,7 +164,29 @@ const optionPie = ref({
 const getPlayerCountLoading = ref(false)
 const playerCountTimeRange = ref(1)
 
-const getPlayerCount = () => {
+// const getPlayerCount = () => {
+//   getPlayerCountLoading.value = true
+//
+//   const reqForm = {
+//     roomID: globalStore.room.id,
+//     timeRange: playerCountTimeRange.value * 24 * 60 * 60,
+//   }
+//
+//   playerApi.statistics.playerCount.get(reqForm).then(response => {
+//     if (response.data != null) {
+//       option.value.xAxis.data = []
+//       option.value.series[0].data = []
+//       for (let item of response.data) {
+//         option.value.xAxis.data.push(timestamp2time(item.timestamp))
+//         option.value.series[0].data.push(item?.playerInfo?.length || 0)
+//       }
+//     }
+//   }).finally(() => {
+//     getPlayerCountLoading.value = false
+//   })
+// }
+
+const getPlayerCountV2 = () => {
   getPlayerCountLoading.value = true
 
   const reqForm = {
@@ -172,13 +194,13 @@ const getPlayerCount = () => {
     timeRange: playerCountTimeRange.value * 24 * 60 * 60,
   }
 
-  playerApi.statistics.playerCount.get(reqForm).then(response => {
+  playerApi.statistics.playerCountV2.get(reqForm).then(response => {
     if (response.data != null) {
       option.value.xAxis.data = []
       option.value.series[0].data = []
       for (let item of response.data) {
         option.value.xAxis.data.push(timestamp2time(item.timestamp))
-        option.value.series[0].data.push(item?.playerInfo?.length || 0)
+        option.value.series[0].data.push(item?.count || 0)
       }
     }
   }).finally(() => {
@@ -212,7 +234,7 @@ const getOnlineTime = () => {
 }
 
 onMounted(() => {
-  getPlayerCount()
+  getPlayerCountV2()
   getOnlineTime()
 })
 </script>

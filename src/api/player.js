@@ -35,6 +35,12 @@ export default {
         return await http.get(this.url, data)
       },
     },
+    playerCountV2: {
+      url: `/player/statistics/player_count/v2`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+    },
   },
   chat: {
     url: `/player/chat`,
