@@ -762,8 +762,9 @@ export default {
         no: 'No',
         noLimit: 'No Lim',
         actions: 'Actions',
-        update: 'Update',
-        delete: 'Delete',
+        update: 'Update User',
+        delete: 'Delete User',
+        revoke: 'Revoke Token',
         unit: 'Room',
       },
       search: {

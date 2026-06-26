@@ -761,8 +761,9 @@ export default {
         no: '否',
         noLimit: '不限制',
         actions: '操作',
-        update: '修改',
-        delete: '删除',
+        update: '修改用户',
+        delete: '删除用户',
+        revoke: '令牌撤销',
         unit: '个房间',
       },
       search: {
