@@ -22,7 +22,7 @@ instance.interceptors.request.use(
       return Promise.reject(new Error('IP address is empty'))
     }
 
-    config.baseURL = `http://${globalStore.entry.ip}:${globalStore.entry.port}/${ApiVersion}`
+    config.baseURL = `${globalStore.entry.protocol || 'http'}://${globalStore.entry.ip}:${globalStore.entry.port}/${ApiVersion}`
 
     const token = globalStore.entry.token
 
@@ -66,6 +66,7 @@ instance.interceptors.response.use(
           ip: '',
           port: '',
           token: '',
+          protocol: 'http',
           inEntry: true,
         }
         userStore.clearStore()

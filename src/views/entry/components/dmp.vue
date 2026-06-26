@@ -52,7 +52,7 @@
                   icon="ri-global-line"
                   start
                 />
-                http://{{ dmp.ip }}:{{ dmp.port }}
+                {{ dmp.protocol || 'http' }}://{{ dmp.ip }}:{{ dmp.port }}
               </v-chip>
               <div style="margin-top: 10px">
                 <v-chip
@@ -121,21 +121,18 @@
             >
               <v-container max-width="500">
                 <v-row>
-                  <v-col
-                    cols="12"
-                    sm="9"
-                  >
+                  <v-col cols="12">
                     <v-text-field
                       v-model="addForm.ip"
                       :rules="addFormRules.ip"
-                      label="IP"
+                      :label="t('entry.ip')"
                       required
                       clearable
                     />
                   </v-col>
                   <v-col
                     cols="12"
-                    sm="3"
+                    sm="6"
                   >
                     <v-text-field
                       v-model.number="addForm.port"
@@ -146,8 +143,16 @@
                   </v-col>
                   <v-col
                     cols="12"
-                    sm="12"
+                    sm="6"
                   >
+                    <v-select
+                      v-model="addForm.protocol"
+                      :items="protocolOptions"
+                      :label="t('entry.protocol')"
+                      required
+                    />
+                  </v-col>
+                  <v-col cols="12">
                     <v-text-field
                       v-model="addForm.token"
                       :rules="addFormRules.token"
@@ -157,10 +162,7 @@
                       clearable
                     />
                   </v-col>
-                  <v-col
-                    cols="12"
-                    sm="12"
-                  >
+                  <v-col cols="12">
                     <v-text-field
                       v-model="addForm.remark"
                       :label="t('entry.remark')"
@@ -170,7 +172,6 @@
                   <v-col
                     class="mt-4"
                     cols="12"
-                    sm="12"
                   >
                     <v-btn
                       block
@@ -183,7 +184,6 @@
                   </v-col>
                   <v-col
                     cols="12"
-                    sm="12"
                     style="margin-top: -20px"
                   >
                     <v-btn
@@ -231,21 +231,18 @@
                   >
                     <v-container max-width="500">
                       <v-row>
-                        <v-col
-                          cols="12"
-                          sm="9"
-                        >
+                        <v-col cols="12">
                           <v-text-field
                             v-model="addForm.ip"
                             :rules="addFormRules.ip"
-                            label="IP"
+                            :label="t('entry.ip')"
                             required
                             clearable
                           />
                         </v-col>
                         <v-col
                           cols="12"
-                          sm="3"
+                          sm="6"
                         >
                           <v-text-field
                             v-model.number="addForm.port"
@@ -257,8 +254,16 @@
                         </v-col>
                         <v-col
                           cols="12"
-                          sm="12"
+                          sm="6"
                         >
+                          <v-select
+                            v-model="addForm.protocol"
+                            :items="protocolOptions"
+                            :label="t('entry.protocol')"
+                            required
+                          />
+                        </v-col>
+                        <v-col cols="12">
                           <v-text-field
                             v-model="addForm.token"
                             :rules="addFormRules.token"
@@ -276,10 +281,7 @@
                             </v-tooltip>
                           </v-text-field>
                         </v-col>
-                        <v-col
-                          cols="12"
-                          sm="12"
-                        >
+                        <v-col cols="12">
                           <v-text-field
                             v-model="addForm.remark"
                             :label="t('entry.remark')"
@@ -289,7 +291,6 @@
                         <v-col
                           class="mt-4"
                           cols="12"
-                          sm="12"
                         >
                           <v-btn
                             block
@@ -302,7 +303,6 @@
                         </v-col>
                         <v-col
                           cols="12"
-                          sm="12"
                           style="margin-top: -20px"
                         >
                           <v-btn
@@ -371,11 +371,17 @@ const loading = ref(false)
 const dialog = ref(false)
 const dialogEdit = ref(false)
 
+const protocolOptions = [
+  { title: 'HTTP', value: 'http' },
+  { title: 'HTTPS', value: 'https' },
+]
+
 const addForm = ref({
   ip: undefined,
   port: undefined,
   token: undefined,
   remark: undefined,
+  protocol: 'http',
 })
 
 const addFormRules = {
@@ -426,6 +432,7 @@ const initDialog = edit => {
       port: undefined,
       token: undefined,
       remark: undefined,
+      protocol: 'http',
     }
   } else {
     addForm.value = {
@@ -433,6 +440,7 @@ const initDialog = edit => {
       port: dmp.value.port,
       token: dmp.value.token,
       remark: dmp.value.remark,
+      protocol: dmp.value.protocol || 'http',
     }
   }
 }
@@ -466,6 +474,7 @@ const handleAdd = async event => {
   globalStore.entry.inEntry = true
   globalStore.entry.ip = addForm.value.ip
   globalStore.entry.port = addForm.value.port
+  globalStore.entry.protocol = addForm.value.protocol
   userStore.token = addForm.value.ip
 
   const newConfig = {
@@ -474,6 +483,7 @@ const handleAdd = async event => {
     port: addForm.value.port,
     token: addForm.value.token,
     remark: addForm.value.remark,
+    protocol: addForm.value.protocol,
     selectedRoomID: 0,
     selectedRoomName: '',
   }
@@ -498,6 +508,7 @@ const handleUpdate = async event => {
   globalStore.entry.inEntry = true
   globalStore.entry.ip = addForm.value.ip
   globalStore.entry.port = addForm.value.port
+  globalStore.entry.protocol = addForm.value.protocol
   useUserStore.token = addForm.value.ip
 
   const newConfig = {
@@ -506,6 +517,7 @@ const handleUpdate = async event => {
     port: addForm.value.port,
     token: addForm.value.token,
     remark: addForm.value.remark,
+    protocol: addForm.value.protocol,
   }
 
   const dbValue = ElectronApi.store.get(DB_KEY.dmps)
@@ -585,6 +597,7 @@ const handleGotoDashboard = () => {
   globalStore.entry.ip = dmp.value.ip
   globalStore.entry.port = dmp.value.port
   globalStore.entry.token = dmp.value.token
+  globalStore.entry.protocol = dmp.value.protocol || 'http'
 
   userStore.userInfo.role = 'admin'
 
@@ -621,6 +634,7 @@ const getCpuMemStatus = () => {
   globalStore.entry.ip = dmp.value.ip
   globalStore.entry.port = dmp.value.port
   globalStore.entry.token = dmp.value.token
+  globalStore.entry.protocol = dmp.value.protocol || 'http'
   dashboardApi.info.sys.get().then(response => {
     sysInfo.value = response.data
     getCpuMemStatusLoading.value = false
@@ -646,6 +660,7 @@ const getRoomBasic = () => {
   globalStore.entry.ip = dmp.value.ip
   globalStore.entry.port = dmp.value.port
   globalStore.entry.token = dmp.value.token
+  globalStore.entry.protocol = dmp.value.protocol || 'http'
   platformApi.overview.get().then(response => {
     overviewData.value = response.data
   })

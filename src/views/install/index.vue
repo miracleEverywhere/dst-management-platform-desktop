@@ -471,7 +471,7 @@ const reloadPage = () => {
 
 // 连接WebSocket
 const connectWebSocket = () => {
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+  const protocol = (globalStore.entry.protocol || 'http') === 'https' ? 'wss:' : 'ws:'
   const token = globalStore.entry.token
   const wsUrl = `${protocol}//${globalStore.entry.ip}:${globalStore.entry.port}/v3/platform/webssh?token=${token}`
   const regexSuccess = /==>dmp@@ 安装完成 @@dmp<==/
