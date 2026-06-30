@@ -227,6 +227,166 @@
             </v-radio-group>
           </v-col>
         </v-row>
+        <!-- Webhook 通知 -->
+        <v-alert
+          color="primary"
+          :title="t('platform.settings.form.webhook.title')"
+          density="compact"
+          class="mt-8"
+          variant="tonal"
+          icon="ri-notification-3-line"
+        />
+        <v-row
+          v-for="(webhook, i) in globalSettingsForm.webhook"
+          :key="i"
+          class="mt-2"
+        >
+          <v-col :cols="12">
+            <v-card variant="outlined">
+              <v-card-text>
+                <v-row>
+                  <v-col :cols="mobile?12:6">
+                    <v-text-field
+                      v-model="webhook.name"
+                      :label="t('platform.settings.form.webhook.form.name')"
+                      :rules="[v => !!v || t('platform.settings.form.webhook.form.nameRequired')]"
+                      density="compact"
+                    />
+                  </v-col>
+                  <v-col :cols="mobile?12:6">
+                    <v-text-field
+                      v-model="webhook.url"
+                      :label="t('platform.settings.form.webhook.form.url')"
+                      :rules="[v => !!v || t('platform.settings.form.webhook.form.urlRequired')]"
+                      density="compact"
+                    />
+                  </v-col>
+                  <v-col :cols="mobile?12:6">
+                    <v-select
+                      v-model="webhook.roomIds"
+                      v-tooltip="t('platform.settings.form.webhook.form.roomIdsHint')"
+                      :items="roomOptions"
+                      :label="t('platform.settings.form.webhook.form.roomIds')"
+                      item-title="roomName"
+                      item-value="roomID"
+                      multiple
+                      density="compact"
+                      clearable
+                    >
+                      <template #selection="{ item, index }">
+                        <v-chip
+                          v-if="index < (mobile?1:5)"
+                          label
+                          :text="item.title"
+                        />
+                        <v-chip
+                          v-if="index === (mobile?1:5)"
+                          label
+                        >
+                          <span v-tooltip="webhook.roomIds.slice(mobile ? 1 : 5).map(key => roomOptions.find(i => i.roomID === key)?.roomName || key).join(', ')">
+                            +{{ webhook.roomIds.length - (mobile ? 1 : 5) }}
+                          </span>
+                        </v-chip>
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <v-col :cols="mobile?12:6">
+                    <v-text-field
+                      v-model="webhook.secret"
+                      v-tooltip="t('platform.settings.form.webhook.form.secretPlaceholder')"
+                      :append-inner-icon="isWebhookSecretVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                      :type="isWebhookSecretVisible ? 'text' : 'password'"
+                      :label="t('platform.settings.form.webhook.form.secret')"
+                      density="compact"
+                      @click:append-inner="isWebhookSecretVisible = !isWebhookSecretVisible"
+                    />
+                  </v-col>
+                  <v-col :cols="12">
+                    <v-select
+                      v-model="webhook.events"
+                      :items="webhookEventItems"
+                      :label="t('platform.settings.form.webhook.form.events')"
+                      :rules="[v => v && v.length > 0 || t('platform.settings.form.webhook.form.eventsRequired')]"
+                      item-title="label"
+                      item-value="value"
+                      multiple
+                      density="compact"
+                    >
+                      <template #selection="{ item, index }">
+                        <v-chip
+                          v-if="index < (mobile?1:5)"
+                          label
+                          :text="item.title"
+                        />
+                        <v-chip
+                          v-if="index === (mobile?1:5)"
+                          label
+                        >
+                          <span v-tooltip="webhook.events.slice(mobile ? 1 : 5).map(key => webhookEventItems.find(i => i.value === key)?.label || key).join(', ')">
+                            +{{ webhook.events.length - (mobile ? 1 : 5) }}
+                          </span>
+                        </v-chip>
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <v-col
+                    :cols="mobile?4:2"
+                    class="d-flex align-center"
+                  >
+                    <v-switch
+                      v-model="webhook.enabled"
+                      :label="webhook.enabled ? t('platform.settings.form.webhook.enable') : t('platform.settings.form.webhook.disable')"
+                      color="primary"
+                      hide-details
+                      density="comfortable"
+                    />
+                  </v-col>
+                  <v-col
+                    :cols="mobile?4:2"
+                    class="d-flex align-center"
+                  >
+                    <v-btn
+                      size="default"
+                      variant="tonal"
+                      color="success"
+                      :loading="testLoading[i]"
+                      :disabled="!(webhook.url && webhook.name)"
+                      @click="handleWebhookTest(webhook, i)"
+                    >
+                      {{ t('platform.settings.form.webhook.test') }}
+                    </v-btn>
+                  </v-col>
+                  <v-col
+                    :cols="mobile?4:2"
+                    class="d-flex align-center"
+                  >
+                    <v-btn
+                      size="default"
+                      variant="tonal"
+                      color="error"
+                      @click="deleteWebhook(i)"
+                    >
+                      {{ t('platform.settings.form.webhook.delete') }}
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row class="mt-2">
+          <v-col>
+            <v-btn
+              v-tooltip="t('platform.settings.form.webhook.tip.name')"
+              variant="text"
+              color="primary"
+              prepend-icon="ri-add-line"
+              @click="addWebhook"
+            >
+              {{ t('platform.settings.form.webhook.add') }}
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-form>
   </v-card>
@@ -246,6 +406,9 @@ import { useI18n } from "vue-i18n"
 import { deepCopy } from "@/utils/tools.js"
 import _ from 'lodash'
 import { showSnackbar } from "@/utils/snackbar.js"
+import roomApi from "@/api/room.js"
+import { v4 as uuidv4 } from "uuid"
+import useGlobalStore from "@/plugins/store/global"
 
 
 const props = defineProps({
@@ -257,6 +420,7 @@ const props = defineProps({
 
 const { mobile } = useDisplay()
 const { t } = useI18n()
+const globalStore = useGlobalStore()
 
 const globalSettingsFormRef = ref()
 
@@ -269,6 +433,7 @@ const globalSettingsFormOld = ref({
   autoUpdateEnable: false,
   autoUpdateSetting: '',
   autoUpdateRestart: false,
+  webhook: [],
 })
 
 const globalSettingsForm = ref({
@@ -280,6 +445,7 @@ const globalSettingsForm = ref({
   autoUpdateEnable: false,
   autoUpdateSetting: '',
   autoUpdateRestart: false,
+  webhook: [],
 })
 
 const globalSettingsFormRules = ref({
@@ -299,6 +465,52 @@ const globalSettingsFormRules = ref({
   ],
 })
 
+const webhookEventItems = ref([])
+const testLoading = ref({})
+const roomOptions = ref([])
+
+const fetchWebhookEvents = async () => {
+  const response = await platformApi.webhook.events.get()
+
+  webhookEventItems.value = response.data.map(e => ({
+    label: e[globalStore.language],
+    value: e.type,
+  }))
+}
+
+const fetchRoomOptions = async () => {
+  const response = await roomApi.basic.get()
+
+  roomOptions.value = response.data || []
+}
+
+const addWebhook = () => {
+  globalSettingsForm.value.webhook.push({
+    id: uuidv4(),
+    name: '',
+    url: '',
+    events: webhookEventItems.value.map(i => i.value),
+    enabled: true,
+    secret: '',
+    roomIds: [],
+  })
+}
+
+const deleteWebhook = index => {
+  globalSettingsForm.value.webhook.splice(index, 1)
+}
+
+const handleWebhookTest = (item, index) => {
+  testLoading.value[index] = true
+  platformApi.webhook.test.post({ url: item.url, secret: item.secret }).then(response => {
+    showSnackbar(response.message)
+  }).finally(() => {
+    testLoading.value[index] = false
+  })
+}
+
+const isWebhookSecretVisible = ref(false)
+
 const getGlobalSettingsLoading = ref(false)
 
 const getGlobalSettings = () => {
@@ -309,6 +521,20 @@ const getGlobalSettings = () => {
     if (globalSettingsForm.value.playerInfoSaveTime === 0) {
       globalSettingsForm.value.playerInfoSaveTime = 1
     }
+
+    // Parse webhook setting
+    if (globalSettingsForm.value.webhookSetting) {
+      try {
+        globalSettingsForm.value.webhook = JSON.parse(globalSettingsForm.value.webhookSetting)
+      } catch {
+        globalSettingsForm.value.webhook = []
+      }
+    } else {
+      globalSettingsForm.value.webhook = []
+    }
+
+    // Remove raw field to avoid confusion
+    delete globalSettingsForm.value.webhookSetting
   }).finally(() => {
     getGlobalSettingsLoading.value = false
   })
@@ -319,9 +545,17 @@ const updateLoading = ref(false)
 const handleUpdate = async () => {
   const { valid } = await globalSettingsFormRef.value.validate()
   if (valid) {
+    globalSettingsForm.value.webhookSetting = JSON.stringify(globalSettingsForm.value.webhook)
+
+    const webhook = globalSettingsForm.value.webhook
+
+    delete globalSettingsForm.value.webhook
+
     if (_.isEqual(globalSettingsFormOld.value, globalSettingsForm.value)) {
+      globalSettingsForm.value.webhook = webhook
       showSnackbar(t('platform.settings.noChange'), 'error')
     } else {
+      globalSettingsForm.value.webhook = webhook
       updateLoading.value = true
       platformApi.globalSettings.post(globalSettingsForm.value).then(response => {
         showSnackbar(response.message)
@@ -334,6 +568,8 @@ const handleUpdate = async () => {
 
 onMounted(() => {
   getGlobalSettings()
+  fetchWebhookEvents()
+  fetchRoomOptions()
 })
 </script>
 

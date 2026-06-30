@@ -382,6 +382,7 @@ const roomSettingToDB = () => {
     tickRate: roomSettingData.value.tickRate,
     startType: roomSettingData.value.startType,
     announceSetting: roomSettingData.value.announceSetting,
+    webhookSetting: JSON.stringify(roomSettingData.value.webhook),
   }
 }
 
@@ -432,6 +433,7 @@ const DBToRoomSetting = data => {
     tickRate: data.tickRate,
     startType: data.startType,
     announceSetting: data.announceSetting,
+    webhook: data.webhookSetting ? JSON.parse(data.webhookSetting) : [],
   }
 }
 

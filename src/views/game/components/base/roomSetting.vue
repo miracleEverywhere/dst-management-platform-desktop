@@ -507,6 +507,137 @@
       </v-col>
       <v-spacer v-if="!mobile" />
     </v-row>
+    <!-- Webhook 通知 -->
+    <v-alert
+      color="primary"
+      :title="t('game.base.step4.form.webhook.name')"
+      density="compact"
+      class="mt-8"
+      variant="tonal"
+      icon="ri-notification-3-line"
+    />
+    <v-row
+      v-for="(webhook, i) in roomSettingForm.webhook"
+      :key="i"
+      class="mt-2"
+    >
+      <v-col :cols="12">
+        <v-card variant="outlined">
+          <v-card-text>
+            <v-row>
+              <v-col :cols="mobile?12:6">
+                <v-text-field
+                  v-model="webhook.name"
+                  :label="t('game.base.step4.form.webhook.form.name')"
+                  :rules="[v => !!v || t('game.base.step4.form.webhook.form.nameRequired')]"
+                  density="compact"
+                />
+              </v-col>
+              <v-col :cols="mobile?12:6">
+                <v-text-field
+                  v-model="webhook.url"
+                  :label="t('game.base.step4.form.webhook.form.url')"
+                  :rules="[v => !!v || t('game.base.step4.form.webhook.form.urlRequired')]"
+                  density="compact"
+                />
+              </v-col>
+              <v-col :cols="12">
+                <v-select
+                  v-model="webhook.events"
+                  :items="webhookEventItems"
+                  :label="t('game.base.step4.form.webhook.form.events')"
+                  :rules="[v => v && v.length > 0 || t('game.base.step4.form.webhook.form.eventsRequired')]"
+                  item-title="label"
+                  item-value="value"
+                  multiple
+                  density="compact"
+                >
+                  <template #selection="{ item, index }">
+                    <v-chip
+                      v-if="index < (mobile?1:5)"
+                      label
+                      :text="item.title"
+                    />
+                    <v-chip
+                      v-if="index === (mobile?1:5)"
+                      label
+                    >
+                      <span v-tooltip="webhook.events.slice(mobile ? 1 : 5).map(key => webhookEventItems.find(i => i.value === key)?.label || key).join(', ')">
+                        +{{ webhook.events.length - (mobile ? 1 : 5) }}
+                      </span>
+                    </v-chip>
+                  </template>
+                </v-select>
+              </v-col>
+              <v-col :cols="mobile?12:6">
+                <v-text-field
+                  v-model="webhook.secret"
+                  :append-inner-icon="isWebhookSecretVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                  :type="isWebhookSecretVisible ? 'text' : 'password'"
+                  :label="t('game.base.step4.form.webhook.form.secret')"
+                  density="compact"
+                  class="mt-2"
+                  @click:append-inner="isWebhookSecretVisible = !isWebhookSecretVisible"
+                />
+              </v-col>
+              <v-col
+                :cols="mobile?4:2"
+                class="d-flex align-center"
+              >
+                <v-switch
+                  v-model="webhook.enabled"
+                  :label="webhook.enabled ? t('game.base.step4.form.webhook.enable') : t('game.base.step4.form.webhook.disable')"
+                  color="primary"
+                  density="compact"
+                  hide-details
+                />
+              </v-col>
+              <v-col
+                :cols="mobile?4:2"
+                class="d-flex align-center"
+              >
+                <v-btn
+                  size="default"
+                  variant="tonal"
+                  color="success"
+                  :loading="testLoading[i]"
+                  :disabled="!(webhook.url && webhook.name)"
+                  @click="handleWebhookTest(webhook, i)"
+                >
+                  {{ t('platform.settings.form.webhook.test') }}
+                </v-btn>
+              </v-col>
+              <v-col
+                :cols="mobile?4:2"
+                class="d-flex align-center"
+              >
+                <v-btn
+                  size="default"
+                  variant="tonal"
+                  color="error"
+                  @click="deleteWebhook(i)"
+                >
+                  {{ t('game.base.step4.form.webhook.delete') }}
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row class="mt-2">
+      <v-col>
+        <v-btn
+          v-tooltip="t('game.base.step4.form.webhook.tip.name')"
+          variant="text"
+          color="primary"
+          prepend-icon="ri-add-line"
+          @click="addWebhook"
+        >
+          {{ t('game.base.step4.form.webhook.add') }}
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-form>
 </template>
 
@@ -523,6 +654,7 @@ const props = defineProps({
 })
 
 onMounted(() => {
+  fetchWebhookEvents()
   if (Object.keys(props.roomSetting).length !== 0) {
     roomSettingForm.value = props.roomSetting
   }
@@ -569,7 +701,45 @@ const roomSettingForm = ref({
   },
   tickRate: 15,
   startType: '32-bit',
+  webhook: [],
 })
+
+const webhookEventItems = ref([])
+const testLoading = ref({})
+const isWebhookSecretVisible = ref(false)
+
+const fetchWebhookEvents = async () => {
+  const response = await roomApi.webhook.events.get()
+
+  webhookEventItems.value = response.data.map(e => ({
+    label: e[globalStore.language],
+    value: e.type,
+  }))
+}
+
+const addWebhook = () => {
+  roomSettingForm.value.webhook.push({
+    id: uuidv4(),
+    name: '',
+    url: '',
+    events: webhookEventItems.value.map(i => i.value),
+    enabled: true,
+    secret: '',
+  })
+}
+
+const deleteWebhook = index => {
+  roomSettingForm.value.webhook.splice(index, 1)
+}
+
+const handleWebhookTest = (item, index) => {
+  testLoading.value[index] = true
+  roomApi.webhook.test.post({ url: item.url, secret: item.secret }).then(response => {
+    showSnackbar(response.message)
+  }).finally(() => {
+    testLoading.value[index] = false
+  })
+}
 
 const roomSettingFormRules = ref({
   backupClean: [

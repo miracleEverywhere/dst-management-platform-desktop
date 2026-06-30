@@ -43,7 +43,9 @@
                 v-if="index === 1"
                 label
               >
-                +{{ selectedTypes.length - 1 }}
+                <span v-tooltip="selectedTypes.slice(1).map(key => allTypes.find(i => i.value === key)?.title || key).join(', ')">
+                  +{{ selectedTypes.length - 1 }}
+                </span>
               </v-chip>
             </template>
           </v-select>

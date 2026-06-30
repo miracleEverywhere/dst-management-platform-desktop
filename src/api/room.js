@@ -58,4 +58,18 @@ export default {
       return await http.post(this.url, data)
     },
   },
+  webhook: {
+    test: {
+      url: `/room/webhook/test`,
+      post: async function (data) {
+        return await http.post(this.url, data)
+      },
+    },
+    events: {
+      url: `/room/webhook/events`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+    },
+  },
 }
