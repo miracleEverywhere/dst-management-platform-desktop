@@ -559,6 +559,7 @@ const handleUpdate = async () => {
       updateLoading.value = true
       platformApi.globalSettings.post(globalSettingsForm.value).then(response => {
         showSnackbar(response.message)
+        getGlobalSettings()
       }).finally(() => {
         updateLoading.value = false
       })
