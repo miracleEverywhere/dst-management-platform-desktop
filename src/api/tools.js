@@ -55,4 +55,24 @@ export default {
       return await http.delete(this.url, data)
     },
   },
+  tmi: {
+    category: {
+      url: `/tools/tmi/category`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+      items: {
+        url: `/tools/tmi/category/items`,
+        get: async function (data) {
+          return await http.get(this.url, data)
+        },
+      },
+    },
+    console: {
+      url: `/tools/tmi/console`,
+      post: async function (data) {
+        return await http.post(this.url, data)
+      },
+    },
+  },
 }

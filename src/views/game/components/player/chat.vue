@@ -11,6 +11,73 @@
         <div v-if="mobile" />
 
         <div class="fcc">
+          <v-dialog
+            v-model="chatDialogVisible"
+            class="flex-wrap"
+            :width="mobile?'90%':'60%'"
+          >
+            <template #activator="{ props: activatorProps }">
+              <v-btn
+                v-if="!mobile"
+                class="mr-4"
+                color="info"
+                v-bind="activatorProps"
+                @click="sendMessage=''"
+              >
+                {{ t('game.player.chat.send.start') }}
+              </v-btn>
+              <v-btn
+                v-if="mobile"
+                class="mr-4"
+                color="info"
+                variant="text"
+                icon="ri-send-ins-line"
+                v-bind="activatorProps"
+                @click="sendMessage=''"
+              />
+            </template>
+            <template #default>
+              <v-card>
+                <v-row class="ma-2">
+                  <v-col cols="12">
+                    <v-radio-group
+                      v-model="sendMessageType"
+                      inline
+                    >
+                      <template #prepend>
+                        <v-chip>
+                          {{ t('game.player.chat.send.sendMessageType') }}
+                        </v-chip>
+                      </template>
+                      <v-radio
+                        :label="t('game.player.chat.send.announce')"
+                        value="announce"
+                      />
+                      <v-radio
+                        :label="t('game.player.chat.send.systemMsg')"
+                        value="systemMsg"
+                      />
+                    </v-radio-group>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="sendMessage"
+                      @keyup.enter="handleSendMessage"
+                    >
+                      <template #append>
+                        <v-btn
+                          icon="ri-send-ins-line"
+                          variant="text"
+                          @click="handleSendMessage"
+                        />
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </template>
+          </v-dialog>
+
           <v-number-input
             v-model="lines"
             :label="t('game.player.chat.lines')"
@@ -65,6 +132,22 @@
               color="info"
               :loading="loading"
               @update:model-value="getChatMessages(false)"
+            />
+          </v-chip>
+          <v-chip
+            v-if="!mobile"
+            v-tooltip="t('game.player.chat.autoPullTip')"
+            label
+            size="large"
+            class="mr-4"
+          >
+            <span class="mr-2">
+              {{ t('game.player.chat.autoPull') }}
+            </span>
+            <v-switch
+              v-model="autoPull"
+              hide-details
+              color="info"
             />
           </v-chip>
           <v-switch
@@ -204,6 +287,7 @@ import { useI18n } from "vue-i18n"
 import Result from "@/components/Result.vue"
 import { timestamp2time } from "@/utils/tools.js"
 import { showSnackbar } from "@/utils/snackbar.js"
+import dashboardApi from "@/api/dashboard.js"
 
 
 const props = defineProps({
@@ -308,6 +392,47 @@ const getImage = type => {
 const selectedTypes = ref([])
 const allTypes = ref([])
 
+const chatDialogVisible = ref(false)
+const sendMessage = ref('')
+const sendMessageType = ref('announce')
+
+const handleSendMessage = () => {
+  if (sendMessage.value.length === 0) {
+    return
+  }
+
+  const reqForm = {
+    type: sendMessageType.value,
+    roomID: globalStore.room.id,
+    extra: sendMessage.value,
+  }
+
+  dashboardApi.exec.game.post(reqForm).then(response => {
+    showSnackbar(response.message)
+    chatDialogVisible.value = false
+  }).finally(() => {
+    getChatMessages()
+  })
+}
+
+let intervalId = null
+const autoPull = ref(true)
+
+const startRequests = () => {
+  intervalId = setInterval(() => {
+    if (autoPull.value) {
+      getChatMessages()
+    }
+  }, 5000)
+}
+
+const cancelRequests = () => {
+  if (intervalId) {
+    clearInterval(intervalId)
+    intervalId = null
+  }
+}
+
 onMounted(() => {
   for (const i of types) {
     allTypes.value.push({
@@ -317,5 +442,11 @@ onMounted(() => {
   }
   selectedTypes.value = types
   getChatMessages()
+  startRequests()
+})
+
+onBeforeUnmount(() => {
+  cancelRequests()
+  window.removeEventListener('beforeunload', cancelRequests)
 })
 </script>

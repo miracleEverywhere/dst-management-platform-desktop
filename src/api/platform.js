@@ -68,4 +68,30 @@ export default {
       },
     },
   },
+  plugin: {
+    list: {
+      url: `/platform/plugin/list`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+    },
+    install: {
+      url: `/platform/plugin/install`,
+      post: async function (data) {
+        return await http.post(this.url, data)
+      },
+    },
+    action: {
+      url: `/platform/plugin/action`,
+      post: async function (data) {
+        return await http.post(this.url, data)
+      },
+    },
+    status: {
+      url: `/platform/plugin/status`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+    },
+  },
 }
