@@ -89,7 +89,7 @@
                         </v-list-item-title>
                       </v-list-item>
                       <v-list-item
-                        class="text-info"
+                        class="text-primary"
                         @click="handleAction('install', item)"
                       >
                         <template #prepend>
@@ -104,12 +104,12 @@
                       </v-list-item>
                       <v-list-item
                         :disabled="item.step!==100||item.status"
-                        class="text-info"
+                        class="text-success"
                         @click="handleAction('enable', item)"
                       >
                         <template #prepend>
                           <v-icon
-                            icon="ri-install-line"
+                            icon="ri-checkbox-circle-line"
                             size="22"
                           />
                         </template>
@@ -119,12 +119,12 @@
                       </v-list-item>
                       <v-list-item
                         :disabled="item.step!==100||!item.status"
-                        class="text-info"
+                        class="text-warning"
                         @click="handleAction('disable', item)"
                       >
                         <template #prepend>
                           <v-icon
-                            icon="ri-install-line"
+                            icon="ri-close-circle-line"
                             size="22"
                           />
                         </template>
@@ -139,7 +139,7 @@
                       >
                         <template #prepend>
                           <v-icon
-                            icon="ri-install-line"
+                            icon="ri-loop-left-line"
                             size="22"
                           />
                         </template>
@@ -148,12 +148,12 @@
                         </v-list-item-title>
                       </v-list-item>
                       <v-list-item
-                        class="text-info"
+                        class="text-error"
                         @click="handleAction('uninstall', item)"
                       >
                         <template #prepend>
                           <v-icon
-                            icon="ri-install-line"
+                            icon="ri-uninstall-line"
                             size="22"
                           />
                         </template>
@@ -193,7 +193,7 @@
         </v-alert>
         <v-alert
           border="start"
-          color="warning"
+          color="error"
           variant="tonal"
           class="mb-4"
         >
@@ -201,12 +201,12 @@
         </v-alert>
         <v-alert
           border="start"
-          color="x"
+          color="warning"
           variant="tonal"
           class="mb-4"
         >
           {{ t(`platform.plugin.introduce.${currentPlugin}.os`) }}
-          {{ osInfo.Platform }} {{ osInfo.PlatformVersion }}
+          {{ osPlatform }} {{ osPlatformVersion }}
         </v-alert>
       </v-card-text>
     </v-card>
@@ -238,7 +238,7 @@
           class="mb-4"
         >
           {{ t(`platform.plugin.introduce.${currentPlugin}.os`) }}
-          {{ osInfo.Platform }} {{ osInfo.PlatformVersion }}
+          {{ osPlatform }} {{ osPlatformVersion }}
         </v-alert>
         <v-text-field
           v-model="installTmiForm.proxy"
@@ -286,20 +286,13 @@ import { showSnackbar } from "@/utils/snackbar.js"
 const { mobile } = useDisplay()
 const { t } = useI18n()
 
-const osInfo = ref({
-  Architecture: "",
-  OS: "",
-  CPUModel: "",
-  CPUCores: 2,
-  MemorySize: 0,
-  Platform: "",
-  PlatformVersion: "",
-  Uptime: 0,
-})
+const osPlatform = ref('')
+const osPlatformVersion = ref('')
 
 const getOSInfo = () => {
   platformApi.osInfo.get().then(response => {
-    osInfo.value = response.data
+    osPlatform.value = response.data?.Platform || ''
+    osPlatformVersion.value = response.data?.PlatformVersion || ''
   })
 }
 

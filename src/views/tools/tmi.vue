@@ -94,7 +94,7 @@
                     :key="items"
                     :value="items"
                   >
-                    {{ items }}
+                    {{ t(`tools.tmi.categories.${items}`) }}
                   </v-tab>
                 </v-tabs>
                 <div class="flex-fill overflow-y-auto pa-4 align-self-stretch">
@@ -225,7 +225,7 @@
                       density="compact"
                       color="x"
                       class="ml-2 mb-2"
-                      @click="handleCmd('hunger', '', 0)"
+                      @click="handleCmd('hunger', '', 1)"
                     >
                       {{ t('tools.tmi.cardCmd.character.hungerZero') }}
                     </v-btn>
@@ -241,7 +241,7 @@
                       density="compact"
                       color="x"
                       class="ml-2 mb-2"
-                      @click="handleCmd('sanity', '', 0)"
+                      @click="handleCmd('sanity', '', 1)"
                     >
                       {{ t('tools.tmi.cardCmd.character.sanZero') }}
                     </v-btn>
@@ -257,7 +257,7 @@
                       density="compact"
                       color="x"
                       class="ml-2 mb-2"
-                      @click="handleCmd('health', '', 0)"
+                      @click="handleCmd('health', '', 1)"
                     >
                       {{ t('tools.tmi.cardCmd.character.healthZero') }}
                     </v-btn>
@@ -621,7 +621,7 @@
                       density="compact"
                       color="x"
                       class="ml-2 mb-2"
-                      @click="handleCmd('penaltyAdd', '', 0)"
+                      @click="handleCmd('penaltyReduce', '', 0)"
                     >
                       {{ t('tools.tmi.cardCmd.playerAction.healthUp') }}
                     </v-btn>
@@ -629,7 +629,7 @@
                       density="compact"
                       color="x"
                       class="ml-2 mb-2"
-                      @click="handleCmd('penaltyReduce', '', 0)"
+                      @click="handleCmd('penaltyAdd', '', 0)"
                     >
                       {{ t('tools.tmi.cardCmd.playerAction.healthDown') }}
                     </v-btn>
@@ -989,14 +989,6 @@
                     >
                       {{ t('tools.tmi.cardCmd.surfaceTeleport.maxwellStatue') }}
                     </v-btn>
-                    <v-btn
-                      density="compact"
-                      color="x"
-                      class="ml-2 mb-2"
-                      @click="handleCmd('teleport', 'sculpture_rookhead', 0)"
-                    >
-                      {{ t('tools.tmi.cardCmd.surfaceTeleport.rookHead') }}
-                    </v-btn>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -1281,6 +1273,7 @@ const handleCmd = (type, prefab, num, uidRequired=true) => {
     type: type,
     prefab: prefab,
     num: num,
+    uid: selectPlayer.value.uid,
   }
 
   toolsApi.tmi.console.post(reqForm).then(response => {
