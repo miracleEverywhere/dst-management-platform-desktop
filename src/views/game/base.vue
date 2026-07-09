@@ -1,6 +1,6 @@
 <template>
   <check
-    :category="['game', 'room']"
+    :category="['game']"
     :other-height="otherHeight"
   >
     <v-stepper v-model="step">
