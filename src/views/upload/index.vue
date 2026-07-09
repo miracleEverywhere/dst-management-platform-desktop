@@ -1,6 +1,8 @@
 <template>
-  <!-- 游戏是否安装 -->
-  <template v-if="globalStore.gameVersion.local!==0">
+  <check
+    :category="['game']"
+    :other-height="otherHeight"
+  >
     <v-row>
       <v-col>
         <v-sheet
@@ -165,30 +167,7 @@
         </v-treeview>
       </v-col>
     </v-row>
-  </template>
-  <template v-else>
-    <result
-      v-if="userStore.userInfo.role==='admin'"
-      :title="t('global.noGame.title')"
-      :sub-title="t('global.noGame.subTitle')"
-      :height="calculateContainerSize()"
-      type="error"
-    >
-      <v-btn
-        to="/install"
-        class="mt-4"
-      >
-        {{ t('global.noGame.button') }}
-      </v-btn>
-    </result>
-    <result
-      v-else
-      :title="t('global.noGameNoAdmin.title')"
-      :sub-title="t('global.noGameNoAdmin.subTitle')"
-      :height="calculateContainerSize()"
-      type="error"
-    />
-  </template>
+  </check>
 </template>
 
 <script setup>
@@ -208,10 +187,11 @@ const windowHeight = ref(window.innerHeight)
 const uploadLoading = ref(false)
 const uploadDialogVisible = ref(false)
 const uploadType = ref('')
+const otherHeight = 150
 
 const checkUploadFile = param => {
   const zipPattern = /\.zip$/i
-  
+
   return zipPattern.test(param.name)
 }
 
@@ -219,7 +199,7 @@ const canCreateRoom = () => {
   if (userStore.userInfo.role === 'admin') {
     return true
   }
-  
+
   return userStore.userInfo.roomCreation
 }
 
@@ -232,7 +212,7 @@ const handleUpload = file => {
   if (!checkUploadFile(file)) {
     showSnackbar(t('upload.dialog.zipTip'), 'error')
     uploadDialogVisible.value = false
-    
+
     return
   }
   uploadLoading.value = true
@@ -386,9 +366,8 @@ const handleResize = debounce(() => {
 
 const calculateContainerSize = () => {
   // 64(navbar) + 37(tab header) + 20(card padding) + 16(card padding) = 137
-  const other = 150
 
-  return Math.max(2, Math.floor(windowHeight.value - other))
+  return Math.max(2, Math.floor(windowHeight.value - otherHeight))
 }
 
 onMounted(() => {
