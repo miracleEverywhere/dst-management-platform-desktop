@@ -70,6 +70,7 @@ export default {
     toolsToken: '平台令牌',
     toolsSnapshot: '游戏存档',
     toolsTmi: '更多物品',
+    toolsAI: 'AI 对话',
     logs: '日志管理',
     logsGame: '游戏日志',
     logsChat: '聊天日志',
@@ -608,6 +609,14 @@ export default {
           fileTypeError: '请上传TXT文件',
           fileReadError: '文件读取错误',
         },
+        dstBlock: {
+          introduce: 'DST Block是一个社区驱动的饥荒联机版黑名单管理平台，你可以一键导入已录入的破坏性玩家ID',
+          urlText: 'DST Block地址为:',
+          tip: '你也可以在DST Block进行提交，每一次提交都在帮助净化游戏环境',
+          import: '导入',
+          cancel: '取消',
+        },
+        deleteAll: '清空',
       },
       history: {
         tabName: '历史玩家',
@@ -941,6 +950,7 @@ export default {
           4: '安装失败',
           5: '安装失败',
           100: '安装成功',
+          builtin: '内置插件',
         },
         actions: {
           action: '操作',
@@ -961,14 +971,14 @@ export default {
         tmi: {
           desc: 'tmi(Too Many Items)插件即游戏中的T键模组，你可以给任意玩家刷任意物品。该功能依赖于Stex工具(https://github.com/oblivioncth/Stexatlaser)，TMIR模组(3638290455)',
           warning: '该插件会极大的降低游戏乐趣和游戏生命，请勿滥用；该功能也可能导致游戏崩溃(就像你在游戏中乱T)',
-          os: 'tmi插件只能安装在ubuntu 24系统上(Stex工具要求)，当前系统为：',
+          os: 'tmi插件只能在ubuntu 24系统上才能正常运行(Stex工具要求)，非ubuntu 24系统仅可使用基本功能，但无法显示图片。当前系统为：',
         },
       },
       install: {
         tmi: {
           proxy: {
             name: '代理',
-            tip: '需要从github下载Stex，如不需要代理则留空',
+            tip: '需要从github下载Stex，如不需要代理则留空，非ubuntu 24系统无需填写',
           },
         },
         cancel: '取消',
@@ -1158,6 +1168,36 @@ export default {
     },
   },
   tools: {
+    ai: {
+      title: '游戏内 AI 对话',
+      tabs: {
+        room: '房间配置',
+        default: '全局默认配置',
+      },
+      actions: {
+        save: '保存配置',
+        refresh: '刷新配置',
+        importDefault: '导入全局默认配置',
+      },
+      form: {
+        enabled: '启用游戏内 AI 对话',
+        prefix: '触发前缀',
+        baseURL: 'Base URL',
+        apiKey: 'API Key',
+        model: '模型名称',
+        systemPrompt: '系统提示词',
+        temperature: 'Temperature',
+        maxTokens: '最大输出 Token',
+        requestTimeoutSeconds: '请求超时（秒）',
+        contextMaxMessages: '上下文消息上限',
+        contextTTLMinutes: '上下文有效期（分钟）',
+      },
+      validation: {
+        required: '该字段不能为空',
+        positive: '请输入大于 0 的数字',
+        prefix: '前缀不能换行且最多 64 个字符',
+      },
+    },
     backup: {
       gameName: '房间名',
       cycles: '天数',
@@ -1287,6 +1327,32 @@ export default {
       },
     },
     tmi: {
+      categories: {
+        animal: '生物',
+        base: '基地',
+        boss: 'Boss',
+        building: '建筑',
+        clothes: '衣帽',
+        cooking: '料理',
+        den: '巢穴',
+        equip: '装备',
+        event: '活动',
+        farming: '种植',
+        follower: '随从',
+        food: '食材',
+        gift: '礼物',
+        limited: '限时',
+        magic: '魔法',
+        material: '材料',
+        natural: '自然',
+        ocean: '海洋',
+        ore: '矿石',
+        plant: '植物',
+        props: '道具',
+        puppet: '角色',
+        sculpture: '雕塑',
+        tool: '工具',
+      },
       cardPlayerAndWorld: {
         playerSelect: {
           selected: '选择的玩家：',

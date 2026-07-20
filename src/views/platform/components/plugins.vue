@@ -57,12 +57,14 @@
                   {{ value?t('platform.plugin.table.status.enable'):t('platform.plugin.table.status.disable') }}
                 </v-chip>
               </template>
-              <template #item.step="{ value }">
+              <template #item.step="{ item, value }">
                 <v-chip
-                  :color="value===100?'success':'warning'"
+                  :color="item.name === 'chat' ? 'info' : value === 100 ? 'success' : 'warning'"
                   label
                 >
-                  {{ t(`platform.plugin.table.step.${value}`) }}
+                  {{ item.name === 'chat'
+                  ? t('platform.plugin.table.step.builtin')
+                  : t(`platform.plugin.table.step.${value}`) }}
                 </v-chip>
               </template>
               <template #item.actions="{ item }">
@@ -75,6 +77,7 @@
                   <v-menu activator="parent">
                     <v-list>
                       <v-list-item
+                        v-if="item.name !== 'chat'"
                         class="text-info"
                         @click="handleAction('introduce', item)"
                       >
@@ -89,6 +92,7 @@
                         </v-list-item-title>
                       </v-list-item>
                       <v-list-item
+                        v-if="item.name !== 'chat'"
                         class="text-primary"
                         @click="handleAction('install', item)"
                       >
@@ -103,7 +107,7 @@
                         </v-list-item-title>
                       </v-list-item>
                       <v-list-item
-                        :disabled="item.step!==100||item.status"
+                        :disabled="(item.name !== 'chat' && item.step !== 100) || item.status"
                         class="text-success"
                         @click="handleAction('enable', item)"
                       >
@@ -118,7 +122,7 @@
                         </v-list-item-title>
                       </v-list-item>
                       <v-list-item
-                        :disabled="item.step!==100||!item.status"
+                        :disabled="(item.name !== 'chat' && item.step !== 100) || !item.status"
                         class="text-warning"
                         @click="handleAction('disable', item)"
                       >
@@ -133,6 +137,7 @@
                         </v-list-item-title>
                       </v-list-item>
                       <v-list-item
+                        v-if="item.name !== 'chat'"
                         :disabled="item.step!==100"
                         class="text-info"
                         @click="handleAction('update', item)"
@@ -148,6 +153,7 @@
                         </v-list-item-title>
                       </v-list-item>
                       <v-list-item
+                        v-if="item.name !== 'chat'"
                         class="text-error"
                         @click="handleAction('uninstall', item)"
                       >
@@ -366,8 +372,11 @@ const installTmi = () => {
   platformApi.plugin.install.post(installTmiForm.value).then(response => {
     installTmiDialogVisible.value = false
     showSnackbar(response.message)
-    // eslint-disable-next-line sonarjs/no-extra-arguments
-    getPluginListData(pluginListData.value.page, pluginListData.value.pageSize, undefined)
+    getPluginListData({
+      page: pluginListData.value.page,
+      itemsPerPage: pluginListData.value.pageSize,
+      sortBy: undefined,
+    })
   }).finally(() => {
     installTmiLoading.value = false
   })
@@ -390,8 +399,11 @@ const handleConfirm = () => {
 
   platformApi.plugin.action.post(reqForm).then(response => {
     showSnackbar(response.message)
-    // eslint-disable-next-line sonarjs/no-extra-arguments
-    getPluginListData(pluginListData.value.page, pluginListData.value.pageSize, undefined)
+    getPluginListData({
+      page: pluginListData.value.page,
+      itemsPerPage: pluginListData.value.pageSize,
+      sortBy: undefined,
+    })
   }).finally(() => {
     handleCancel()
   })
@@ -410,4 +422,3 @@ onMounted(() => {
   getOSInfo()
 })
 </script>
-

@@ -115,7 +115,7 @@ const props = defineProps({
       if (!value) return true
 
       // 或者允许所有字符串，或者维护一个插件列表
-      return ['tmi', 'voice', 'translate'].includes(value)
+      return ['tmi', 'chat', 'voice', 'translate'].includes(value)
     },
   },
 })
@@ -190,4 +190,3 @@ onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
 })
 </script>
-
