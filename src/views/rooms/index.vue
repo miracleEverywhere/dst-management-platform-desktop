@@ -65,6 +65,7 @@
                     {{ truncateString(room.gameName, mobile?8:15) }}
                   </v-chip>
                   <v-chip
+                    v-tooltip="room.status?t('rooms.card.success.header.title.activatedTip'):t('rooms.card.success.header.title.deactivatedTip')"
                     :color="room.status?'success':'warning'"
                     class="ml-4"
                   >

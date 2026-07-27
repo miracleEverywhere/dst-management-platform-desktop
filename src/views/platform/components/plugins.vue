@@ -63,8 +63,8 @@
                   label
                 >
                   {{ item.name === 'chat'
-                  ? t('platform.plugin.table.step.builtin')
-                  : t(`platform.plugin.table.step.${value}`) }}
+                    ? t('platform.plugin.table.step.builtin')
+                    : t(`platform.plugin.table.step.${value}`) }}
                 </v-chip>
               </template>
               <template #item.actions="{ item }">
