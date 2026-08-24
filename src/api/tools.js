@@ -55,4 +55,60 @@ export default {
       return await http.delete(this.url, data)
     },
   },
+  tmi: {
+    category: {
+      url: `/tools/tmi/category`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+      items: {
+        url: `/tools/tmi/category/items`,
+        get: async function (data) {
+          return await http.get(this.url, data)
+        },
+      },
+    },
+    console: {
+      url: `/tools/tmi/console`,
+      post: async function (data) {
+        return await http.post(this.url, data)
+      },
+    },
+  },
+  aichat: {
+    setting: {
+      url: `/tools/aichat/setting`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+      put: async function (data) {
+        return await http.put(this.url, data)
+      },
+      base: {
+        url: `/tools/aichat/setting/base`,
+        get: async function (data) {
+          return await http.get(this.url, data)
+        },
+        put: async function (data) {
+          return await http.put(this.url, data)
+        },
+      },
+    },
+    keyword: {
+      rebuild: {
+        url: `/tools/aichat/keyword/rebuild`,
+        post: async function (data) {
+          return await http.post(this.url, data)
+        },
+      },
+    },
+    embedding: {
+      rebuild: {
+        url: `/tools/aichat/embedding/rebuild`,
+        post: async function (data) {
+          return await http.post(this.url, data)
+        },
+      },
+    },
+  },
 }

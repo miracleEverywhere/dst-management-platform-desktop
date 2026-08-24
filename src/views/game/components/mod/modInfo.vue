@@ -1,12 +1,23 @@
 <template>
   <v-card
-    hover
-    variant="flat"
     height="135"
-    class="cursor-auto"
+    class="cursor-auto mod-card"
   >
+    <v-tooltip
+      v-if="props.downloaded"
+      location="top"
+    >
+      <template #activator="{ props: tooltipProps }">
+        <span
+          v-bind="tooltipProps"
+          class="downloaded-corner bg-success"
+          aria-hidden="true"
+        ></span>
+      </template>
+      {{ t('game.mod.download.modInfo.downloaded') }}
+    </v-tooltip>
     <div
-      class="fcc"
+      class="fcc mod-card-content"
       style="height: 135px"
     >
       <div style="width: 80px; height: 80px">
@@ -72,6 +83,7 @@
                 {{ t('game.mod.download.modInfo.detail') }}
               </v-btn>
             </template>
+            <!-- eslint-disable-next-line vue/no-unused-vars -->
             <template #default="{ isActive }">
               <v-card :title="props.mod.name">
                 <v-card-text>
@@ -231,21 +243,22 @@
                     </tbody>
                   </v-table>
                   <v-container height="30vh">
+                    <!-- eslint-disable-next-line vue/no-v-html -->
                     <div v-html="bbCodeParser.parse(props.mod.file_description)" />
                   </v-container>
                 </v-card-text>
               </v-card>
             </template>
           </v-dialog>
-          <v-btn
+          <progress-button
+            :progress="props.downloadProgress"
             color="success"
             density="compact"
             size="small"
-            :loading="downloadLoading"
             @click="handleDownload"
           >
             {{ t('game.mod.download.modInfo.download') }}
-          </v-btn>
+          </progress-button>
         </div>
       </div>
     </div>
@@ -255,8 +268,6 @@
 <script setup>
 import { formatBytes, timestamp2time } from "@/utils/tools"
 
-import modApi from "@/api/mod"
-import { showSnackbar } from "@/utils/snackbar"
 import PreciseRating from "@/components/PreciseRating.vue"
 import bbCodeParser from 'js-bbcode-parser'
 import { useI18n } from "vue-i18n"
@@ -271,7 +282,17 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  downloaded: {
+    type: Boolean,
+    default: false,
+  },
+  downloadProgress: {
+    type: Number,
+    default: 0,
+  },
 })
+
+const emit = defineEmits(['download'])
 
 const { t } = useI18n()
 
@@ -289,30 +310,40 @@ const computedName = computed(() => {
 })
 
 const dialogVisible = ref(false)
-const downloadLoading = ref(false)
 
 const handleDownload = () => {
-  downloadLoading.value = true
-
-  const reqFrom = {
-    roomID: props.roomID,
-    id: props.mod.id,
-    // eslint-disable-next-line camelcase
-    file_url: props.mod.file_url,
-    update: false,
-    size: props.mod.size,
-    name: props.mod.name,
-  }
-
-  modApi.download.post(reqFrom).then(response => {
-    showSnackbar(response.message)
-  }).finally(() => {
-    downloadLoading.value = false
-  })
+  emit('download', props.mod)
 }
 </script>
 
 <style scoped>
+.mod-card {
+  overflow: hidden;
+  position: relative;
+}
+
+.mod-card-content {
+  position: relative;
+  z-index: 1;
+}
+
+.downloaded-corner {
+  block-size: 28px;
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+  inline-size: 28px;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  position: absolute;
+  z-index: 2;
+}
+
+.downloaded-corner::after {
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  opacity: 0.28;
+  position: absolute;
+}
+
 .custom-table {
   border-collapse: collapse;
   width: 100%;

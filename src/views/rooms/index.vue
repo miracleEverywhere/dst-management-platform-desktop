@@ -65,6 +65,7 @@
                     {{ truncateString(room.gameName, mobile?8:15) }}
                   </v-chip>
                   <v-chip
+                    v-tooltip="room.status?t('rooms.card.success.header.title.activatedTip'):t('rooms.card.success.header.title.deactivatedTip')"
                     :color="room.status?'success':'warning'"
                     class="ml-4"
                   >
@@ -148,6 +149,20 @@
                         {{ t('platform.rooms.actions.delete') }}
                       </v-list-item-title>
                     </v-list-item>
+                    <v-list-item
+                      class="text-primary"
+                      @click="generateGameInfo(room)"
+                    >
+                      <template #prepend>
+                        <v-icon
+                          icon="ri-file-copy-2-line"
+                          size="22"
+                        />
+                      </template>
+                      <v-list-item-title>
+                        {{ t('rooms.card.success.header.menu.copy') }}
+                      </v-list-item-title>
+                    </v-list-item>
                   </v-list>
                 </v-menu>
               </div>
@@ -215,6 +230,7 @@
                         <v-chip
                           color="info"
                           label
+                          @click.stop="() => {}"
                         >
                           <v-tooltip
                             v-if="getCurrentPlayersNum(room.players)!==0"
@@ -357,8 +373,9 @@ import { debounce, parseModLua, truncateString } from "@/utils/tools"
 import { showSnackbar } from "@/utils/snackbar"
 import { useRouter } from "vue-router"
 import eventBus from '@/utils/eventBus'
-import ElectronApi from "@/utils/electronApi"
-import { DB_KEY } from "@/config"
+import modApi from "@/api/mod.js"
+import dashboardApi from "@/api/dashboard.js"
+import { sleep } from "@antfu/utils"
 
 
 const { mobile } = useDisplay()
@@ -393,6 +410,15 @@ const getRooms = async () => {
   const response = await roomApi.list.get(reqForm.value)
 
   rooms.value = response.data.rows || []
+
+  if (rooms.value.length === 0) {
+    if (reqForm.value.page > 1) {
+      reqForm.value.page--
+
+      return getRooms()
+    }
+  }
+
   total.value = response.data.total
   getRoomsLoading.value = false
 }
@@ -428,21 +454,11 @@ const toggleMenu = () => {
   eventBus.emit('toggleMenu', 3)
 }
 
-const selectRoom = room => {
+const selectRoom = async room => {
   globalStore.room.id = room.id
   globalStore.room.gameName = room.gameName
-
-  const dmps = ElectronApi.store.get(DB_KEY.dmps) || []
-
-  for (let i = 0; i < dmps.length; i++) {
-    if (dmps[i].id === globalStore.entry.id) {
-      dmps[i].selectedRoomID = room.id
-      dmps[i].selectedRoomName = room.gameName
-      break
-    }
-  }
-
-  ElectronApi.store.set(DB_KEY.dmps, dmps)
+  await sleep(200)
+  await gotoDashboard(room)
 }
 
 const gotoDashboard = async room => {
@@ -465,16 +481,16 @@ const generatePlayerList = players => {
 
 const handleAction = (actionType, row) => {
   switch (actionType) {
-  case 'activate':
-    activate(row)
-    break
-  case 'deactivate':
-    deactivate(row)
-    break
-  case 'delete':
-    deleteRoomID.value = row.id
-    confirmVisible.value = true
-    break
+    case 'activate':
+      activate(row)
+      break
+    case 'deactivate':
+      deactivate(row)
+      break
+    case 'delete':
+      deleteRoomID.value = row.id
+      confirmVisible.value = true
+      break
   }
 }
 
@@ -576,6 +592,86 @@ const handleResize = debounce(() => {
     cardWidth.value = cardRef.value.$el.offsetWidth
   }
 }, 200)
+
+// eslint-disable-next-line sonarjs/no-invariant-returns
+const copyToClipboard = async text => {
+  try {
+    await navigator.clipboard.writeText(text)
+    
+    return true
+  } catch {
+    // 降级方案
+    const textArea = document.createElement('textarea')
+
+    textArea.value = text
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textArea)
+    
+    return true
+  }
+}
+
+const getEnabledMods = async room => {
+  const reqForm = {
+    roomID: room.id,
+    worldID: room.worlds[0].id,
+  }
+
+  const response = await modApi.setting.enabledMods.get(reqForm)
+
+  return response.data
+}
+
+const getConnectionCode = async room => {
+  const reqForm = {
+    roomID: room.id,
+  }
+
+  const response = await dashboardApi.connectionCode.get(reqForm)
+
+  return response.data
+}
+
+const generateGameInfo = async room => {
+  const modData = await getEnabledMods(room)
+  const connectionCode = await getConnectionCode(room)
+  const players = await getCurrentPlayersNickname(room.players)
+
+  let modInfo = modData.map(mod => mod.name).join(', ')
+  let info = ''
+  let copyMessage = ''
+
+  switch (globalStore.language) {
+    case 'zh':
+      info = info + `✅房间名称: ${room.gameName}\n`
+      info = info + `✅房间描述: ${room.description ? room.description : '无描述'}\n`
+      info = info + `✅游戏模式: ${t('game.base.step1.gameMode.modes.' + room.gameMode)}\n`
+      info = info + `✅模组个数: ${room.modInOne ? parseModLua(room.modData).length : parseModLua(room.worlds[0].modData).length}\n`
+      info = info + `✅玩家个数: ${getCurrentPlayersNum(room.players)}/${room.maxPlayer}\n`
+      info = info + `✅直连代码: ${connectionCode}\n`
+      info = info + `✅在线玩家: ${players ? players : '无在线玩家'}\n`
+      info = info + `✅模组信息: ${modInfo ? modInfo : '无模组'}\n`
+      copyMessage = '复制成功'
+      break
+    case 'en':
+      info = info + `✅Game Name: ${room.gameName}\n`
+      info = info + `✅Game Desc: ${room.description ? room.description : 'No Desc'}\n`
+      info = info + `✅Game Mode: ${t('game.base.step1.gameMode.modes.' + room.gameMode)}\n`
+      info = info + `✅Mods: ${room.modInOne ? parseModLua(room.modData).length : parseModLua(room.worlds[0].modData).length}\n`
+      info = info + `✅Players: ${getCurrentPlayersNum(room.players)}/${room.maxPlayer}\n`
+      info = info + `✅Code: ${connectionCode}\n`
+      info = info + `✅Online: ${players ? players : 'No Online Players'}\n`
+      info = info + `✅Mods: ${modInfo ? modInfo : 'No Mods'}\n`
+      copyMessage = 'Copy Success'
+      break
+  }
+
+  await copyToClipboard(info)
+
+  await showSnackbar(copyMessage)
+}
 
 onMounted(async () => {
   reqForm.value.pageSize = calculateCardSize()

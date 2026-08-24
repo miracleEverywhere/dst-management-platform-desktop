@@ -126,7 +126,7 @@
               <v-card-text v-else>
                 <result
                   :height="230"
-                  color="info"
+                  type="info"
                   :title="t('game.mod.setting.tip.fetching')"
                 />
               </v-card-text>
@@ -376,17 +376,17 @@ const selectedMods = ref([])
 
 const handleModAction = (action, mod) => {
   switch (action) {
-  case "enable":
-    modEnable(mod)
-    break
-  case "update":
-    modUpdate(mod)
-    break
-  case "delete":
-    handleDeleteMod(mod)
-    break
-  default:
-    showSnackbar("牛哇", "error")
+    case "enable":
+      modEnable(mod)
+      break
+    case "update":
+      modUpdate(mod)
+      break
+    case "delete":
+      handleDeleteMod(mod)
+      break
+    default:
+      showSnackbar("牛哇", "error")
   }
 }
 
@@ -478,10 +478,11 @@ const preDownload = async () => {
       update: false,
       name: modList.value[i].name,
       size: modList.value[i].size,
+      sync: true,
     }
 
     try {
-      const res = await modApi.download.post(reqFrom)
+      await modApi.download.post(reqFrom)
 
       modList.value[i].color = 'success'
       preDownloadProgress.value = ((i+1) / modList.value.length) * 100
@@ -574,6 +575,7 @@ const handleDeleteAcf = () => {
   const reqFrom = {
     roomID: globalStore.room.id,
   }
+
   modApi.delete.acf.delete(reqFrom).then(response => {
     deleteAcfDialog.value = false
     showSnackbar(response.message)

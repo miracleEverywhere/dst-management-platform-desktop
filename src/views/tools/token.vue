@@ -124,24 +124,31 @@ const handleCreate = () => {
 }
 
 const requestPython = ref('```python [id:Python]\n' +
-  'import requests\n' +
+  '# pip install dmp-sdk-python (安装python-sdk)\n' +
+  'from dmp_sdk_python import DMPClient\n' +
   '\n' +
-  'url = "http://{ip}:{port}"\n' +
-  'token = "your token"\n' +
-  '# 中文\n' +
-  'lang = "zh"\n' +
-  '# English\n' +
-  '# lang = "en"\n' +
+  '# 初始化客户端（通过 token 认证）\n' +
+  'client = DMPClient("http://your-server:80", "your-token")\n' +
   '\n' +
-  'payload = {}\n' +
-  'headers = {\n' +
-  '    \'X-DMP-TOKEN\': token,\n' +
-  '    \'X-I18n-Lang\': lang\n' +
-  '}\n' +
   '\n' +
-  'response = requests.request("GET", url, headers=headers, data=payload)\n' +
+  '# 链式调用: client.模块.方法()\n' +
+  'users = client.user.list_users()\n' +
+  'print(users.rows)\n' +
   '\n' +
-  'print(response.text)\n' +
+  'rooms = client.room.list()\n' +
+  'print(rooms.rows)\n' +
+  '\n' +
+  'room_info = client.rm.get(room_id=8)\n' +
+  'print(room_info)\n' +
+  '\n' +
+  'mods = client.mod.get_enabled(roomID=8, worldID=24)\n' +
+  'print(mods)\n' +
+  '\n' +
+  'sys_info = client.pt.os_info()\n' +
+  'print(sys_info)\n' +
+  '\n' +
+  'cpu_usage = client.dashboard.get_sys_info()[\'cpu\']\n' +
+  'print(cpu_usage)\n' +
   '```')
 
 const requestGolang = ref('```golang [id:Golang]\n' +

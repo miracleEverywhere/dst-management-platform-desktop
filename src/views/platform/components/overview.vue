@@ -226,6 +226,48 @@
         </v-card-text>
       </v-card>
     </v-col>
+    <v-col
+      cols="12"
+      md="6"
+    >
+      <v-card v-tooltip="t('platform.overview.gameVersionServer')">
+        <template #prepend>
+          <v-icon
+            color="primary"
+            class="me-8"
+            icon="ri-bank-line"
+            size="48"
+          />
+          <span>
+            {{ t('platform.overview.gameVersionServer') }}
+          </span>
+        </template>
+        <v-card-text class="d-flex justify-end">
+          {{ globalStore.gameVersion.server }}
+        </v-card-text>
+      </v-card>
+    </v-col>
+    <v-col
+      cols="12"
+      md="6"
+    >
+      <v-card v-tooltip="t('platform.overview.gameVersionLocal')">
+        <template #prepend>
+          <v-icon
+            color="primary"
+            class="me-8"
+            icon="ri-government-line"
+            size="48"
+          />
+          <span>
+            {{ t('platform.overview.gameVersionLocal') }}
+          </span>
+        </template>
+        <v-card-text class="d-flex justify-end">
+          {{ globalStore.gameVersion.local }}
+        </v-card-text>
+      </v-card>
+    </v-col>
   </v-row>
 </template>
 
@@ -234,7 +276,10 @@ import platformApi from "@/api/platform"
 import { formatBytes } from "@/utils/tools"
 import { CountTo } from "vue3-count-to"
 import { useI18n } from "vue-i18n"
+import useGlobalStore from "@store/global"
 
+
+const globalStore = useGlobalStore()
 
 const { t } = useI18n()
 

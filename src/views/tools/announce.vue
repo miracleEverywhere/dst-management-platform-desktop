@@ -1,156 +1,117 @@
 <template>
-  <!-- 游戏是否安装 -->
-  <template v-if="globalStore.gameVersion.local!==0">
-    <!-- 房间是否选择 -->
-    <template v-if="globalStore.room.id!==0">
-      <v-card>
-        <v-sheet
-          border
-          rounded
+  <check
+    :category="['game', 'room']"
+    :other-height="otherHeight"
+  >
+    <v-card>
+      <v-sheet
+        border
+        rounded
+      >
+        <v-data-table
+          :headers="headers"
+          :items="announces"
+          :loading="getAnnounceLoading"
         >
-          <v-data-table
-            :headers="headers"
-            :items="announces"
-            :loading="getAnnounceLoading"
-          >
-            <template #loading>
-              <v-skeleton-loader type="table-row@10" />
-            </template>
-            <template #top>
-              <v-toolbar flat>
-                <v-toolbar-title>
-                  <v-icon
-                    icon="ri-chat-smile-ai-3-line"
-                    start
-                  />
-                  <span v-if="!mobile">{{ t('tools.announce.title') }}</span>
-                </v-toolbar-title>
-                <v-btn
-                  prepend-icon="ri-add-line"
-                  color="success"
-                  @click="openAnnounceDialog"
-                >
-                  {{ t('tools.announce.add') }}
-                </v-btn>
-                <v-btn
-                  prepend-icon="ri-refresh-line"
-                  :loading="getAnnounceLoading"
-                  color="default"
-                  @click="getAnnounce"
-                >
-                  {{ t('tools.announce.refresh') }}
-                </v-btn>
-              </v-toolbar>
-            </template>
-            <template #item.status="{value}">
-              <v-chip
-                v-if="value"
-                label
-                color="success"
-              >
-                {{ t('tools.announce.form.status.y') }}
-              </v-chip>
-              <v-chip
-                v-else
-                label
-                color="error"
-              >
-                {{ t('tools.announce.form.status.n') }}
-              </v-chip>
-            </template>
-            <template #item.interval="{value}">
-              <v-chip label>
-                {{ value }}
-              </v-chip>
-            </template>
-            <template #item.content="{value}">
-              {{ truncateString(value, 40) }}
-            </template>
-            <template #item.actions="{ item }">
+          <template #loading>
+            <v-skeleton-loader type="table-row@10" />
+          </template>
+          <template #top>
+            <v-toolbar flat>
+              <v-toolbar-title>
+                <v-icon
+                  icon="ri-chat-smile-ai-3-line"
+                  start
+                />
+                <span v-if="!mobile">{{ t('tools.announce.title') }}</span>
+              </v-toolbar-title>
               <v-btn
-                color="info"
-                append-icon="ri-arrow-drop-down-line"
-                variant="text"
-                :loading="deleteLoading"
+                prepend-icon="ri-add-line"
+                color="success"
+                @click="openAnnounceDialog"
               >
-                {{ t('tools.announce.actions') }}
-                <v-menu activator="parent">
-                  <v-list>
-                    <v-list-item
-                      class="text-info"
-                      @click="openAnnounceDialog(item, true)"
-                    >
-                      <template #prepend>
-                        <v-icon
-                          icon="ri-edit-line"
-                          size="22"
-                        />
-                      </template>
-                      <v-list-item-title>
-                        {{ t('tools.announce.update') }}
-                      </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item
-                      class="text-error"
-                      @click="handleDelete(item.id)"
-                    >
-                      <template #prepend>
-                        <v-icon
-                          icon="ri-delete-bin-line"
-                          size="22"
-                        />
-                      </template>
-                      <v-list-item-title>
-                        {{ t('tools.announce.delete') }}
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
+                {{ t('tools.announce.add') }}
               </v-btn>
-            </template>
-          </v-data-table>
-        </v-sheet>
-      </v-card>
-    </template>
-    <template v-else>
-      <result
-        :title="t('global.noRoomSelected.title')"
-        :sub-title="t('global.noRoomSelected.subTitle')"
-        type="error"
-        :height="calculateContainerSize()"
-      >
-        <v-btn
-          to="/rooms"
-          class="mt-4"
-        >
-          {{ t('global.noRoomSelected.button') }}
-        </v-btn>
-      </result>
-    </template>
-  </template>
-  <template v-else>
-    <result
-      v-if="userStore.userInfo.role==='admin'"
-      :title="t('global.noGame.title')"
-      :sub-title="t('global.noGame.subTitle')"
-      :height="calculateContainerSize()"
-      type="error"
-    >
-      <v-btn
-        to="/install"
-        class="mt-4"
-      >
-        {{ t('global.noGame.button') }}
-      </v-btn>
-    </result>
-    <result
-      v-else
-      :title="t('global.noGameNoAdmin.title')"
-      :sub-title="t('global.noGameNoAdmin.subTitle')"
-      :height="calculateContainerSize()"
-      type="error"
-    />
-  </template>
+              <v-btn
+                prepend-icon="ri-refresh-line"
+                :loading="getAnnounceLoading"
+                color="default"
+                @click="getAnnounce"
+              >
+                {{ t('tools.announce.refresh') }}
+              </v-btn>
+            </v-toolbar>
+          </template>
+          <template #item.status="{value}">
+            <v-chip
+              v-if="value"
+              label
+              color="success"
+            >
+              {{ t('tools.announce.form.status.y') }}
+            </v-chip>
+            <v-chip
+              v-else
+              label
+              color="error"
+            >
+              {{ t('tools.announce.form.status.n') }}
+            </v-chip>
+          </template>
+          <template #item.interval="{value}">
+            <v-chip label>
+              {{ value }}
+            </v-chip>
+          </template>
+          <template #item.content="{value}">
+            {{ truncateString(value, 40) }}
+          </template>
+          <template #item.actions="{ item }">
+            <v-btn
+              color="info"
+              append-icon="ri-arrow-drop-down-line"
+              variant="text"
+              :loading="deleteLoading"
+            >
+              {{ t('tools.announce.actions') }}
+              <v-menu activator="parent">
+                <v-list>
+                  <v-list-item
+                    class="text-info"
+                    @click="openAnnounceDialog(item, true)"
+                  >
+                    <template #prepend>
+                      <v-icon
+                        icon="ri-edit-line"
+                        size="22"
+                      />
+                    </template>
+                    <v-list-item-title>
+                      {{ t('tools.announce.update') }}
+                    </v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    class="text-error"
+                    @click="handleDelete(item.id)"
+                  >
+                    <template #prepend>
+                      <v-icon
+                        icon="ri-delete-bin-line"
+                        size="22"
+                      />
+                    </template>
+                    <v-list-item-title>
+                      {{ t('tools.announce.delete') }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-btn>
+          </template>
+        </v-data-table>
+      </v-sheet>
+    </v-card>
+  </check>
 
   <v-dialog
     v-model="announceDialog"
@@ -240,7 +201,7 @@ import useGlobalStore from "@store/global.js"
 import useUserStore from "@store/user.js"
 import { useI18n } from "vue-i18n"
 import { useDisplay } from "vuetify/framework"
-import { debounce, deepCopy, generateUUID, truncateString } from "@/utils/tools.js"
+import { debounce, generateUUID, truncateString } from "@/utils/tools.js"
 import toolsApi from "@/api/tools.js"
 import { showSnackbar } from "@/utils/snackbar.js"
 
@@ -250,6 +211,7 @@ const userStore = useUserStore()
 const { t } = useI18n()
 const { mobile } = useDisplay()
 const windowHeight = ref(window.innerHeight)
+const otherHeight = 150
 
 const announces = ref([])
 const getAnnounceLoading = ref(false)
@@ -375,7 +337,7 @@ const handleDelete = id => {
     setting: JSON.stringify(newAnnounces),
   }
 
-  toolsApi.announce.put(reqForm).then(response => {
+  toolsApi.announce.put(reqForm).then(() => {
     showSnackbar(t('tools.announce.deleteMessage'))
     getAnnounce()
   }).finally(() => {
@@ -390,9 +352,8 @@ const handleResize = debounce(() => {
 
 const calculateContainerSize = () => {
   // 64(navbar) + 37(tab header) + 20(card padding) + 16(card padding) = 137
-  const other = 150
 
-  return Math.max(2, Math.floor(windowHeight.value - other))
+  return Math.max(2, Math.floor(windowHeight.value - otherHeight))
 }
 
 onMounted(() => {

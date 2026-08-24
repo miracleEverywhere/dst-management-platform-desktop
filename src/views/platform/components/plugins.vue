@@ -1,0 +1,499 @@
+<template>
+  <v-card>
+    <v-card-text>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            v-model="search"
+            :label="t('platform.plugin.search.label')"
+            :placeholder="t('platform.plugin.search.placeholder')"
+            persistent-placeholder
+            clearable
+            @keyup.enter="getPluginListData({page: pluginListData.page,
+                                             itemsPerPage: pluginListData.pageSize,
+                                             sortBy: undefined,
+            })"
+            @click:clear="getPluginListData({page: pluginListData.page,
+                                             itemsPerPage: pluginListData.pageSize,
+                                             sortBy: undefined,
+            })"
+          />
+        </v-col>
+        <v-col cols="12">
+          <v-sheet
+            rounded
+            border
+          >
+            <v-data-table-server
+              v-model:items-per-page="pluginListData.pageSize"
+              :items="pluginListData.rows"
+              :items-length="pluginListData.total"
+              :page="pluginListData.page"
+              :loading="getPluginListDataLoading"
+              :headers="headers"
+              @update:options="getPluginListData"
+            >
+              <template #top>
+                <v-toolbar flat>
+                  <v-toolbar-title>
+                    <v-icon
+                      icon="ri-plug-3-line"
+                      start
+                    />
+                    <span v-if="!mobile">{{ t('platform.plugin.table.title') }}</span>
+                  </v-toolbar-title>
+                </v-toolbar>
+              </template>
+              <template #item.name="{ value }">
+                <v-chip label>
+                  {{ value }}
+                </v-chip>
+              </template>
+              <template #item.status="{ value }">
+                <v-chip
+                  :color="value?'success':'error'"
+                  label
+                >
+                  {{ value?t('platform.plugin.table.status.enable'):t('platform.plugin.table.status.disable') }}
+                </v-chip>
+              </template>
+              <template #item.step="{ item, value }">
+                <v-chip
+                  :color="getPluginConfig(item.name).builtin ? 'info' : value === 100 ? 'success' : 'warning'"
+                  label
+                >
+                  {{ getPluginConfig(item.name).builtin
+                    ? t('platform.plugin.table.step.builtin')
+                    : t(`platform.plugin.table.step.${value}`) }}
+                </v-chip>
+              </template>
+              <template #item.actions="{ item }">
+                <v-btn
+                  color="info"
+                  append-icon="ri-arrow-drop-down-line"
+                  variant="text"
+                >
+                  {{ t('platform.plugin.table.actions.action') }}
+                  <v-menu activator="parent">
+                    <v-list>
+                      <v-list-item
+                        v-if="getPluginConfig(item.name).actions.introduce"
+                        class="text-info"
+                        @click="handleAction('introduce', item)"
+                      >
+                        <template #prepend>
+                          <v-icon
+                            icon="ri-information-2-line"
+                            size="22"
+                          />
+                        </template>
+                        <v-list-item-title>
+                          {{ t('platform.plugin.table.actions.introduce') }}
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item
+                        v-if="getPluginConfig(item.name).actions.install"
+                        :disabled="item.step===100"
+                        class="text-primary"
+                        @click="handleAction('install', item)"
+                      >
+                        <template #prepend>
+                          <v-icon
+                            icon="ri-install-line"
+                            size="22"
+                          />
+                        </template>
+                        <v-list-item-title>
+                          {{ t('platform.plugin.table.actions.install') }}
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item
+                        v-if="getPluginConfig(item.name).actions.enable"
+                        :disabled="(!getPluginConfig(item.name).builtin && item.step !== 100) || item.status"
+                        class="text-success"
+                        @click="handleAction('enable', item)"
+                      >
+                        <template #prepend>
+                          <v-icon
+                            icon="ri-checkbox-circle-line"
+                            size="22"
+                          />
+                        </template>
+                        <v-list-item-title>
+                          {{ t('platform.plugin.table.actions.enable') }}
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item
+                        v-if="getPluginConfig(item.name).actions.disable"
+                        :disabled="(!getPluginConfig(item.name).builtin && item.step !== 100) || !item.status"
+                        class="text-warning"
+                        @click="handleAction('disable', item)"
+                      >
+                        <template #prepend>
+                          <v-icon
+                            icon="ri-close-circle-line"
+                            size="22"
+                          />
+                        </template>
+                        <v-list-item-title>
+                          {{ t('platform.plugin.table.actions.disable') }}
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item
+                        v-if="getPluginConfig(item.name).actions.update"
+                        :disabled="item.step!==100"
+                        class="text-info"
+                        @click="handleAction('update', item)"
+                      >
+                        <template #prepend>
+                          <v-icon
+                            icon="ri-loop-left-line"
+                            size="22"
+                          />
+                        </template>
+                        <v-list-item-title>
+                          {{ t('platform.plugin.table.actions.update') }}
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item
+                        v-if="getPluginConfig(item.name).actions.uninstall"
+                        :disabled="item.step!==100"
+                        class="text-error"
+                        @click="handleAction('uninstall', item)"
+                      >
+                        <template #prepend>
+                          <v-icon
+                            icon="ri-uninstall-line"
+                            size="22"
+                          />
+                        </template>
+                        <v-list-item-title>
+                          {{ t('platform.plugin.table.actions.uninstall') }}
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </v-btn>
+              </template>
+            </v-data-table-server>
+          </v-sheet>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
+
+  <v-dialog
+    v-model="introduceDialogVisible"
+    :width="mobile?'90%':'50%'"
+  >
+    <v-card>
+      <v-card-title>
+        {{ currentPlugin }}
+      </v-card-title>
+      <v-card-text>
+        <v-alert
+          border="start"
+          color="info"
+          variant="tonal"
+          class="mb-4"
+        >
+          {{ t(`platform.plugin.introduce.${currentPlugin}.desc`) }}
+          <br>
+          {{ t(`platform.plugin.introduce.info`) }}
+        </v-alert>
+        <v-alert
+          border="start"
+          color="error"
+          variant="tonal"
+          class="mb-4"
+        >
+          {{ t(`platform.plugin.introduce.${currentPlugin}.warning`) }}
+        </v-alert>
+        <v-alert
+          v-if="currentPluginConfig.showOsInfo"
+          border="start"
+          color="warning"
+          variant="tonal"
+          class="mb-4"
+        >
+          {{ t(`platform.plugin.introduce.${currentPlugin}.os`) }}
+          {{ osPlatform }} {{ osPlatformVersion }}
+        </v-alert>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog
+    v-model="installDialogVisible"
+    :width="mobile?'90%':'50%'"
+    :persistent="installLoading"
+  >
+    <v-card>
+      <v-card-title>
+        {{ currentPlugin }}
+        {{ t('platform.plugin.install.install') }}
+      </v-card-title>
+      <v-card-text class="my-4">
+        <v-alert
+          border="start"
+          color="info"
+          variant="tonal"
+          class="mb-4"
+        >
+          {{ t(`platform.plugin.introduce.info`) }}
+        </v-alert>
+        <v-alert
+          v-if="currentPluginConfig.showOsInfo"
+          border="start"
+          color="x"
+          variant="tonal"
+          class="mb-4"
+        >
+          {{ t(`platform.plugin.introduce.${currentPlugin}.os`) }}
+          {{ osPlatform }} {{ osPlatformVersion }}
+        </v-alert>
+        <v-text-field
+          v-if="currentPluginConfig.installProxy"
+          v-model="installForm.proxy"
+          v-tooltip="t('platform.plugin.install.proxy.tip')"
+          :label="t('platform.plugin.install.proxy.name')"
+        />
+        <v-checkbox
+          v-if="currentPlugin === 'tmi'"
+          v-model="installForm.imageParse"
+          v-tooltip="t('platform.plugin.install.tmi.imageParse.tip')"
+          :label="t('platform.plugin.install.tmi.imageParse.name')"
+          hide-details
+          class="mt-2"
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          color="x"
+          @click="installDialogVisible=false"
+        >
+          {{ t('platform.plugin.install.cancel') }}
+        </v-btn>
+        <v-btn
+          :loading="installLoading"
+          @click="installPlugin"
+        >
+          {{ t('platform.plugin.install.install') }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <confirm-box
+    v-model="confirmSettings.visible"
+    type="warning"
+    :title="t('global.confirm.title')"
+    :content="confirmSettings.content"
+    :confirm-text="t('global.confirm.confirm')"
+    :cancel-text="t('global.confirm.cancel')"
+    :confirm-loading="confirmSettings.loading"
+    @confirm="handleConfirm"
+    @cancel="handleCancel"
+  />
+</template>
+
+<script setup>
+import platformApi from "@/api/platform.js"
+import { useDisplay } from "vuetify/framework"
+import { useI18n } from "vue-i18n"
+import { showSnackbar } from "@/utils/snackbar.js"
+
+
+const { mobile } = useDisplay()
+const { t } = useI18n()
+
+const osPlatform = ref('')
+const osPlatformVersion = ref('')
+
+const getOSInfo = () => {
+  platformApi.osInfo.get().then(response => {
+    osPlatform.value = response.data?.Platform || ''
+    osPlatformVersion.value = response.data?.PlatformVersion || ''
+  })
+}
+
+const search = ref('')
+
+const pluginListData = ref({
+  rows: [],
+  page: 1,
+  pageSize: 10,
+  total: 0,
+})
+
+const getPluginListDataLoading = ref(false)
+
+const getPluginListData = ({ page, itemsPerPage, sortBy }) => {
+  const reqFrom = {
+    q: search.value,
+    page: page,
+    pageSize: itemsPerPage,
+  }
+
+  getPluginListDataLoading.value = true
+  platformApi.plugin.list.get(reqFrom).then(response => {
+    pluginListData.value = response.data
+  }).finally(() => {
+    getPluginListDataLoading.value = false
+  })
+}
+
+const headers = [
+  { title: t('platform.plugin.table.name'), value: 'name' },
+  { title: t('platform.plugin.table.status.name'), value: 'status' },
+  { title: t('platform.plugin.table.step.name'), value: 'step' },
+  { title: t('platform.plugin.table.actions.action'), value: 'actions' },
+]
+
+// New plugins inherit these defaults; pluginConfigs only declares exceptions.
+const defaultPluginConfig = {
+  builtin: false,
+  showOsInfo: false,
+  installProxy: true,
+  defaultProxy: '',
+  actions: {
+    introduce: true,
+    install: true,
+    enable: true,
+    disable: true,
+    update: true,
+    uninstall: true,
+  },
+}
+
+const pluginConfigs = {
+  chat: {
+    builtin: true,
+    actions: {
+      introduce: false,
+      install: false,
+      update: false,
+      uninstall: false,
+    },
+  },
+  tmi: {
+    showOsInfo: true,
+    defaultProxy: 'https://ghfast.top/',
+  },
+  'ai_chat': {
+    defaultProxy: 'https://ghfast.top/',
+    actions: {
+      update: false,
+    },
+  },
+}
+
+const getPluginConfig = pluginName => {
+  const config = pluginConfigs[pluginName] || {}
+
+  return {
+    ...defaultPluginConfig,
+    ...config,
+    actions: {
+      ...defaultPluginConfig.actions,
+      ...config.actions,
+    },
+  }
+}
+
+const handleAction = (action, item) => {
+  currentPlugin.value = item.name
+
+  if (action === 'introduce') {
+    introduceDialogVisible.value = true
+
+    return
+  }
+  if (action === 'install') {
+    installForm.value = {
+      name: item.name,
+      proxy: getPluginConfig(item.name).defaultProxy,
+      ...(item.name === 'tmi' && {
+        imageParse: osPlatform.value.toLowerCase() === 'ubuntu'
+          && osPlatformVersion.value.split('.')[0] === '24',
+      }),
+    }
+    installDialogVisible.value = true
+
+    return
+  }
+
+  confirmSettings.value = {
+    visible: true,
+    content: t(`platform.plugin.confirm.${action}`),
+    loading: false,
+    action: action,
+  }
+}
+
+const currentPlugin = ref('')
+const currentPluginConfig = computed(() => getPluginConfig(currentPlugin.value))
+const introduceDialogVisible = ref(false)
+const installDialogVisible = ref(false)
+const installLoading = ref(false)
+
+const installForm = ref({
+  name: '',
+  proxy: '',
+})
+
+const installPlugin = () => {
+  installLoading.value = true
+  platformApi.plugin.install.post(installForm.value).then(response => {
+    installDialogVisible.value = false
+    showSnackbar(response.message)
+    getPluginListData({
+      page: pluginListData.value.page,
+      itemsPerPage: pluginListData.value.pageSize,
+      sortBy: undefined,
+    })
+  }).finally(() => {
+    installLoading.value = false
+  })
+}
+
+const confirmSettings = ref({
+  visible: false,
+  content: '',
+  loading: false,
+  action: '',
+})
+
+const handleConfirm = () => {
+  confirmSettings.value.loading = true
+
+  const reqForm = {
+    name: currentPlugin.value,
+    type: confirmSettings.value.action,
+  }
+
+  platformApi.plugin.action.post(reqForm).then(response => {
+    showSnackbar(response.message)
+    getPluginListData({
+      page: pluginListData.value.page,
+      itemsPerPage: pluginListData.value.pageSize,
+      sortBy: undefined,
+    })
+  }).finally(() => {
+    handleCancel()
+  })
+}
+
+const handleCancel = () => {
+  confirmSettings.value = {
+    visible: false,
+    content: '',
+    loading: false,
+    action: '',
+  }
+}
+
+onMounted(() => {
+  getOSInfo()
+})
+</script>

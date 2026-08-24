@@ -34,6 +34,15 @@ export default {
       return await http.post(this.url, data)
     },
   },
+  readme: {
+    url: `/platform/readme`,
+    get: async function (data) {
+      return await http.get(this.url, data)
+    },
+    post: async function (data) {
+      return await http.post(this.url, data)
+    },
+  },
   runningScreens: {
     url: `/platform/running_screens`,
     get: async function (data) {
@@ -51,6 +60,46 @@ export default {
       url: `/platform/screen/kill`,
       post: async function (data) {
         return await http.post(this.url, data)
+      },
+    },
+  },
+  webhook: {
+    test: {
+      url: `/platform/webhook/test`,
+      post: async function (data) {
+        return await http.post(this.url, data)
+      },
+    },
+    events: {
+      url: `/platform/webhook/events`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+    },
+  },
+  plugin: {
+    list: {
+      url: `/platform/plugin/list`,
+      get: async function (data) {
+        return await http.get(this.url, data)
+      },
+    },
+    install: {
+      url: `/platform/plugin/install`,
+      post: async function (data) {
+        return await http.post(this.url, data)
+      },
+    },
+    action: {
+      url: `/platform/plugin/action`,
+      post: async function (data) {
+        return await http.post(this.url, data)
+      },
+    },
+    status: {
+      url: `/platform/plugin/status`,
+      get: async function (data) {
+        return await http.get(this.url, data)
       },
     },
   },

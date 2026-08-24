@@ -1,265 +1,226 @@
 <template>
-  <!-- 游戏是否安装 -->
-  <template v-if="globalStore.gameVersion.local!==0">
-    <!-- 房间是否选择 -->
-    <template v-if="globalStore.room.id!==0">
-      <v-card :height="calculateHeight()">
-        <v-card-title>
-          <div class="card-header">
-            <span>
-              {{ t('logs.clean.title') }}
-            </span>
-            <div>
-              <v-btn
-                v-if="!mobile"
-                color="info"
-                class="mr-2"
-                @click="selectedLog=[0, 1, 2, 3, 4]"
-              >
-                {{ t('logs.clean.selectAll') }}
-              </v-btn>
-              <v-btn
-                color="error"
-                class="mr-2"
-                @click="handleClean"
-              >
-                {{ t('logs.clean.delete') }}
-              </v-btn>
-              <v-btn
-                color="default"
-                :loading="getCleanInfoLoading"
-                @click="getCleanInfo"
-              >
-                {{ t('logs.clean.refresh') }}
-              </v-btn>
-            </div>
-          </div>
-        </v-card-title>
-        <v-card-text>
-          <v-item-group
-            v-model="selectedLog"
-            multiple
-          >
-            <v-container
-              :height="calculateHeight()-70"
-              style="overflow-y: auto"
+  <check
+    :category="['game', 'room']"
+    :other-height="otherHeight"
+  >
+    <v-card :height="calculateHeight()">
+      <v-card-title>
+        <div class="card-header">
+          <span>
+            {{ t('logs.clean.title') }}
+          </span>
+          <div>
+            <v-btn
+              v-if="!mobile"
+              color="info"
+              class="mr-2"
+              @click="selectedLog=[0, 1, 2, 3, 4]"
             >
-              <v-row>
-                <v-col
-                  cols="12"
-                  md="6"
-                >
-                  <v-item v-slot="{ isSelected, toggle }">
-                    <v-card @click="toggle">
-                      <div class="card-header mr-4 my-4">
-                        <div class="ma-4 d-flex align-center">
-                          <v-chip
-                            label
-                            class="mr-4"
-                          >
-                            {{ t('logs.clean.game') }}
-                          </v-chip>
-                          <span>
-                            {{ formatBytes(cleanInfo.game) }}
-                          </span>
-                        </div>
-                        <v-chip
-                          v-if="!isSelected"
-                          color="info"
-                        >
-                          {{ t('logs.clean.select') }}
-                        </v-chip>
-                        <v-chip
-                          v-if="isSelected"
-                          color="success"
-                        >
-                          {{ t('logs.clean.selected') }}
-                        </v-chip>
-                      </div>
-                    </v-card>
-                  </v-item>
-                </v-col>
-                <v-col
-                  cols="12"
-                  md="6"
-                >
-                  <v-item v-slot="{ isSelected, toggle }">
-                    <v-card @click="toggle">
-                      <div class="card-header mr-4 my-4">
-                        <div class="ma-4 d-flex align-center">
-                          <v-chip
-                            label
-                            class="mr-4"
-                          >
-                            {{ t('logs.clean.chat') }}
-                          </v-chip>
-                          <span>
-                            {{ formatBytes(cleanInfo.chat) }}
-                          </span>
-                        </div>
-                        <v-chip
-                          v-if="!isSelected"
-                          color="info"
-                        >
-                          {{ t('logs.clean.select') }}
-                        </v-chip>
-                        <v-chip
-                          v-if="isSelected"
-                          color="success"
-                        >
-                          {{ t('logs.clean.selected') }}
-                        </v-chip>
-                      </div>
-                    </v-card>
-                  </v-item>
-                </v-col>
-                <v-col
-                  cols="12"
-                  md="6"
-                >
-                  <v-item v-slot="{ isSelected, toggle }">
-                    <v-card @click="toggle">
-                      <div class="card-header mr-4 my-4">
-                        <div class="ma-4 d-flex align-center">
-                          <v-chip
-                            label
-                            class="mr-4"
-                          >
-                            {{ t('logs.clean.steam') }}
-                          </v-chip>
-                          <span>
-                            {{ formatBytes(cleanInfo.steam) }}
-                          </span>
-                        </div>
-                        <v-chip
-                          v-if="!isSelected"
-                          color="info"
-                        >
-                          {{ t('logs.clean.select') }}
-                        </v-chip>
-                        <v-chip
-                          v-if="isSelected"
-                          color="success"
-                        >
-                          {{ t('logs.clean.selected') }}
-                        </v-chip>
-                      </div>
-                    </v-card>
-                  </v-item>
-                </v-col>
-                <v-col
-                  cols="12"
-                  md="6"
-                >
-                  <v-item v-slot="{ isSelected, toggle }">
-                    <v-card @click="toggle">
-                      <div class="card-header mr-4 my-4">
-                        <div class="ma-4 d-flex align-center">
-                          <v-chip
-                            label
-                            class="mr-4"
-                          >
-                            {{ t('logs.clean.access') }}
-                          </v-chip>
-                          <span>
-                            {{ formatBytes(cleanInfo.access) }}
-                          </span>
-                        </div>
-                        <v-chip
-                          v-if="!isSelected"
-                          color="info"
-                        >
-                          {{ t('logs.clean.select') }}
-                        </v-chip>
-                        <v-chip
-                          v-if="isSelected"
-                          color="success"
-                        >
-                          {{ t('logs.clean.selected') }}
-                        </v-chip>
-                      </div>
-                    </v-card>
-                  </v-item>
-                </v-col>
-                <v-col
-                  cols="12"
-                  md="6"
-                >
-                  <v-item v-slot="{ isSelected, toggle }">
-                    <v-card @click="toggle">
-                      <div class="card-header mr-4 my-4">
-                        <div class="ma-4 d-flex align-center">
-                          <v-chip
-                            label
-                            class="mr-4"
-                          >
-                            {{ t('logs.clean.runtime') }}
-                          </v-chip>
-                          <span>
-                            {{ formatBytes(cleanInfo.runtime) }}
-                          </span>
-                        </div>
-                        <v-chip
-                          v-if="!isSelected"
-                          color="info"
-                        >
-                          {{ t('logs.clean.select') }}
-                        </v-chip>
-                        <v-chip
-                          v-if="isSelected"
-                          color="success"
-                        >
-                          {{ t('logs.clean.selected') }}
-                        </v-chip>
-                      </div>
-                    </v-card>
-                  </v-item>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-item-group>
-        </v-card-text>
-      </v-card>
-    </template>
-    <template v-else>
-      <result
-        :title="t('global.noRoomSelected.title')"
-        :sub-title="t('global.noRoomSelected.subTitle')"
-        type="error"
-        :height="calculateHeight()"
-      >
-        <v-btn
-          to="/rooms"
-          class="mt-4"
+              {{ t('logs.clean.selectAll') }}
+            </v-btn>
+            <v-btn
+              color="error"
+              class="mr-2"
+              @click="handleClean"
+            >
+              {{ t('logs.clean.delete') }}
+            </v-btn>
+            <v-btn
+              color="default"
+              :loading="getCleanInfoLoading"
+              @click="getCleanInfo"
+            >
+              {{ t('logs.clean.refresh') }}
+            </v-btn>
+          </div>
+        </div>
+      </v-card-title>
+      <v-card-text>
+        <v-item-group
+          v-model="selectedLog"
+          multiple
         >
-          {{ t('global.noRoomSelected.button') }}
-        </v-btn>
-      </result>
-    </template>
-  </template>
-  <template v-else>
-    <result
-      v-if="userStore.userInfo.role==='admin'"
-      :title="t('global.noGame.title')"
-      :sub-title="t('global.noGame.subTitle')"
-      :height="calculateHeight()"
-      type="error"
-    >
-      <v-btn
-        to="/install"
-        class="mt-4"
-      >
-        {{ t('global.noGame.button') }}
-      </v-btn>
-    </result>
-    <result
-      v-else
-      :title="t('global.noGameNoAdmin.title')"
-      :sub-title="t('global.noGameNoAdmin.subTitle')"
-      :height="calculateHeight()"
-      type="error"
-    />
-  </template>
+          <v-container
+            :height="calculateHeight()-70"
+            style="overflow-y: auto"
+          >
+            <v-row>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-item v-slot="{ isSelected, toggle }">
+                  <v-card @click="toggle">
+                    <div class="card-header mr-4 my-4">
+                      <div class="ma-4 d-flex align-center">
+                        <v-chip
+                          label
+                          class="mr-4"
+                        >
+                          {{ t('logs.clean.game') }}
+                        </v-chip>
+                        <span>
+                          {{ formatBytes(cleanInfo.game) }}
+                        </span>
+                      </div>
+                      <v-chip
+                        v-if="!isSelected"
+                        color="info"
+                      >
+                        {{ t('logs.clean.select') }}
+                      </v-chip>
+                      <v-chip
+                        v-if="isSelected"
+                        color="success"
+                      >
+                        {{ t('logs.clean.selected') }}
+                      </v-chip>
+                    </div>
+                  </v-card>
+                </v-item>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-item v-slot="{ isSelected, toggle }">
+                  <v-card @click="toggle">
+                    <div class="card-header mr-4 my-4">
+                      <div class="ma-4 d-flex align-center">
+                        <v-chip
+                          label
+                          class="mr-4"
+                        >
+                          {{ t('logs.clean.chat') }}
+                        </v-chip>
+                        <span>
+                          {{ formatBytes(cleanInfo.chat) }}
+                        </span>
+                      </div>
+                      <v-chip
+                        v-if="!isSelected"
+                        color="info"
+                      >
+                        {{ t('logs.clean.select') }}
+                      </v-chip>
+                      <v-chip
+                        v-if="isSelected"
+                        color="success"
+                      >
+                        {{ t('logs.clean.selected') }}
+                      </v-chip>
+                    </div>
+                  </v-card>
+                </v-item>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-item v-slot="{ isSelected, toggle }">
+                  <v-card @click="toggle">
+                    <div class="card-header mr-4 my-4">
+                      <div class="ma-4 d-flex align-center">
+                        <v-chip
+                          label
+                          class="mr-4"
+                        >
+                          {{ t('logs.clean.steam') }}
+                        </v-chip>
+                        <span>
+                          {{ formatBytes(cleanInfo.steam) }}
+                        </span>
+                      </div>
+                      <v-chip
+                        v-if="!isSelected"
+                        color="info"
+                      >
+                        {{ t('logs.clean.select') }}
+                      </v-chip>
+                      <v-chip
+                        v-if="isSelected"
+                        color="success"
+                      >
+                        {{ t('logs.clean.selected') }}
+                      </v-chip>
+                    </div>
+                  </v-card>
+                </v-item>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-item v-slot="{ isSelected, toggle }">
+                  <v-card @click="toggle">
+                    <div class="card-header mr-4 my-4">
+                      <div class="ma-4 d-flex align-center">
+                        <v-chip
+                          label
+                          class="mr-4"
+                        >
+                          {{ t('logs.clean.access') }}
+                        </v-chip>
+                        <span>
+                          {{ formatBytes(cleanInfo.access) }}
+                        </span>
+                      </div>
+                      <v-chip
+                        v-if="!isSelected"
+                        color="info"
+                      >
+                        {{ t('logs.clean.select') }}
+                      </v-chip>
+                      <v-chip
+                        v-if="isSelected"
+                        color="success"
+                      >
+                        {{ t('logs.clean.selected') }}
+                      </v-chip>
+                    </div>
+                  </v-card>
+                </v-item>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-item v-slot="{ isSelected, toggle }">
+                  <v-card @click="toggle">
+                    <div class="card-header mr-4 my-4">
+                      <div class="ma-4 d-flex align-center">
+                        <v-chip
+                          label
+                          class="mr-4"
+                        >
+                          {{ t('logs.clean.runtime') }}
+                        </v-chip>
+                        <span>
+                          {{ formatBytes(cleanInfo.runtime) }}
+                        </span>
+                      </div>
+                      <v-chip
+                        v-if="!isSelected"
+                        color="info"
+                      >
+                        {{ t('logs.clean.select') }}
+                      </v-chip>
+                      <v-chip
+                        v-if="isSelected"
+                        color="success"
+                      >
+                        {{ t('logs.clean.selected') }}
+                      </v-chip>
+                    </div>
+                  </v-card>
+                </v-item>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-item-group>
+      </v-card-text>
+    </v-card>
+  </check>
 </template>
 
 <script setup>
@@ -275,6 +236,7 @@ const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const { mobile } = useDisplay()
 const { t } = useI18n()
+const otherHeight = 120
 
 const cleanInfo = ref({
   game: 0,
@@ -331,7 +293,7 @@ const handleClean = () => {
 }
 
 const calculateHeight = () => {
-  return Math.max(2, Math.floor(windowHeight.value - 120))
+  return Math.max(2, Math.floor(windowHeight.value - otherHeight))
 }
 
 const windowHeight = ref(window.innerHeight)

@@ -21,6 +21,9 @@
     <v-tab value="Metrics">
       {{ t('platform.tab.metrics') }}
     </v-tab>
+    <v-tab value="Plugins">
+      {{ t('platform.tab.plugins') }}
+    </v-tab>
   </v-tabs>
   <v-tabs-window v-model="activeTabName">
     <v-tabs-window-item value="Overview">
@@ -78,6 +81,17 @@
         <metrics />
       </v-container>
     </v-tabs-window-item>
+    <v-tabs-window-item value="Plugins">
+      <v-container
+        fluid
+        :height="calculateContainerSize()"
+        width="100%"
+        class="w-100"
+        style="overflow-y: auto"
+      >
+        <plugins />
+      </v-container>
+    </v-tabs-window-item>
   </v-tabs-window>
 </template>
 
@@ -89,6 +103,7 @@ import User from "@/views/platform/components/user.vue"
 import Metrics from "@/views/platform/components/metrics.vue"
 import Settings from "@/views/platform/components/settings.vue"
 import Rooms from "@/views/platform/components/rooms.vue"
+import Plugins from "@/views/platform/components/plugins.vue"
 
 
 const { t } = useI18n()

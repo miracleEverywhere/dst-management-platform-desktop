@@ -35,6 +35,7 @@
       v-if="!(props.gameMode==='custom' || props.gameMode === 'lavaarena' || props.gameMode === 'quagmire' )"
       open-on-click
     >
+      <!-- eslint-disable-next-line vue/no-template-shadow -->
       <template #activator="{ props }">
         <v-btn
           variant="text"
@@ -963,11 +964,14 @@ onMounted(async () => {
     worldForm.value[0].authenticationPort = portFactor.value + GamePortFactor.authenticationPort
 
     if (!(props.gameMode === 'lavaarena' || props.gameMode === 'quagmire' || props.gameMode === 'custom')) {
+      // eslint-disable-next-line sonarjs/code-eval
       worldForm.value[0].levelData = eval(props.gameMode).master
       await handleWorldTabsEdit('', 'add')
+      // eslint-disable-next-line sonarjs/code-eval
       worldForm.value[1].levelData = eval(props.gameMode).caves
     }
     if (props.gameMode === 'lavaarena' || props.gameMode === 'quagmire') {
+      // eslint-disable-next-line sonarjs/code-eval
       worldForm.value[0].levelData = eval(props.gameMode).master
     }
 
@@ -1267,6 +1271,7 @@ const beautifyLua = luaScript => {
   removedWatermark = removedWatermark.replace(/ = /g, "=")
   removedWatermark = removedWatermark.replace(/\t/g, "  ")
 
+  // eslint-disable-next-line regexp/no-super-linear-backtracking
   removedWatermark = removedWatermark.replace(/overrides=\{ +(.+)\n/g, "overrides={\n    $1\n")
   removedWatermark = removedWatermark.replace(/^(\w+)=(.+)\n/gm, "    $1=$2\n")
   removedWatermark = removedWatermark.replace(/(.+)\},\n/g, "$1\n  },\n")
@@ -1298,44 +1303,44 @@ const handleModelValueChange = debounce(data => {
 const astToLua = (astNode, indentLevel = 0) => {
   const indent = '    '.repeat(indentLevel)
   switch (astNode.type) {
-  case 'Chunk':
-    return astNode.body.map(node => astToLua(node, indentLevel)).join('\n')
-  case 'LocalStatement':
-    return `${indent}local ${astNode.variables.map(astToLua).join(', ')} = ${astNode.init.map(astToLua).join(', ')}`
-  case 'FunctionDeclaration':
-    return `${indent}function ${astToLua(astNode.identifier)}(${astNode.parameters.map(astToLua).join(', ')}) \n${astToLua(astNode.body, indentLevel + 1)}\n${indent}end`
-  case 'ReturnStatement':
-    return `${indent}return ${astNode.arguments.map(astToLua).join(', ')}`
-  case 'BinaryExpression':
-    return `${astToLua(astNode.left)} ${astNode.operator} ${astToLua(astNode.right)}`
-  case 'CallStatement':
-    return `${indent}${astToLua(astNode.expression)}`
-  case 'Identifier':
-    return astNode.name
-  case 'StringLiteral':
-    return `${astNode.raw}`
-  case 'NumericLiteral':
-    return astNode.raw
-  case 'VarargLiteral':
-    return '...'
-  case 'TableConstructorExpression':
-    return `${indent}{ ${astNode.fields.map(field => astToLua(field, indentLevel + 1)).join(',\n' + indent)} }`
-  case 'Field':
-    return astNode.key ? `${astToLua(astNode.key)} = ${astToLua(astNode.value)}` : astToLua(astNode.value)
-  case 'AssignmentStatement':
-    return `${indent}${astNode.variables.map(astToLua).join(', ')} = ${astNode.init.map(astToLua).join(', ')}`
-  case 'CallExpression':
-    return `${astToLua(astNode.base)}(${astNode.arguments.map(astToLua).join(', ')})`
-  case 'TableKeyString':
-    return `${astToLua(astNode.key)} = ${astToLua(astNode.value)}`
-  case 'BooleanLiteral':
-    return astNode.raw
-  case 'TableKey':
-    return `[${astToLua(astNode.key)}] = ${astToLua(astNode.value)}`
-  case 'TableValue':
-    return astToLua(astNode.value)
-  default:
-    throw new Error(`Unsupported node type: ${astNode.type}`)
+    case 'Chunk':
+      return astNode.body.map(node => astToLua(node, indentLevel)).join('\n')
+    case 'LocalStatement':
+      return `${indent}local ${astNode.variables.map(astToLua).join(', ')} = ${astNode.init.map(astToLua).join(', ')}`
+    case 'FunctionDeclaration':
+      return `${indent}function ${astToLua(astNode.identifier)}(${astNode.parameters.map(astToLua).join(', ')}) \n${astToLua(astNode.body, indentLevel + 1)}\n${indent}end`
+    case 'ReturnStatement':
+      return `${indent}return ${astNode.arguments.map(astToLua).join(', ')}`
+    case 'BinaryExpression':
+      return `${astToLua(astNode.left)} ${astNode.operator} ${astToLua(astNode.right)}`
+    case 'CallStatement':
+      return `${indent}${astToLua(astNode.expression)}`
+    case 'Identifier':
+      return astNode.name
+    case 'StringLiteral':
+      return `${astNode.raw}`
+    case 'NumericLiteral':
+      return astNode.raw
+    case 'VarargLiteral':
+      return '...'
+    case 'TableConstructorExpression':
+      return `${indent}{ ${astNode.fields.map(field => astToLua(field, indentLevel + 1)).join(',\n' + indent)} }`
+    case 'Field':
+      return astNode.key ? `${astToLua(astNode.key)} = ${astToLua(astNode.value)}` : astToLua(astNode.value)
+    case 'AssignmentStatement':
+      return `${indent}${astNode.variables.map(astToLua).join(', ')} = ${astNode.init.map(astToLua).join(', ')}`
+    case 'CallExpression':
+      return `${astToLua(astNode.base)}(${astNode.arguments.map(astToLua).join(', ')})`
+    case 'TableKeyString':
+      return `${astToLua(astNode.key)} = ${astToLua(astNode.value)}`
+    case 'BooleanLiteral':
+      return astNode.raw
+    case 'TableKey':
+      return `[${astToLua(astNode.key)}] = ${astToLua(astNode.value)}`
+    case 'TableValue':
+      return astToLua(astNode.value)
+    default:
+      throw new Error(`Unsupported node type: ${astNode.type}`)
   }
 }
 

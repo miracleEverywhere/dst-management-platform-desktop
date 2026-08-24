@@ -82,6 +82,7 @@
             v-model="roomForm.customGameMode"
             :rules="roomFormRules.customGameMode"
             :label="t('game.base.step1.gameMode.modes.custom.label')"
+            density="compact"
           />
         </v-radio-group>
       </v-col>
@@ -664,7 +665,6 @@ const handleEmoji = e => {
     })
   } else {
     copyToClipboard(e).then(() => {
-      let message
       showSnackbar('复制成功')
       emojiDialog.value = false
     }).catch(() => {

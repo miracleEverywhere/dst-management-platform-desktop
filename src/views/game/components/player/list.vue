@@ -10,7 +10,69 @@
         </span>
         <div>
           <v-btn
+            v-if="props.listType === 'blocklist' && !mobile"
+            :loading="listChangeLoading"
             class="mr-2"
+          >
+            DST Block
+            <v-dialog
+              v-model="dstBlockDialog"
+              :persistent="listChangeLoading"
+              activator="parent"
+              :width="mobile?'90%':'45%'"
+            >
+              <v-card>
+                <v-card-title>
+                  {{ t('game.player.list.dstBlock.import') }} DST Block
+                </v-card-title>
+                <v-card-text class="mt-4">
+                  <v-alert
+                    color="success"
+                    class="mb-4"
+                  >
+                    {{ t('game.player.list.dstBlock.introduce') }}
+                  </v-alert>
+                  <v-alert
+                    color="info"
+                    class="mb-4"
+                  >
+                    {{ t('game.player.list.dstBlock.urlText') }}
+                    <v-btn
+                      variant="text"
+                      href="https://dst-block.miraclesses.top"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-lowercase"
+                    >
+                      https://dst-block.miraclesses.top
+                    </v-btn>
+                  </v-alert>
+                  <v-alert class="mb-4">
+                    {{ t('game.player.list.dstBlock.tip') }}
+                  </v-alert>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                    variant="elevated"
+                    color="x"
+                    @click="dstBlockDialog=false"
+                  >
+                    {{ t('game.player.list.dstBlock.cancel') }}
+                  </v-btn>
+                  <v-btn
+                    variant="elevated"
+                    color="primary"
+                    @click="handleListChange('', 'import')"
+                  >
+                    {{ t('game.player.list.dstBlock.import') }}
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-btn>
+          <v-btn
+            class="mr-2"
+            color="success"
             @click="handleOpenImportDialog"
           >
             {{ t('game.player.list.import.title') }}
@@ -37,6 +99,14 @@
               </v-card-text>
             </v-card>
           </v-dialog>
+          <v-btn
+            color="error"
+            class="mr-2"
+            :loading="listChangeLoading"
+            @click="confirmSettings.visible = true"
+          >
+            {{ t('game.player.list.deleteAll') }}
+          </v-btn>
           <v-btn
             color="default"
             @click="getListData(true)"
@@ -74,9 +144,6 @@
             @click:close="handleListChange(uid,'delete')"
           >
             {{ uid }}
-            <span v-if="(props.uidmap.find(item => item.uid === uid)?.nickname||'')!==''">
-              ({{ props.uidmap.find(item => item.uid === uid)?.nickname||'' }})
-            </span>
           </v-chip>
           <div
             class="d-flex align-center"
@@ -88,6 +155,7 @@
               v-model="inputValue"
               density="compact"
               :placeholder="t('game.player.list.placeholder')"
+              persistent-placeholder
               class="mt-2"
               @keyup.enter="handleInputConfirm"
               @blur="handleInputConfirm"
@@ -107,6 +175,18 @@
       </v-container>
     </v-card-text>
   </v-card>
+
+  <confirm-box
+    v-model="confirmSettings.visible"
+    type="warning"
+    :title="t('global.confirm.title')"
+    :content="t('global.confirm.content')"
+    :confirm-text="t('global.confirm.confirm')"
+    :cancel-text="t('global.confirm.cancel')"
+    :confirm-loading="confirmSettings.loading"
+    @confirm="handleConfirm"
+    @cancel="confirmSettings.visible = false"
+  />
 </template>
 
 <script setup>
@@ -124,10 +204,6 @@ const props = defineProps({
   height: {
     type: Number,
     default: 0,
-  },
-  uidmap: {
-    type: Array,
-    default: () => [],
   },
 })
 
@@ -158,7 +234,7 @@ const getListData = (tip=false) => {
 
 const listChangeLoading = ref(false)
 
-const handleListChange = (uid, actionType) => {
+const handleListChange = async (uid, actionType) => {
   listChangeLoading.value = true
 
   const reqForm = {
@@ -173,6 +249,7 @@ const handleListChange = (uid, actionType) => {
     getListData()
   }).finally(() => {
     listChangeLoading.value = false
+    dstBlockDialog.value = false
   })
 }
 
@@ -191,7 +268,7 @@ const handleInputConfirm = () => {
   if (inputValue.value) {
     if (!(/^KU_/.test(inputValue.value))) {
       showSnackbar(t('game.player.list.uidValid'), 'error')
-      
+
       return
     }
     handleListChange(inputValue.value, 'add')
@@ -235,7 +312,7 @@ const handleImport = file => {
     const fileContent = reader.result
 
     const uidsFile = fileContent.split('\n')
-    // eslint-disable-next-line sonarjs/no-unused-collection
+
     const uids = []
     for (let uid of uidsFile) {
       if (uid !== "") {
@@ -267,9 +344,22 @@ const handleImport = file => {
   }
 }
 
+const dstBlockDialog = ref(false)
+const dstBlockLoading = ref(false)
+
+const confirmSettings = ref({
+  visible: false,
+  loading: false,
+})
+
+const handleConfirm = async () => {
+  confirmSettings.value.loading = true
+  await handleListChange('', 'deleteAll')
+  confirmSettings.value.loading = false
+  confirmSettings.value.visible = false
+}
 
 onMounted(() => {
   getListData()
 })
 </script>
-

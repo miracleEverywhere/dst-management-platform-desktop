@@ -1,12 +1,27 @@
 <template>
+  <v-text-field
+    v-model="search"
+    class="mt-4"
+    :label="t('game.player.history.search.label')"
+    :placeholder="t('game.player.history.search.placeholder')"
+    persistent-placeholder
+    clearable
+    @keyup.enter="searchUidmap"
+    @click:clear="searchUidmap"
+  />
   <v-sheet
     border
     rounded
     class="mt-4"
   >
-    <v-data-table
+    <v-data-table-server
+      v-model:page="uidmapData.page"
+      v-model:items-per-page="uidmapData.pageSize"
       :headers="headers"
-      :items="props.uidmap"
+      :items="uidmapData.rows"
+      :items-length="uidmapData.total"
+      :loading="getUidmapLoading"
+      @update:options="getUidmap"
     >
       <template #loading>
         <v-skeleton-loader type="table-row@10" />
@@ -91,7 +106,7 @@
           </v-menu>
         </v-btn>
       </template>
-    </v-data-table>
+    </v-data-table-server>
   </v-sheet>
 </template>
 
@@ -102,16 +117,43 @@ import { useI18n } from "vue-i18n"
 import playerApi from "@/api/player.js"
 import { showSnackbar } from "@/utils/snackbar.js"
 
-const props = defineProps({
-  uidmap: {
-    type: Array,
-    default: () => [],
-  },
-})
-
 const globalStore = useGlobalStore()
 const { mobile } = useDisplay()
 const { t } = useI18n()
+
+const search = ref('')
+
+const uidmapData = ref({
+  rows: [],
+  page: 1,
+  pageSize: 10,
+  total: 0,
+})
+
+const getUidmapLoading = ref(false)
+
+const getUidmap = ({ page, itemsPerPage }) => {
+  const reqForm = {
+    roomID: globalStore.room.id,
+    q: search.value || '',
+    page,
+    pageSize: itemsPerPage,
+  }
+
+  getUidmapLoading.value = true
+  playerApi.uidmap.get(reqForm).then(response => {
+    uidmapData.value = response.data
+  }).finally(() => {
+    getUidmapLoading.value = false
+  })
+}
+
+const searchUidmap = () => {
+  getUidmap({
+    page: 1,
+    itemsPerPage: uidmapData.value.pageSize,
+  })
+}
 
 const headers = [
   { key: 'uid', title: t('game.player.online.header.uid') },
@@ -138,4 +180,3 @@ const handleList = (uid, listType, actionType) => {
   })
 }
 </script>
-

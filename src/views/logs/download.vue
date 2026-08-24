@@ -1,66 +1,27 @@
 <template>
-  <!-- 游戏是否安装 -->
-  <template v-if="globalStore.gameVersion.local!==0">
-    <!-- 房间是否选择 -->
-    <template v-if="globalStore.room.id!==0">
-      <v-card :height="calculateHeight()">
-        <v-card-text>
-          <result
-            :height="calculateHeight()"
-            type="info"
-            :title="t('logs.download.title')"
-            :sub-title="t('logs.download.subTitle')"
-          >
-            <v-btn
-              :loading="downloadLoading"
-              class="mt-4"
-              @click="downloadLog"
-            >
-              {{ t('logs.download.button') }}
-            </v-btn>
-          </result>
-        </v-card-text>
-      </v-card>
-    </template>
-    <template v-else>
-      <result
-        :title="t('global.noRoomSelected.title')"
-        :sub-title="t('global.noRoomSelected.subTitle')"
-        type="error"
-        :height="calculateHeight()"
-      >
-        <v-btn
-          to="/rooms"
-          class="mt-4"
+  <check
+    :category="['game', 'room']"
+    :other-height="otherHeight"
+  >
+    <v-card :height="calculateHeight()">
+      <v-card-text>
+        <result
+          :height="calculateHeight()"
+          type="info"
+          :title="t('logs.download.title')"
+          :sub-title="t('logs.download.subTitle')"
         >
-          {{ t('global.noRoomSelected.button') }}
-        </v-btn>
-      </result>
-    </template>
-  </template>
-  <template v-else>
-    <result
-      v-if="userStore.userInfo.role==='admin'"
-      :title="t('global.noGame.title')"
-      :sub-title="t('global.noGame.subTitle')"
-      :height="calculateHeight()"
-      type="error"
-    >
-      <v-btn
-        to="/install"
-        class="mt-4"
-      >
-        {{ t('global.noGame.button') }}
-      </v-btn>
-    </result>
-    <result
-      v-else
-      :title="t('global.noGameNoAdmin.title')"
-      :sub-title="t('global.noGameNoAdmin.subTitle')"
-      :height="calculateHeight()"
-      type="error"
-    />
-  </template>
+          <v-btn
+            :loading="downloadLoading"
+            class="mt-4"
+            @click="downloadLog"
+          >
+            {{ t('logs.download.button') }}
+          </v-btn>
+        </result>
+      </v-card-text>
+    </v-card>
+  </check>
 </template>
 
 <script setup>
@@ -76,6 +37,7 @@ const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const { mobile } = useDisplay()
 const { t } = useI18n()
+const otherHeight = 160
 
 const downloadLoading = ref(false)
 
@@ -92,7 +54,7 @@ const downloadLog = () => {
 }
 
 const calculateHeight = () => {
-  return Math.max(2, Math.floor(windowHeight.value - 160))
+  return Math.max(2, Math.floor(windowHeight.value - otherHeight))
 }
 
 const windowHeight = ref(window.innerHeight)

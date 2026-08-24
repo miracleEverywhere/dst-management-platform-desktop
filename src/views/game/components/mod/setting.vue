@@ -257,11 +257,15 @@ const getEnabledMods = async () => {
     worldID: selectedWorldId.value,
   }
 
-  const response = await modApi.setting.enabledMods.get(reqForm)
+  try {
+    const response = await modApi.setting.enabledMods.get(reqForm)
 
-  enabledMods.value = response.data || []
-  leftLoading.value = false
-  dataGot.value = false
+    enabledMods.value = response.data || []
+    leftLoading.value = false
+    dataGot.value = false
+  } catch {
+    leftLoading.value = false
+  }
 }
 
 const getModConfig = async (id, worldID, file_url, name) => {

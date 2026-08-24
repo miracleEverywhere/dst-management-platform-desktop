@@ -7,6 +7,7 @@
             v-model="search"
             :label="t('platform.user.search.label')"
             :placeholder="t('platform.user.search.placeholder')"
+            persistent-placeholder
             clearable
             @keyup.enter="getUserListData({page: userListData.page,
                                            itemsPerPage: userListData.pageSize,
@@ -192,6 +193,20 @@
                   {{ t('platform.user.table.actions') }}
                   <v-menu activator="parent">
                     <v-list>
+                      <v-list-item
+                        class="text-info"
+                        @click="handleAction('revoke', item)"
+                      >
+                        <template #prepend>
+                          <v-icon
+                            icon="ri-key-2-line"
+                            size="22"
+                          />
+                        </template>
+                        <v-list-item-title>
+                          {{ t('platform.user.table.revoke') }}
+                        </v-list-item-title>
+                      </v-list-item>
                       <v-list-item
                         class="text-warning"
                         @click="handleAction('update', item)"
@@ -505,7 +520,7 @@
     :confirm-text="t('global.confirm.confirm')"
     :cancel-text="t('global.confirm.cancel')"
     :confirm-loading="confirmLoading"
-    @confirm="handleDelete"
+    @confirm="handleConfirm"
     @cancel="confirmVisible=false"
   />
 </template>
@@ -519,9 +534,7 @@ import avatar1 from "@images/avatars/avatar-1.png"
 import avatar2 from "@images/avatars/avatar-2.png"
 import avatar3 from "@images/avatars/avatar-3.png"
 import avatar4 from "@images/avatars/avatar-4.png"
-import { SHA512 } from "@/utils/tools.js"
 import { showSnackbar } from "@/utils/snackbar.js"
-import globalStore from "@store/global.js"
 import useUserStore from "@store/user.js"
 
 
@@ -697,7 +710,7 @@ const handleUserSubmit = async () => {
       nickname: userForm.value.nickname,
       role: userForm.value.role,
       avatar: userForm.value.avatar,
-      password: SHA512(userForm.value.password),
+      password: userForm.value.password,
       disabled: userForm.value.disabled,
       rooms: userForm.value.rooms.join(','),
       roomCreation: userForm.value.roomCreation,
@@ -724,15 +737,21 @@ const dbRoomsToRooms = str =>
 
 const handleAction = (action, user) => {
   switch (action) {
-  case "update":
-    openUpdateUserDialog(user)
-    break
-  case "delete":
-    currentUsername.value = user.username
-    confirmVisible.value = true
-    break
-  default:
-    showSnackbar("牛哇", "error")
+    case "update":
+      openUpdateUserDialog(user)
+      break
+    case "revoke":
+      currentAction.value = 'revoke'
+      currentUsername.value = user.username
+      confirmVisible.value = true
+      break
+    case "delete":
+      currentAction.value = 'delete'
+      currentUsername.value = user.username
+      confirmVisible.value = true
+      break
+    default:
+      showSnackbar("牛哇", "error")
   }
 }
 
@@ -760,15 +779,20 @@ const openUpdateUserDialog = user => {
 const confirmVisible = ref(false)
 const confirmLoading = ref(false)
 const currentUsername = ref('')
+const currentAction = ref('delete')
 
-const handleDelete = () => {
+const handleConfirm = () => {
   confirmLoading.value = true
 
   const reqForm = {
     username: currentUsername.value,
   }
 
-  userApi.base.delete(reqForm).then(response => {
+  const apiCall = currentAction.value === 'revoke'
+    ? userApi.revoke.post(reqForm)
+    : userApi.base.delete(reqForm)
+
+  apiCall.then(response => {
     confirmVisible.value = false
     showSnackbar(response.message)
     getUserListData({
