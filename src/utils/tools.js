@@ -13,82 +13,82 @@ export function getBrowserLang() {
 
   switch (browserLang) {
   // 简体中文（中国大陆）
-  case "zh":
-  case "zh-cn":
-  case "zh-hans":
-  case "zh-sg":
+    case "zh":
+    case "zh-cn":
+    case "zh-hans":
+    case "zh-sg":
 
     // 繁体中文（台湾、香港）
-  case "zh-tw":
-  case "zh-hk":
-  case "zh-mo":
-    defaultBrowserLang = "zh"
-    break
+    case "zh-tw":
+    case "zh-hk":
+    case "zh-mo":
+      defaultBrowserLang = "zh"
+      break
 
     // 英文（美国、英国等）
-  case "en":
-  case "en-us":
-  case "en-gb":
-  case "en-au":
-  case "en-ca":
-    defaultBrowserLang = "en"
-    break
+    case "en":
+    case "en-us":
+    case "en-gb":
+    case "en-au":
+    case "en-ca":
+      defaultBrowserLang = "en"
+      break
 
-    //   // 日语
-    // case "ja":
-    // case "ja-jp":
-    //   defaultBrowserLang = "ja"
-    //   break
-    //
-    //   // 韩语
-    // case "ko":
-    // case "ko-kr":
-    //   defaultBrowserLang = "ko"
-    //   break
-    //
-    //   // 法语
-    // case "fr":
-    // case "fr-fr":
-    // case "fr-ca":
-    //   defaultBrowserLang = "fr"
-    //   break
-    //
-    //   // 德语
-    // case "de":
-    // case "de-de":
-    // case "de-at":
-    // case "de-ch":
-    //   defaultBrowserLang = "de"
-    //   break
-    //
-    //   // 西班牙语
-    // case "es":
-    // case "es-es":
-    // case "es-mx":
-    // case "es-ar":
-    //   defaultBrowserLang = "es"
-    //   break
-    //
-    //   // 其他语言...
-    // case "ru":
-    // case "ru-ru":
-    //   defaultBrowserLang = "ru"
-    //   break
-    //
-    // case "pt":
-    // case "pt-br":
-    // case "pt-pt":
-    //   defaultBrowserLang = "pt"
-    //   break
-    //
-    // case "it":
-    // case "it-it":
-    //   defaultBrowserLang = "it"
-    //   break
+      //   // 日语
+      // case "ja":
+      // case "ja-jp":
+      //   defaultBrowserLang = "ja"
+      //   break
+      //
+      //   // 韩语
+      // case "ko":
+      // case "ko-kr":
+      //   defaultBrowserLang = "ko"
+      //   break
+      //
+      //   // 法语
+      // case "fr":
+      // case "fr-fr":
+      // case "fr-ca":
+      //   defaultBrowserLang = "fr"
+      //   break
+      //
+      //   // 德语
+      // case "de":
+      // case "de-de":
+      // case "de-at":
+      // case "de-ch":
+      //   defaultBrowserLang = "de"
+      //   break
+      //
+      //   // 西班牙语
+      // case "es":
+      // case "es-es":
+      // case "es-mx":
+      // case "es-ar":
+      //   defaultBrowserLang = "es"
+      //   break
+      //
+      //   // 其他语言...
+      // case "ru":
+      // case "ru-ru":
+      //   defaultBrowserLang = "ru"
+      //   break
+      //
+      // case "pt":
+      // case "pt-br":
+      // case "pt-pt":
+      //   defaultBrowserLang = "pt"
+      //   break
+      //
+      // case "it":
+      // case "it-it":
+      //   defaultBrowserLang = "it"
+      //   break
 
     // 如果未匹配到，默认返回 'zh'
-  default:
-    defaultBrowserLang = "zh"
+    default:
+      defaultBrowserLang = "zh"
   }
 
   return defaultBrowserLang
@@ -96,12 +96,12 @@ export function getBrowserLang() {
 
 export const getEditorLang = lang => {
   switch (lang) {
-  case "zh":
-    return 'zh-CN'
-  case "en":
-    return 'en-US'
-  default:
-    return 'zh-CN'
+    case "zh":
+      return 'zh-CN'
+    case "en":
+      return 'en-US'
+    default:
+      return 'zh-CN'
   }
 }
 
@@ -111,13 +111,9 @@ export const sleep = function (ms) {
 
 export const validateIpv4 = ip => {
   const ipv4Pattern =
-        /^(25[0-5]|2[0-4]\d|[01]?\d{1,2})\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})$/
+      /^(?:25[0-5]|2[0-4]\d|[01]?\d{1,2})\.(?:25[0-5]|2[0-4]\d|[01]?\d{1,2})\.(?:25[0-5]|2[0-4]\d|[01]?\d{1,2})\.(?:25[0-5]|2[0-4]\d|[01]?\d{1,2})$/
 
-  if (ipv4Pattern.test(ip)) {
-    return true
-  } else {
-    return false
-  }
+  return ipv4Pattern.test(ip)
 }
 
 export const truncateString = (str, num) => {

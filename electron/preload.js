@@ -51,5 +51,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   themeChange: theme => ipcRenderer.invoke('theme-change', theme),
 
-  openBrowser: (url) => ipcRenderer.invoke('open-browser', { url }),
+  openBrowser: url => ipcRenderer.invoke('open-browser', { url }),
 })

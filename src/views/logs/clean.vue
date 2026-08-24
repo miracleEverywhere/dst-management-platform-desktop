@@ -269,7 +269,7 @@ const cleanLoading = ref(false)
 const handleClean = () => {
   if (selectedLog.value.length === 0) {
     showSnackbar(t('logs.clean.noSelected'), "error")
-    
+
     return
   }
   cleanLoading.value = true

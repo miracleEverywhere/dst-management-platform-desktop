@@ -378,6 +378,13 @@ const detailDialogLoading = ref(false)
 const openDetailDialog = async row => {
   detailDialog.value = true
   detailDialogLoading.value = true
+  detailForm.value = {
+    id: undefined,
+    gameName: '',
+    gameMode: '',
+    ports: [],
+    screens: [],
+  }
 
   detailForm.value = {
     id: undefined,

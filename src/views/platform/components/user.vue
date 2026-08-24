@@ -262,6 +262,15 @@
         <v-card-text class="my-2">
           <v-row>
             <v-col>
+              <v-alert
+                color="warning"
+                density="compact"
+                :text="t('platform.user.dialogWarning')"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
               <v-text-field
                 v-model="userForm.username"
                 v-tooltip="t('platform.user.form.username.tip')"

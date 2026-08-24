@@ -346,7 +346,7 @@ const multiDisableLoading = ref(false)
 const handleMultiDisable = async () => {
   if (!selectedMod.value.length) {
     showSnackbar(t('game.mod.setting.tip.selectModToDisable'), 'error')
-    
+
     return
   }
   multiDisableLoading.value = true

@@ -23,7 +23,7 @@ export default defineComponent({
 
       // Force repaint to make sure the
       // animation is triggered correctly.
-      // eslint-disable-next-line no-unused-expressions
+
       getComputedStyle(element).height
 
       // Trigger the animation.
@@ -47,7 +47,7 @@ export default defineComponent({
 
       // Force repaint to make sure the
       // animation is triggered correctly.
-      // eslint-disable-next-line no-unused-expressions
+
       getComputedStyle(element).height
       requestAnimationFrame(() => {
         element.style.height = '0px'

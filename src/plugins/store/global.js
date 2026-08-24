@@ -33,6 +33,7 @@ const globalStore = defineStore("global", {
         ip: '',
         port: '',
         token: '',
+        protocol: 'http',
         inEntry: true,
       },
     }

@@ -191,7 +191,7 @@ const otherHeight = 150
 
 const checkUploadFile = param => {
   const zipPattern = /\.zip$/i
-  
+
   return zipPattern.test(param.name)
 }
 
@@ -199,7 +199,7 @@ const canCreateRoom = () => {
   if (userStore.userInfo.role === 'admin') {
     return true
   }
-  
+
   return userStore.userInfo.roomCreation
 }
 
@@ -212,7 +212,7 @@ const handleUpload = file => {
   if (!checkUploadFile(file)) {
     showSnackbar(t('upload.dialog.zipTip'), 'error')
     uploadDialogVisible.value = false
-    
+
     return
   }
   uploadLoading.value = true

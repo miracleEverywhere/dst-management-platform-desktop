@@ -3,7 +3,9 @@
     "./vite.config.*",
     "./src/**/*",
     "./src/**/*.vue",
-    "./themeConfig.js"
+    "./themeConfig.js",
+    "auto-imports.d.ts",
+    "components.d.ts"
   ],
   "exclude": [
     "./dist",

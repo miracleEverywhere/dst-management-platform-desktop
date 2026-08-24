@@ -1,7 +1,5 @@
 export const PiniaPrefix = "dmp-"
 
-export const Version = "v3.0.4"
-
 export const ApiVersion = "v3"
 
 export const GamePortFactor = {

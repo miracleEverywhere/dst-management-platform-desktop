@@ -974,7 +974,6 @@ onMounted(async () => {
       // eslint-disable-next-line sonarjs/code-eval
       worldForm.value[0].levelData = eval(props.gameMode).master
     }
-
   }
 
   worldTabName.value = worldForm.value[0].name

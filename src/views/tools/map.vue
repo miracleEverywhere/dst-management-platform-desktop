@@ -793,140 +793,140 @@ const generateImage = async () => {
       const img = new Image()
 
       img.src = new URL(`./images/undefined.png`, import.meta.url).href
-      
+
       return img
     })(),
     waxwell: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/waxwell.png`, import.meta.url).href
-      
+
       return img
     })(),
     walter: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/walter.png`, import.meta.url).href
-      
+
       return img
     })(),
     wanda: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wanda.png`, import.meta.url).href
-      
+
       return img
     })(),
     warly: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/warly.png`, import.meta.url).href
-      
+
       return img
     })(),
     wathgrithr: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wathgrithr.png`, import.meta.url).href
-      
+
       return img
     })(),
     webber: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/webber.png`, import.meta.url).href
-      
+
       return img
     })(),
     wendy: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wendy.png`, import.meta.url).href
-      
+
       return img
     })(),
     wes: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wes.png`, import.meta.url).href
-      
+
       return img
     })(),
     wickerbottom: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wickerbottom.png`, import.meta.url).href
-      
+
       return img
     })(),
     willow: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/willow.png`, import.meta.url).href
-      
+
       return img
     })(),
     wilson: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wilson.png`, import.meta.url).href
-      
+
       return img
     })(),
     winona: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/winona.png`, import.meta.url).href
-      
+
       return img
     })(),
     wolfgang: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wolfgang.png`, import.meta.url).href
-      
+
       return img
     })(),
     wonkey: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wonkey.png`, import.meta.url).href
-      
+
       return img
     })(),
     woodie: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/woodie.png`, import.meta.url).href
-      
+
       return img
     })(),
     wormwood: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wormwood.png`, import.meta.url).href
-      
+
       return img
     })(),
     wortox: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wortox.png`, import.meta.url).href
-      
+
       return img
     })(),
     wurt: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wurt.png`, import.meta.url).href
-      
+
       return img
     })(),
     wx78: (() => {
       const img = new Image()
 
       img.src = new URL(`./images/wx78.png`, import.meta.url).href
-      
+
       return img
     })(),
   }
