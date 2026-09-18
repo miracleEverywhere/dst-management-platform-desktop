@@ -43,6 +43,21 @@
                   </v-list-item-title>
                 </v-list-item>
                 <v-list-item
+                  :disabled="selectedMods.length===0||multiDeleteLoading"
+                  class="text-error"
+                  @click="multiDelete"
+                >
+                  <template #prepend>
+                    <v-icon
+                      icon="ri-delete-bin-2-line"
+                      size="22"
+                    />
+                  </template>
+                  <v-list-item-title>
+                    {{ t('game.mod.add.deleteMulti') }}
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item
                   :disabled="multiEnableLoading"
                   class="text-warning"
                   @click="handleModAction('enable', {id: 0, file_url: ''})"
@@ -572,16 +587,41 @@ const deleteAcfDialog = ref(false)
 const handleDeleteAcf = () => {
   deleteAcfLoading.value = true
 
-  const reqFrom = {
+  const reqForm = {
     roomID: globalStore.room.id,
   }
 
-  modApi.delete.acf.delete(reqFrom).then(response => {
+  modApi.delete.acf.delete(reqForm).then(response => {
     deleteAcfDialog.value = false
     showSnackbar(response.message)
     getDownloadedMods()
   }).finally(() => {
     deleteAcfLoading.value = false
+  })
+}
+
+const multiDeleteLoading = ref(false)
+
+const multiDelete = () => {
+  const reqForm = {
+    roomID: globalStore.room.id,
+    mods: [],
+  }
+
+  for (const mod of selectedMods.value) {
+    reqForm.mods.push({
+      id: mod.id,
+      // eslint-disable-next-line camelcase
+      file_url: mod.file_url,
+    })
+  }
+
+  modApi.delete.multi.post(reqForm).then(response => {
+    showSnackbar(response.message)
+    selectedMods.value = []
+    getDownloadedMods()
+  }).finally(() => {
+    multiDeleteLoading.value = false
   })
 }
 

@@ -63,8 +63,8 @@
                   label
                 >
                   {{ getPluginConfig(item.name).builtin
-                    ? t('platform.plugin.table.step.builtin')
-                    : t(`platform.plugin.table.step.${value}`) }}
+                  ? t('platform.plugin.table.step.builtin')
+                  : t(`platform.plugin.table.step.${value}`) }}
                 </v-chip>
               </template>
               <template #item.actions="{ item }">
@@ -263,6 +263,7 @@
           v-model="installForm.imageParse"
           v-tooltip="t('platform.plugin.install.tmi.imageParse.tip')"
           :label="t('platform.plugin.install.tmi.imageParse.name')"
+          :disabled="osType===Darwin"
           hide-details
           class="mt-2"
         />
@@ -302,6 +303,7 @@ import platformApi from "@/api/platform.js"
 import { useDisplay } from "vuetify/framework"
 import { useI18n } from "vue-i18n"
 import { showSnackbar } from "@/utils/snackbar.js"
+import { Darwin } from "@/config/index.js"
 
 
 const { mobile } = useDisplay()
@@ -309,11 +311,13 @@ const { t } = useI18n()
 
 const osPlatform = ref('')
 const osPlatformVersion = ref('')
+const osType = ref('')
 
 const getOSInfo = () => {
   platformApi.osInfo.get().then(response => {
     osPlatform.value = response.data?.Platform || ''
     osPlatformVersion.value = response.data?.PlatformVersion || ''
+    osType.value = response.data?.OS || ''
   })
 }
 
@@ -415,7 +419,7 @@ const handleAction = (action, item) => {
       proxy: getPluginConfig(item.name).defaultProxy,
       ...(item.name === 'tmi' && {
         imageParse: osPlatform.value.toLowerCase() === 'ubuntu'
-          && osPlatformVersion.value.split('.')[0] === '24',
+          && osPlatformVersion.value === '24.04',
       }),
     }
     installDialogVisible.value = true
@@ -440,10 +444,14 @@ const installLoading = ref(false)
 const installForm = ref({
   name: '',
   proxy: '',
+  imageParse: false,
 })
 
 const installPlugin = () => {
   installLoading.value = true
+  if (osType.value===Darwin) {
+    installForm.value.imageParse = false
+  }
   platformApi.plugin.install.post(installForm.value).then(response => {
     installDialogVisible.value = false
     showSnackbar(response.message)

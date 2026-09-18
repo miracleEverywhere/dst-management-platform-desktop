@@ -12,7 +12,7 @@
           v-bind="tooltipProps"
           class="downloaded-corner bg-success"
           aria-hidden="true"
-        ></span>
+        />
       </template>
       {{ t('game.mod.download.modInfo.downloaded') }}
     </v-tooltip>
@@ -89,157 +89,157 @@
                 <v-card-text>
                   <v-table class="custom-table">
                     <tbody>
-                      <tr>
-                        <td
-                          rowspan="2"
-                          class="text-center"
+                    <tr>
+                      <td
+                        rowspan="2"
+                        class="text-center"
+                      >
+                        <v-icon
+                          icon="ri-image-line"
+                          color="info"
+                        />
+                      </td>
+                      <td
+                        rowspan="2"
+                        class="text-center"
+                      >
+                        <div
+                          class="fcc my-2"
+                          style="width: 100%; height: 150px"
                         >
-                          <v-icon
-                            icon="ri-image-line"
-                            color="info"
-                          />
-                        </td>
-                        <td
-                          rowspan="2"
-                          class="text-center"
-                        >
-                          <div
-                            class="fcc my-2"
-                            style="width: 100%; height: 150px"
-                          >
-                            <div style="width: 150px; height: 150px">
-                              <v-img
-                                :src="props.mod.preview_url"
-                                cover
-                                rounded
-                                aspect-ratio="1"
-                              >
-                                <template #placeholder>
-                                  <div class="d-flex align-center justify-center fill-height">
-                                    <v-progress-circular
-                                      color="grey-lighten-4"
-                                      indeterminate
-                                    />
-                                  </div>
-                                </template>
-                              </v-img>
-                            </div>
+                          <div style="width: 150px; height: 150px">
+                            <v-img
+                              :src="props.mod.preview_url"
+                              cover
+                              rounded
+                              aspect-ratio="1"
+                            >
+                              <template #placeholder>
+                                <div class="d-flex align-center justify-center fill-height">
+                                  <v-progress-circular
+                                    color="grey-lighten-4"
+                                    indeterminate
+                                  />
+                                </div>
+                              </template>
+                            </v-img>
                           </div>
-                        </td>
-                        <td class="text-center">
-                          ID
-                        </td>
-                        <td class="text-center">
-                          <v-chip
-                            color="info"
-                            label
-                          >
-                            {{ props.mod.id }}
-                          </v-chip>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="text-center">
-                          {{ t('game.mod.download.modInfo.size') }}
-                        </td>
-                        <td class="text-center">
-                          <v-chip
-                            color="info"
-                            label
-                          >
-                            {{ formatBytes(props.mod.size) }}
-                          </v-chip>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="text-center">
-                          <v-icon
-                            icon="ri-thumb-up-fill"
-                            color="success"
-                          />
-                        </td>
-                        <td class="text-center">
-                          <v-chip
-                            color="success"
-                            label
-                          >
-                            {{ props.mod.vote_data.votes_up }}
-                          </v-chip>
-                        </td>
-                        <td class="text-center">
-                          <v-icon
-                            icon="ri-thumb-down-fill"
-                            color="error"
-                          />
-                        </td>
-                        <td class="text-center">
-                          <v-chip
-                            color="error"
-                            label
-                          >
-                            {{ props.mod.vote_data.votes_down }}
-                          </v-chip>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="text-center">
-                          {{ t('game.mod.download.modInfo.createTime') }}
-                        </td>
-                        <td class="text-center">
-                          <v-chip
-                            color="success"
-                            label
-                          >
-                            {{ timestamp2time(props.mod.time_created * 1000) }}
-                          </v-chip>
-                        </td>
-                        <td class="text-center">
-                          {{ t('game.mod.download.modInfo.updateTime') }}
-                        </td>
-                        <td class="text-center">
-                          <v-chip
-                            color="info"
-                            label
-                          >
-                            {{ timestamp2time(props.mod.time_updated * 1000) }}
-                          </v-chip>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="text-center">
-                          {{ t('game.mod.download.modInfo.subscriptions') }}
-                        </td>
-                        <td
-                          colspan="3"
-                          class="text-center"
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        ID
+                      </td>
+                      <td class="text-center">
+                        <v-chip
+                          color="info"
+                          label
                         >
-                          <v-chip
-                            color="default"
-                            label
-                          >
-                            {{ props.mod.subscriptions }}
-                          </v-chip>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="text-center">
-                          <v-icon
-                            icon="ri-star-fill"
-                            color="warning"
-                          />
-                        </td>
-                        <td
-                          colspan="3"
-                          class="text-center"
+                          {{ props.mod.id }}
+                        </v-chip>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-center">
+                        {{ t('game.mod.download.modInfo.size') }}
+                      </td>
+                      <td class="text-center">
+                        <v-chip
+                          color="info"
+                          label
                         >
-                          <precise-rating
-                            :value="computedRate"
-                            :length="5"
-                            :show-actual-value="true"
-                            size="24"
-                          />
-                        </td>
-                      </tr>
+                          {{ formatBytes(props.mod.size) }}
+                        </v-chip>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-center">
+                        <v-icon
+                          icon="ri-thumb-up-fill"
+                          color="success"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <v-chip
+                          color="success"
+                          label
+                        >
+                          {{ props.mod.vote_data.votes_up }}
+                        </v-chip>
+                      </td>
+                      <td class="text-center">
+                        <v-icon
+                          icon="ri-thumb-down-fill"
+                          color="error"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <v-chip
+                          color="error"
+                          label
+                        >
+                          {{ props.mod.vote_data.votes_down }}
+                        </v-chip>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-center">
+                        {{ t('game.mod.download.modInfo.createTime') }}
+                      </td>
+                      <td class="text-center">
+                        <v-chip
+                          color="success"
+                          label
+                        >
+                          {{ timestamp2time(props.mod.time_created * 1000) }}
+                        </v-chip>
+                      </td>
+                      <td class="text-center">
+                        {{ t('game.mod.download.modInfo.updateTime') }}
+                      </td>
+                      <td class="text-center">
+                        <v-chip
+                          color="info"
+                          label
+                        >
+                          {{ timestamp2time(props.mod.time_updated * 1000) }}
+                        </v-chip>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-center">
+                        {{ t('game.mod.download.modInfo.subscriptions') }}
+                      </td>
+                      <td
+                        colspan="3"
+                        class="text-center"
+                      >
+                        <v-chip
+                          color="default"
+                          label
+                        >
+                          {{ props.mod.subscriptions }}
+                        </v-chip>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-center">
+                        <v-icon
+                          icon="ri-star-fill"
+                          color="warning"
+                        />
+                      </td>
+                      <td
+                        colspan="3"
+                        class="text-center"
+                      >
+                        <precise-rating
+                          :value="computedRate"
+                          :length="5"
+                          :show-actual-value="true"
+                          size="24"
+                        />
+                      </td>
+                    </tr>
                     </tbody>
                   </v-table>
                   <v-container height="30vh">
@@ -252,12 +252,17 @@
           </v-dialog>
           <progress-button
             :progress="props.downloadProgress"
-            color="success"
+            :color="downloaded?'warning':'success'"
             density="compact"
             size="small"
             @click="handleDownload"
           >
-            {{ t('game.mod.download.modInfo.download') }}
+            <span v-if="downloaded">
+              {{ t('game.mod.add.updateMod') }}
+            </span>
+            <span v-else>
+              {{ t('game.mod.download.modInfo.download') }}
+            </span>
           </progress-button>
         </div>
       </div>
@@ -305,7 +310,7 @@ const computedName = computed(() => {
   if (props.mod.name.length > maxStr) {
     return props.mod.name.slice(0, maxStr) + '...'
   }
-  
+
   return props.mod.name
 })
 

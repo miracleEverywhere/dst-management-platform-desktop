@@ -281,7 +281,7 @@ const handleNext = async () => {
       if (result.validate) {
         roomData.value = result.formData
         step.value++
-        
+
         return
       }
     }
@@ -292,7 +292,7 @@ const handleNext = async () => {
       if (result.validate) {
         worldData.value = result.formData
         step.value++
-        
+
         return
       }
     }
@@ -303,7 +303,7 @@ const handleNext = async () => {
       if (result.validate) {
         modData.value = result.formData
         step.value++
-        
+
         return
       }
     }
@@ -314,7 +314,7 @@ const handleNext = async () => {
       if (result.validate) {
         roomSettingData.value = result.formData
         step.value++
-        
+
         return
       }
     }
@@ -353,6 +353,7 @@ const roomSettingToDB = () => {
     startType: roomSettingData.value.startType,
     announceSetting: roomSettingData.value.announceSetting,
     webhookSetting: JSON.stringify(roomSettingData.value.webhook),
+    playerUpdateModEnable: roomSettingData.value.playerUpdateModEnable,
   }
 }
 
@@ -375,7 +376,7 @@ const DBToRoomSetting = data => {
       stop: '01:00:00',
     })
   }
-  
+
   roomSettingData.value = {
     backup: {
       enable: data.backupEnable,
@@ -405,6 +406,7 @@ const DBToRoomSetting = data => {
     startType: data.startType,
     announceSetting: data.announceSetting,
     webhook: data.webhookSetting ? JSON.parse(data.webhookSetting) : [],
+    playerUpdateModEnable: data.playerUpdateModEnable,
   }
 }
 
@@ -413,12 +415,9 @@ const saveButtonLoading = ref(false)
 const refreshCurrentPage = inject("refresh")
 
 const reloadPage = () => {
-  setTimeout(() => {
-    refreshCurrentPage(false)
-    nextTick(() => {
-      refreshCurrentPage(true)
-    })
-  }, 0)
+  nextTick(() => {
+    refreshCurrentPage()
+  })
 }
 
 const handleSave = () => {
@@ -450,6 +449,12 @@ const handleSave = () => {
         id: response.data.id,
         gameName: response.data.gameName,
       }
+
+      const room = globalStore.roomBasic.find(item => item.roomID === response.data.id)
+
+      if (room) {
+        room.roomName = response.data.gameName
+      }
       reloadPage()
     }).finally(() => {
       saveButtonLoading.value = false
@@ -474,6 +479,11 @@ const handleSave = () => {
         id: response.data.id,
         gameName: response.data.gameName,
       }
+      globalStore.roomBasic.push({
+        roomID: response.data.id,
+        roomName: response.data.gameName,
+        status: true,
+      })
       reloadPage()
     }).finally(() => {
       saveButtonLoading.value = false

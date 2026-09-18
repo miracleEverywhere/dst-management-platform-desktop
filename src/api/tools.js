@@ -109,6 +109,12 @@ export default {
           return await http.post(this.url, data)
         },
       },
+      cancel: {
+        url: `/tools/aichat/embedding/cancel`,
+        post: async function (data) {
+          return await http.post(this.url, data)
+        },
+      },
     },
   },
 }

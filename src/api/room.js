@@ -28,6 +28,12 @@ export default {
       return await http.get(this.url, data)
     },
   },
+  permittedBasic: {
+    url: `/room/permitted/basic`,
+    get: async function(data){
+      return await http.get(this.url, data)
+    },
+  },
   basic: {
     url: `/room/basic`,
     get: async function(data){
@@ -70,6 +76,12 @@ export default {
       get: async function (data) {
         return await http.get(this.url, data)
       },
+    },
+  },
+  customCmd: {
+    url: `/room/worlds/custom/cmd`,
+    put: async function (data) {
+      return await http.put(this.url, data)
     },
   },
 }

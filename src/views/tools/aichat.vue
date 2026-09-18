@@ -106,6 +106,7 @@
                   </v-col>
                   <v-col
                     cols="12"
+                    md="6"
                     class="mb-2"
                   >
                     <div class="d-flex align-center">
@@ -123,7 +124,27 @@
                         inset
                       />
                     </div>
-
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="6"
+                    class="mb-2"
+                  >
+                    <div class="d-flex align-center">
+                      <v-chip
+                        v-tooltip="t('tools.ai.form.allowChat.tip')"
+                        label
+                        class="mr-4"
+                      >
+                        {{ t('tools.ai.form.allowChat.name') }}
+                      </v-chip>
+                      <v-switch
+                        v-model="roomForm.allowChat"
+                        color="primary"
+                        hide-details
+                        inset
+                      />
+                    </div>
                   </v-col>
                   <v-col
                     cols="12"
@@ -510,11 +531,11 @@
                   type="warning"
                   :title="t('tools.ai.actions.rebuildEmbedding')"
                   :content="t('tools.ai.actions.rebuildEmbeddingConfirm')"
-                  :confirm-text="t('global.confirm.confirm')"
-                  :cancel-text="t('global.confirm.cancel')"
+                  :confirm-text="t('tools.ai.actions.confirmButton')"
+                  :cancel-text="t('tools.ai.actions.cancelButton')"
                   :confirm-loading="embeddingRebuildLoading"
                   @confirm="handleEmbeddingRebuild"
-                  @cancel="embeddingRebuildConfirmVisible = false"
+                  @cancel="handleEmbeddingCancel"
                 />
               </v-card-text>
             </v-form>
@@ -548,6 +569,7 @@ const windowHeight = ref(window.innerHeight)
 const createRoomForm = () => ({
   roomID: globalStore.room.id,
   enabled: false,
+  allowChat: false,
   prefix: '',
   maxResults: 10,
   maxReplyLength: 200,
@@ -670,6 +692,7 @@ const handleRoomSave = async () => {
   const requestForm = {
     roomID: globalStore.room.id,
     enabled: roomForm.value.enabled,
+    allowChat: roomForm.value.allowChat,
     prefix: roomForm.value.prefix,
     maxResults: Number(roomForm.value.maxResults),
     maxReplyLength: Number(roomForm.value.maxReplyLength),
@@ -750,6 +773,17 @@ const handleEmbeddingRebuild = () => {
 
   embeddingRebuildLoading.value = true
   toolsApi.aichat.embedding.rebuild.post().then(response => {
+    showSnackbar(response.message)
+    embeddingRebuildConfirmVisible.value = false
+  }).finally(() => {
+    embeddingRebuildLoading.value = false
+  })
+}
+
+const handleEmbeddingCancel = () => {
+  if (!isAdmin.value) return
+
+  toolsApi.aichat.embedding.cancel.post().then(response => {
     showSnackbar(response.message)
     embeddingRebuildConfirmVisible.value = false
   }).finally(() => {

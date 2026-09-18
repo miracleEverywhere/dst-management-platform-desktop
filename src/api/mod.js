@@ -79,5 +79,11 @@ export default {
         return await http.delete(this.url, data)
       },
     },
+    multi: {
+      url: `/mod/delete/multi`,
+      post: async function(data){
+        return await http.post(this.url, data)
+      },
+    },
   },
 }

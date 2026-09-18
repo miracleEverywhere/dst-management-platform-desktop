@@ -175,7 +175,7 @@
           v-model="roomSettingForm.restart.setting"
           v-tooltip="t('game.base.step4.form.restart.tip.time')"
           :disabled="!roomSettingForm.restart.enable"
-          :label="t('game.base.step4.form.backup.time')"
+          :label="t('game.base.step4.form.restart.time')"
         >
           <v-menu
             :close-on-content-click="false"
@@ -418,6 +418,41 @@
             />
           </v-menu>
         </v-text-field>
+      </v-col>
+      <v-spacer v-if="!mobile" />
+    </v-row>
+    <!-- 玩家更新模组 -->
+    <v-alert
+      color="primary"
+      :title="t('game.base.step4.form.playerUpdateModEnable.name')"
+      density="compact"
+      class="mt-8"
+      variant="tonal"
+      icon="ri-bookmark-fill"
+    />
+    <v-row class="mt-0">
+      <v-col>
+        <v-radio-group
+          v-model="roomSettingForm.playerUpdateModEnable"
+          v-tooltip="t('game.base.step4.form.playerUpdateModEnable.tip')"
+          inline
+          color="primary"
+          class="mt-2"
+        >
+          <template #prepend>
+            <span>
+              {{ t('game.base.step4.form.playerUpdateModEnable.name') }}
+            </span>
+          </template>
+          <v-radio
+            :label="t('game.base.step4.form.playerUpdateModEnable.enable')"
+            :value="true"
+          />
+          <v-radio
+            :label="t('game.base.step4.form.playerUpdateModEnable.disable')"
+            :value="false"
+          />
+        </v-radio-group>
       </v-col>
       <v-spacer v-if="!mobile" />
     </v-row>
@@ -708,6 +743,7 @@ const roomSettingForm = ref({
   tickRate: 15,
   startType: '32-bit',
   webhook: [],
+  playerUpdateModEnable: false,
 })
 
 const webhookEventItems = ref([])
@@ -767,7 +803,7 @@ const roomSettingFormRules = ref({
 const deleteBackupTime = time => {
   if (roomSettingForm.value.backup.setting.length === 1) {
     showSnackbar(t('game.base.step4.form.backup.deleteBlock'), 'error')
-    
+
     return
   }
 

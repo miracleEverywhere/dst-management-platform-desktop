@@ -64,7 +64,236 @@
                       cols="6"
                       class="d-flex align-center"
                     >
-                      {{ osInfo.CPUModel }}
+                      <v-dialog :width="mobile?'90%':'50%'">
+                        <template #activator="{ props: activatorProps }">
+                          <span
+                            v-bind="activatorProps"
+                            class="cursor-pointer text-primary hover-highlight-primary"
+                          >
+                            {{ osInfo.CPUModel }}
+                          </span>
+                        </template>
+                        <v-card>
+                          <v-card-title>
+                            {{ t('install.prepare.left.CPUDetail.title') }}
+                          </v-card-title>
+                          <v-card-text>
+                            <v-tabs v-model="cpu">
+                              <v-tab
+                                v-for="(_, index) in osInfo.CPUDetail"
+                                :key="index"
+                                :value="index"
+                              >
+                                <v-icon
+                                  icon="ri-cpu-line"
+                                  class="mr-2"
+                                />
+                                {{ index }}
+                              </v-tab>
+                            </v-tabs>
+                            <v-tabs-window
+                              v-model="cpu"
+                              class="my-8"
+                            >
+                              <v-tabs-window-item
+                                v-for="(cpuDetail, index) in osInfo.CPUDetail"
+                                :value="index"
+                              >
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.physicalId') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.physicalId }}
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.coreId') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.coreId }}
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.cpu') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.cpu }}
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.vendorId') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.vendorId }}
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.family') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.family }}
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.modelName') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.modelName }}
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.mhz') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.mhz }} MHz
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.cacheSize') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.cacheSize / 1024 }} MiB
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.stepping') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.stepping }}
+                                  </v-col>
+                                </v-row>
+                                <v-row>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex justify-end"
+                                  >
+                                    <v-chip
+                                      color="primary"
+                                      label
+                                    >
+                                      {{ t('install.prepare.left.CPUDetail.microcode') }}
+                                    </v-chip>
+                                  </v-col>
+                                  <v-col
+                                    cols="6"
+                                    class="d-flex align-center"
+                                  >
+                                    {{ cpuDetail.microcode }}
+                                  </v-col>
+                                </v-row>
+                              </v-tabs-window-item>
+                            </v-tabs-window>
+                          </v-card-text>
+                        </v-card>
+                      </v-dialog>
                     </v-col>
                   </v-row>
                   <v-row>
@@ -275,6 +504,7 @@ import { sleep } from "@antfu/utils"
 import { useI18n } from "vue-i18n"
 import { showSnackbar } from "@/utils/snackbar.js"
 import { ApiVersion } from "@/config"
+import { useDisplay } from "vuetify/framework"
 
 // 响应式数据
 const terminalContainer = ref(null)
@@ -285,6 +515,7 @@ const ws = ref(null)
 const connected = ref(false)
 const customCommand = ref('')
 const globalStore = useGlobalStore()
+const { mobile } = useDisplay()
 const { t } = useI18n()
 
 // 添加状态跟踪
@@ -304,6 +535,7 @@ const osInfo = ref({
   Platform: "",
   PlatformVersion: "",
   Uptime: 0,
+  CPUDetail: [],
 })
 
 const getOSInfo = () => {
@@ -588,6 +820,8 @@ const cleanup = () => {
   window.removeEventListener('resize', handleResize)
 }
 
+const cpu = ref(0)
+
 // 生命周期
 onMounted(async () => {
   window.addEventListener('resize', handleResize)
@@ -617,5 +851,14 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.hover-highlight-primary {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.hover-highlight-primary:hover {
+  color: rgb(var(--v-theme-primary));
+  opacity: 0.8;
 }
 </style>

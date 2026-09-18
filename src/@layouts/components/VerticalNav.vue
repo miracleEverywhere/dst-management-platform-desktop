@@ -12,6 +12,7 @@
         'overlay-nav': mdAndDown,
       },
     ]"
+    @click.capture="handleNavClick"
   >
     <!-- 👉 Header -->
     <div class="nav-header">
@@ -75,6 +76,14 @@ const route = useRoute()
 watch(() => route.path, () => {
   props.toggleIsOverlayNavActive(false)
 })
+
+// Close the mobile overlay before RouterLink starts navigation. This avoids Safari
+// keeping the scrim composited into the browser chrome during the route transition.
+const handleNavClick = event => {
+  if (event.target instanceof Element && event.target.closest('.nav-link')) {
+    props.toggleIsOverlayNavActive(false)
+  }
+}
 
 const isVerticalNavScrolled = ref(false)
 const updateIsVerticalNavScrolled = val => isVerticalNavScrolled.value = val

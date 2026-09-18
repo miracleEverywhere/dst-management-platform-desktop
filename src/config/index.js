@@ -1,5 +1,7 @@
 export const PiniaPrefix = "dmp-"
 
+export const Version = "v3.2.0"
+
 export const ApiVersion = "v3"
 
 export const GamePortFactor = {
@@ -8,6 +10,8 @@ export const GamePortFactor = {
   masterServerPort: 31000,
   authenticationPort: 41000,
 }
+
+export const Darwin = "darwin"
 
 export const DB_KEY = {
   dmps: 'dmps',

@@ -381,6 +381,20 @@ export default {
           hostileCreaturesAndSpawners: '敌对生物以及刷新点',
           tip: ' (该配置仅游戏生成前生效)',
         },
+        customOverrides: {
+          title: '未识别配置{count}个',
+          summary: '这些配置不会在标准配置列表中直接展示，可打开详情查看。',
+          description: '这些配置可能由 Mod 或游戏更新添加。平台没有对应的预定义选项，请确认含义后再修改。',
+          viewDetails: '查看详情',
+          close: '关闭',
+          key: '配置键',
+          value: '当前值',
+          rawValue: 'Lua 原始值',
+          enabled: '开启',
+          disabled: '关闭',
+          readOnly: '复杂 Lua 值仅展示，需在“代码配置”中修改。',
+          updateFailed: '配置更新失败，请在代码配置中检查该字段',
+        },
         levelData: {
           required: '请输入世界代码配置',
           lua: '世界代码配置格式错误',
@@ -508,6 +522,12 @@ export default {
               name: '当触发指定事件时，向配置的 URL 发送 HTTP POST 通知',
             },
           },
+          playerUpdateModEnable: {
+            name: '玩家更新模组',
+            enable: '开启',
+            disable: '关闭',
+            tip: '玩家在游戏聊天框中输入指定的内容即可更新模组',
+          },
         },
       },
       step5: {
@@ -560,6 +580,7 @@ export default {
         enableMulti: '批量启用',
         enableMultiFail: '启用失败',
         enableMultiSuccess: '批量启用成功',
+        deleteMulti: '批量删除',
         addClientModsDisabled: '禁本地',
         deleteAcf: '删除ACF',
         deleteAcfTitle: '删除Steam Acf文件',
@@ -718,6 +739,19 @@ export default {
         Platform: "系统名",
         PlatformVersion: "系统版本",
         Uptime: '运行时间',
+        CPUDetail: {
+          title: 'CPU详细信息',
+          physicalId: '插槽ID',
+          coreId: '物理核心ID',
+          cpu: '逻辑核心ID',
+          vendorId: '厂商',
+          family: '系列',
+          modelName: '型号',
+          mhz: '基准频率',
+          cacheSize: 'L3缓存',
+          stepping: '步进',
+          microcode: '微码',
+        },
       },
       right: {
         title: '点击下方按钮安装游戏',
@@ -896,14 +930,6 @@ export default {
           title: '更新后重启',
           tip: '游戏更新完成后，重启所有的房间',
         },
-        customStartupCmd: {
-          title: '游戏启动命令',
-          info1: '方便在ARM环境运行或绑定指定核心等，如果你不需要转译或绑定核心，请不要修改此配置',
-          info2: '例如 box64 ./dontstarve_dedicated_server_nullrenderer',
-          info3: '例如 taskset -c 0 ./dontstarve_dedicated_server_nullrenderer',
-          alertTip: '平台自动拼接的启动命令例如: cd dst/bin64/ && screen -d -h 200 -m -S {screen名} taskset -c 0 ./dontstarve_dedicated_server_nullrenderer_x64 -console -cluster {集群名} -shard {世界名}',
-          tip: '自定义游戏启动程序，64位/LuaJIT模式会自动追加 _x64 或 _x64_luajit，默认为./dontstarve_dedicated_server_nullrenderer；32位路径为dst/bin，64位/LuaJIT路径为dst/bin64',
-        },
         webhook: {
           title: 'Webhook 通知',
           add: '添加 Webhook',
@@ -946,6 +972,7 @@ export default {
       deactivate: '关闭',
       actions: {
         details: '查看详情',
+        customCmd: '启动命令',
         activate: '激活房间',
         deactivate: '关闭房间',
         delete: '删除房间',
@@ -961,6 +988,14 @@ export default {
           noScreenTip: '未发现正在运行的Screen',
           kill: '关闭',
         },
+      },
+      customDialog: {
+        title: '自定义启动命令前缀',
+        label: '命令前缀',
+        info1: '方便在ARM环境运行或绑定指定核心等，如果你不需要转译或绑定核心，请不要修改此配置',
+        info2: '转译例如 box64',
+        info3: '绑定核心例如 taskset -c 0 ',
+        buttonTaskset: '绑定核心',
       },
     },
     plugin: {
@@ -1006,7 +1041,7 @@ export default {
         },
         'ai_chat': {
           desc: 'ai_chat 插件为游戏内聊天提供 AI 对话能力，并结合游戏资料库为玩家回答问题。',
-          warning: '该插件需要配置可用的对话模型；如启用嵌入模型，还会产生额外的模型调用费用。',
+          warning: '该插件需要配置可用的对话模型；如启用向量模型，还会产生额外的模型调用费用。',
         },
       },
       install: {
@@ -1224,12 +1259,14 @@ export default {
         rebuildKeyword: '重建关键词索引',
         rebuildKeywordConfirm: '确定要重建关键词索引吗？重建期间关键词检索可能暂时不可用。',
         rebuildEmbedding: '重建向量索引',
-        rebuildEmbeddingConfirm: '确定要重建向量索引吗？该操作会调用嵌入模型、消耗大量 token，并可能耗时较长。',
-        rebuildEmbeddingTip: '重建向量索引会消耗大量的token(>80w)，如果你是第一次使用，配置完嵌入模型后(点击右上角的保存配置按钮)，需要手动创建一次向量索引(点击重建向量索引按钮)',
+        rebuildEmbeddingConfirm: '确定要重建向量索引吗？该操作会调用向量模型、消耗大量 token，并可能耗时较长。',
+        rebuildEmbeddingTip: '重建向量索引会消耗大量的token，如果你是第一次使用，配置完向量模型后(点击右上角的保存配置按钮)，需要手动创建一次向量索引(点击重建向量索引按钮)',
+        confirmButton: '开始构建',
+        cancelButton: '取消构建',
       },
       sections: {
         chatModel: '对话模型(LLM)',
-        embeddingModel: '嵌入模型(Embedding)',
+        embeddingModel: '向量模型(Embedding)',
         generation: '生成参数',
         context: '上下文设置',
         maintenance: '资料索引',
@@ -1238,6 +1275,10 @@ export default {
         enabled: {
           name: '启用游戏内 AI 对话',
           tip: '启用后，玩家可以在当前房间的游戏聊天中触发 AI 对话',
+        },
+        allowChat: {
+          name: '允许闲聊',
+          tip: '启用后，就算没有检索到文档，AI也会继续回复',
         },
         prefix: {
           name: '触发前缀',
@@ -1249,7 +1290,7 @@ export default {
         },
         maxReplyLength: {
           name: 'AI 回复最大字数',
-          tip: '追加到系统提示词中的回复字数限制，范围 1-180',
+          tip: '追加到系统提示词中的回复字数限制，范围 1-300',
         },
         chatBaseURL: {
           name: '对话模型 Base URL',
@@ -1263,17 +1304,17 @@ export default {
           name: '对话模型名称',
           tip: '对话请求中传递给模型服务的模型名称',
         },
-        embeddingTip: '使用嵌入模型能极大的提高AI的理解能力，强烈建议配置；没有配置嵌入模型系统会回退到关键词搜索',
+        embeddingTip: '使用向量模型能极大的提高AI的理解能力，强烈建议配置；没有配置向量模型系统会回退到关键词搜索',
         embeddingBaseURL: {
-          name: '嵌入模型 Base URL',
+          name: '向量模型 Base URL',
           tip: '兼容 OpenAI Embeddings API 的服务地址，系统会自动追加 /embeddings；不使用向量检索时可留空',
         },
         embeddingApiKey: {
-          name: '嵌入模型 API Key',
-          tip: '调用嵌入模型服务时使用的 Bearer Token；不使用向量检索或服务无需鉴权时可留空',
+          name: '向量模型 API Key',
+          tip: '调用向量模型服务时使用的 Bearer Token；不使用向量检索或服务无需鉴权时可留空',
         },
         embeddingModel: {
-          name: '嵌入模型名称',
+          name: '向量模型名称',
           tip: '构建和查询游戏资料向量索引时使用的模型名称；不使用向量检索时可留空',
         },
         systemPrompt: {

@@ -133,6 +133,20 @@
                         </v-list-item-title>
                       </v-list-item>
                       <v-list-item
+                        class="text-primary"
+                        @click="handleAction('customCmd', item)"
+                      >
+                        <template #prepend>
+                          <v-icon
+                            icon="ri-terminal-box-line"
+                            size="22"
+                          />
+                        </template>
+                        <v-list-item-title>
+                          {{ t('platform.rooms.actions.customCmd') }}
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item
                         class="text-success"
                         :disabled="item.status"
                         @click="handleAction('activate', item)"
@@ -298,6 +312,107 @@
       </template>
     </v-card>
   </v-dialog>
+  <v-dialog
+    v-model="customCmdDialogVisible"
+    :persistent="customCmdSubmitLoading"
+    :width="mobile?'90%':'60%'"
+  >
+    <v-card>
+      <v-card-title>
+        <div class="card-header">
+          <span>
+            {{ t('platform.rooms.customDialog.title') }}
+          </span>
+          <v-chip
+            label
+            color="primary"
+          >
+            {{ selectedRoom.gameName }}({{ selectedRoom.id }})
+          </v-chip>
+        </div>
+      </v-card-title>
+      <v-card-text class="my-4">
+        <v-alert
+          border="start"
+          color="info"
+          variant="tonal"
+          class="mt-4"
+        >
+          <div>
+            {{ t('platform.rooms.customDialog.info1') }}
+          </div>
+          <div class="mt-2">
+            {{ t('platform.rooms.customDialog.info2') }}
+          </div>
+          <div>
+            {{ t('platform.rooms.customDialog.info3') }}
+          </div>
+        </v-alert>
+        <v-row
+          v-for="(world, index) in selectWorlds"
+          :key="world.id"
+          class="mt-4"
+        >
+          <v-col
+            v-if="mobile"
+            cols="12"
+          >
+            <v-chip
+              color="info"
+              label
+            >
+              {{ world.worldName }}
+              ({{ world.id }})
+            </v-chip>
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="world.customStartupCmd"
+              :label="t('platform.rooms.customDialog.label')"
+              density="compact"
+              clearable
+            >
+              <template
+                v-if="!mobile"
+                #prepend
+              >
+                <v-chip
+                  color="info"
+                  label
+                >
+                  {{ world.worldName }}
+                  ({{ world.id }})
+                </v-chip>
+              </template>
+              <template #append>
+                <v-btn
+                  color="info"
+                  @click="addTaskset(index)"
+                >
+                  {{ t('platform.rooms.customDialog.buttonTaskset') }}
+                  {{ index }}
+                </v-btn>
+              </template>
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          color="x"
+          @click="customCmdDialogVisible=false"
+        >
+          {{ t('global.confirm.cancel') }}
+        </v-btn>
+        <v-btn
+          :loading="customCmdSubmitLoading"
+          @click="handleUpdateCustomCmd"
+        >
+          {{ t('global.confirm.confirm') }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   <confirm-box
     v-model="confirmVisible"
     type="warning"
@@ -378,13 +493,6 @@ const detailDialogLoading = ref(false)
 const openDetailDialog = async row => {
   detailDialog.value = true
   detailDialogLoading.value = true
-  detailForm.value = {
-    id: undefined,
-    gameName: '',
-    gameMode: '',
-    ports: [],
-    screens: [],
-  }
 
   detailForm.value = {
     id: undefined,
@@ -445,6 +553,9 @@ const handleAction = (actionType, row) => {
   switch (actionType) {
     case 'details':
       openDetailDialog(row)
+      break
+    case 'customCmd':
+      openCustomCmdDialog(row)
       break
     case 'activate':
       activate(row)
@@ -520,12 +631,64 @@ const deleteRoom = () => {
       itemsPerPage: roomsData.value.pageSize,
       sortBy: undefined,
     })
-    if (globalStore.room.id === currentRoomID.value) {
-      globalStore.room.id = 0
-    }
+    globalStore.deleteRoom(currentRoomID.value)
   }).finally(() => {
     deleteRoomLoading.value = false
   })
+}
+
+const selectWorlds = ref([])
+
+const selectedRoom = ref({
+  id: undefined,
+  gameName: '',
+})
+
+const customCmdDialogVisible = ref(false)
+const customCmdSubmitLoading = ref(false)
+
+const openCustomCmdDialog = row => {
+  selectedRoom.value = {
+    id: row.id,
+    gameName: row.gameName,
+  }
+  selectWorlds.value = row.worlds
+  customCmdDialogVisible.value = true
+}
+
+const handleUpdateCustomCmd = () => {
+  customCmdSubmitLoading.value = true
+
+  const reqForm = {
+    roomID: selectedRoom.value.id,
+    worldCustomStartupCmd: [],
+  }
+
+  for (let world of selectWorlds.value) {
+    reqForm.worldCustomStartupCmd.push({
+      worldID: world.id,
+      customStartupCmd: world.customStartupCmd,
+    })
+  }
+
+  roomApi.customCmd.put(reqForm).then(response => {
+    showSnackbar(response.message)
+    getRoomsData({
+      page: roomsData.value.page,
+      itemsPerPage: roomsData.value.pageSize,
+      sortBy: undefined,
+    })
+    customCmdDialogVisible.value = false
+  }).finally(() => {
+    customCmdSubmitLoading.value = false
+  })
+}
+
+const addTaskset = index => {
+  const world = selectWorlds.value[index]
+  if (world) {
+    world.customStartupCmd = `taskset -c ${index}`
+  }
 }
 </script>
 

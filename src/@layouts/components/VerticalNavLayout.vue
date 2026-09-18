@@ -15,6 +15,12 @@ export default defineComponent({
     // We want to show overlay if overlay nav is visible and want to hide overlay if overlay is hidden and vice versa.
     syncRef(isOverlayNavActive, isLayoutOverlayVisible)
 
+    // Keep both states in sync when navigation is triggered outside the nav links.
+    watch(() => route.path, () => {
+      isOverlayNavActive.value = false
+      isLayoutOverlayVisible.value = false
+    })
+
     return () => {
       // 👉 Vertical nav
       const verticalNav = h(VerticalNav, { isOverlayNavActive: isOverlayNavActive.value, toggleIsOverlayNavActive }, {
@@ -44,7 +50,7 @@ export default defineComponent({
       // 👉 Overlay
       const layoutOverlay = h('div', {
         class: ['layout-overlay', { visible: isLayoutOverlayVisible.value }],
-        onClick: () => { isLayoutOverlayVisible.value = !isLayoutOverlayVisible.value },
+        onClick: () => { toggleIsOverlayNavActive(false) },
       })
 
       return h('div', {
@@ -104,7 +110,7 @@ export default defineComponent({
             @include mixins.boxed-content;
           }
 
-          // else
+            // else
           @else {
             .navbar-content-container {
               @include mixins.boxed-content;
@@ -137,12 +143,15 @@ export default defineComponent({
     inset: 0;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s ease-in-out;
-    will-change: transform;
+    // Safari can keep a transparent fixed layer composited into the browser chrome.
+    visibility: hidden;
+    transition: opacity 0.25s ease-in-out, visibility 0s linear 0.25s;
 
     &.visible {
       opacity: 1;
       pointer-events: auto;
+      visibility: visible;
+      transition-delay: 0s;
     }
   }
 

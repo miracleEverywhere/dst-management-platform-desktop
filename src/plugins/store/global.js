@@ -20,6 +20,11 @@ const globalStore = defineStore("global", {
         id: 0,
         gameName: '',
       },
+
+      // 这里的roomBasic的内容和room没对上，是后端写接口时的疏忽
+      // room中是id和gameName，roomBasic中是roomID和roomName，这两个没对上
+      // 就先这样吧
+      roomBasic: [],
       gameVersion: {
         server: 0,
         local: 0,
@@ -38,7 +43,17 @@ const globalStore = defineStore("global", {
       },
     }
   },
-  actions: {},
+  actions: {
+    deleteRoom(id) {
+      if (this.room.id === id) {
+        this.room.id = 0
+      }
+      const index = this.roomBasic.findIndex(item => item.roomID === id)
+      if (index !== -1) {
+        this.roomBasic.splice(index, 1)
+      }
+    },
+  },
 
   // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值
   getters: {},

@@ -3,7 +3,12 @@ import DefaultLayoutWithVerticalNav from './components/DefaultLayoutWithVertical
 
 // 刷新当前路由页面缓存方法
 const isRouterShow = ref(true)
-const refreshCurrentPage = val => (isRouterShow.value = val)
+
+const refreshCurrentPage = async () => {
+  isRouterShow.value = false
+  await nextTick()
+  isRouterShow.value = true
+}
 
 provide("refresh", refreshCurrentPage)
 </script>

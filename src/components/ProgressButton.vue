@@ -67,7 +67,7 @@ defineOptions({ inheritAttrs: false })
 
 const theme = useTheme()
 
-const progress = defineModel('progress', { default: 0 })
+const progress = defineModel('progress', { default: 0, type: Number })
 
 const downloading = computed(() => progress.value > 0)
 

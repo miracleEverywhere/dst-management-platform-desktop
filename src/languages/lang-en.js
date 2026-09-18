@@ -381,6 +381,20 @@ export default {
           hostileCreaturesAndSpawners: 'Hostile Creatures And Spawners',
           tip: ' (This configuration only takes effect before the game is generated)',
         },
+        customOverrides: {
+          title: 'Unrecognized Settings {count}',
+          summary: 'These settings are hidden from the standard list. Open the details to review them.',
+          description: 'These settings may come from a mod or a game update. The platform has no predefined options for them, so verify their meaning before editing.',
+          viewDetails: 'View details',
+          close: 'Close',
+          key: 'Key',
+          value: 'Current value',
+          rawValue: 'Raw Lua value',
+          enabled: 'Enabled',
+          disabled: 'Disabled',
+          readOnly: 'Complex Lua values are read-only here. Edit them in Code instead.',
+          updateFailed: 'Failed to update the setting. Check this field in Code.',
+        },
         levelData: {
           required: 'Please input world code configuration',
           lua: 'World code configuration format error',
@@ -508,6 +522,12 @@ export default {
               name: 'Upon triggering of the specified event, an HTTP POST notification will be delivered to the configured URL. The notification can be restricted to apply only to selected rooms',
             },
           },
+          playerUpdateModEnable: {
+            name: 'Player Update Mod',
+            enable: 'Enable',
+            disable: 'Disable',
+            tip: 'Players can update the mod by entering the specified content in the in-game chat box',
+          },
         },
       },
       step5: {
@@ -560,6 +580,7 @@ export default {
         enableMulti: 'Multi-Enable',
         enableMultiFail: 'Enable Fail',
         enableMultiSuccess: 'Multi-Enable Success',
+        deleteMulti: 'Multi-Delete',
         addClientModsDisabled: 'Disable Client Mods',
         deleteAcf: 'Delete ACF',
         deleteAcfTitle: 'Delete Steam Acf file',
@@ -718,6 +739,19 @@ export default {
         Platform: "System",
         PlatformVersion: "Version",
         Uptime: 'Uptime',
+        CPUDetail: {
+          title: 'CPU Details',
+          physicalId: 'Physical ID',
+          coreId: 'Core ID',
+          cpu: 'Logic Core ID',
+          vendorId: 'Vendor ID',
+          family: 'Family',
+          modelName: 'Model Name',
+          mhz: 'Frequency',
+          cacheSize: 'L3 Cache',
+          stepping: 'Stepping',
+          microcode: 'Microcode',
+        },
       },
       right: {
         title: 'Click the button below to install the game',
@@ -896,14 +930,6 @@ export default {
           title: 'Restart After Updating',
           tip: 'After the game update is complete, restart all rooms',
         },
-        customStartupCmd: {
-          title: 'Game Startup Command',
-          info1: 'It is convenient for running in an ARM environment or binding to specific CPU cores, etc. If you do not need translation emulation or CPU core binding, please do not modify this configuration.',
-          info2: 'e.g. box64 ./dontstarve_dedicated_server_nullrenderer',
-          info3: 'e.g. taskset -c 0 ./dontstarve_dedicated_server_nullrenderer',
-          alertTip: 'The startup command automatically assembled by the DMP such as: cd dst/bin64/ && screen -d -h 200 -m -S {screen name} taskset -c 0 ./dontstarve_dedicated_server_nullrenderer_x64 -console -cluster {cluster name} -shard {world name}',
-          tip: 'The custom game startup executable. _x64 or _x64_luajit is appended automatically in 64-bit/LuaJIT modes. The default is ./dontstarve_dedicated_server_nullrenderer; the 32-bit path is dst/bin, and the 64-bit/LuaJIT path is dst/bin64.',
-        },
         webhook: {
           title: 'Webhook',
           add: 'Add',
@@ -946,6 +972,7 @@ export default {
       deactivate: 'Deactivate',
       actions: {
         details: 'Details',
+        customCmd: 'Startup Cmd',
         activate: 'Activate',
         deactivate: 'Deactivate',
         delete: 'Delete',
@@ -961,6 +988,14 @@ export default {
           noScreenTip: 'Running Screen Not Fount',
           kill: 'Kill',
         },
+      },
+      customDialog: {
+        title: 'Custom startup command prefix',
+        label: 'Command Prefix',
+        info1: 'It is convenient for running in an ARM environment or binding to specific CPU cores, etc.',
+        info2: 'Translation emulation, for example, box64',
+        info3: 'CPU core binding, for example, taskset -c 0',
+        buttonTaskset: 'Binding Core',
       },
     },
     plugin: {
@@ -1225,7 +1260,9 @@ export default {
         rebuildKeywordConfirm: 'Are you sure you want to rebuild the keyword index? Keyword search may be temporarily unavailable during the rebuild.',
         rebuildEmbedding: 'Rebuild embedding index',
         rebuildEmbeddingConfirm: 'Are you sure you want to rebuild the embedding index? This operation calls the embedding model, consumes a large number of tokens, and may take a while.',
-        rebuildEmbeddingTip: 'Rebuilding the embedding index will consume a large number of tokens (>800,000). If this is your first time using it, after configuring the embedding model (click the "Save settings" button in the upper right corner), you will need to manually create the embedding index once (click the "Rebuild embedding index" button).',
+        rebuildEmbeddingTip: 'Rebuilding the embedding index will consume a large number of tokens. If this is your first time using it, after configuring the embedding model (click the "Save settings" button in the upper right corner), you will need to manually create the embedding index once (click the "Rebuild embedding index" button)',
+        confirmButton: 'Start Build',
+        cancelButton: 'Stop Build',
       },
       sections: {
         chatModel: 'Chat Model (LLM)',
@@ -1238,6 +1275,10 @@ export default {
         enabled: {
           name: 'Enable in-game AI chat',
           tip: 'Allows players to trigger AI conversations from the current room\'s in-game chat',
+        },
+        allowChat: {
+          name: 'Allow casual chat',
+          tip: 'Once enabled, the AI will continue to reply even if no documents are retrieved',
         },
         prefix: {
           name: 'Trigger prefix',
