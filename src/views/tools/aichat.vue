@@ -334,6 +334,15 @@
                 >
                   {{ t(`tools.ai.form.embeddingTip`) }}
                 </v-alert>
+                <v-alert
+                  border="start"
+                  :color="embeddingIndexMismatch ? 'error' : 'success'"
+                  variant="tonal"
+                  density="compact"
+                  class="mb-4"
+                >
+                  {{ embeddingIndexHint }}
+                </v-alert>
                 <v-row class="mt-2">
                   <v-col
                     cols="12"
@@ -358,7 +367,23 @@
                       counter="256"
                     />
                   </v-col>
-                  <v-col cols="12">
+                  <v-col
+                    cols="12"
+                    md="6"
+                  >
+                    <v-number-input
+                      v-model="baseForm.embeddingDimensions"
+                      v-tooltip="t('tools.ai.form.embeddingDimensions.tip')"
+                      :label="t('tools.ai.form.embeddingDimensions.name')"
+                      :rules="baseFormRules.embeddingDimensions"
+                      :min="0"
+                      :max="8192"
+                    />
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="6"
+                  >
                     <v-text-field
                       v-model="baseForm.embeddingApiKey"
                       v-tooltip="t('tools.ai.form.embeddingApiKey.tip')"
@@ -496,6 +521,7 @@
                 >
                   {{ t(`tools.ai.actions.rebuildEmbeddingTip`) }}
                 </v-alert>
+
                 <div class="d-flex flex-wrap ga-3 mt-4">
                   <v-btn
                     prepend-icon="ri-book-open-line"
@@ -582,6 +608,7 @@ const createBaseForm = () => ({
   embeddingBaseURL: '',
   embeddingApiKey: '',
   embeddingModel: '',
+  embeddingDimensions: 0,
   systemPrompt: '',
   temperature: 0.7,
   maxTokens: 512,
@@ -599,6 +626,9 @@ const roomSaving = ref(false)
 const baseLoading = ref(false)
 const baseSaving = ref(false)
 const baseLoaded = ref(false)
+
+// 磁盘上已有向量索引的维度，-1 表示尚未构建索引（由后端 aiBaseSettingGet 返回）
+const embeddingIndexDimensions = ref(-1)
 const keywordRebuildLoading = ref(false)
 const embeddingRebuildLoading = ref(false)
 const keywordRebuildConfirmVisible = ref(false)
@@ -643,6 +673,22 @@ const urlRule = (value, required = false) => {
   }
 }
 
+// 向量维度：0 或不填表示不发送 dimensions 参数，由模型决定原生维度；否则必须是 64-8192 的整数
+const embeddingDimensionsRule = value => {
+  if (value === '' || value === null || value === undefined) return true
+
+  const number = Number(value)
+
+  if (!Number.isInteger(number) || number < 0 || number > 8192 || (number > 0 && number < 64)) {
+    return t('tools.ai.validation.embeddingDimensions')
+  }
+  if (number > 0 && !String(baseForm.value.embeddingModel ?? '').trim()) {
+    return t('tools.ai.validation.embeddingDimensionsNeedModel')
+  }
+
+  return true
+}
+
 const roomFormRules = {
   prefix: [value => !/[\r\n]/u.test(value ?? '') && getCharacterLength(value) <= 64
     || t('tools.ai.validation.prefix')],
@@ -655,6 +701,7 @@ const baseFormRules = {
   chatModel: [requiredRule, maxLengthRule(256)],
   embeddingBaseURL: [value => urlRule(value)],
   embeddingModel: [maxLengthRule(256)],
+  embeddingDimensions: [embeddingDimensionsRule],
   apiKey: [apiKeyRule],
   systemPrompt: [maxLengthRule(8000)],
   temperature: [rangeRule(0, 2)],
@@ -663,6 +710,27 @@ const baseFormRules = {
   contextMaxMessages: [integerRangeRule(2, 100)],
   contextTTLMinutes: [integerRangeRule(1, 10080)],
 }
+
+// 已构建索引的维度与当前配置的维度是否冲突（配置为 0 时跟随模型原生维度，无法提前比较）
+const embeddingIndexMismatch = computed(() => {
+  const configured = Number(baseForm.value.embeddingDimensions) || 0
+
+  return embeddingIndexDimensions.value > 0 && configured >= 0 && embeddingIndexDimensions.value !== configured
+})
+
+const embeddingIndexHint = computed(() => {
+  const indexDimensions = embeddingIndexDimensions.value
+
+  if (indexDimensions <= 0) return t('tools.ai.indexStatus.none')
+  if (embeddingIndexMismatch.value) {
+    return t('tools.ai.indexStatus.mismatch', {
+      index: indexDimensions,
+      configured: Number(baseForm.value.embeddingDimensions) || 0,
+    })
+  }
+
+  return t('tools.ai.indexStatus.current', { dimensions: indexDimensions })
+})
 
 const getRoomSetting = () => {
   const roomID = globalStore.room.id
@@ -714,10 +782,14 @@ const getBaseSetting = () => {
   toolsApi.aichat.setting.base.get().then(response => {
     if (!isAdmin.value) return
 
+    // embeddingIndexDimensions 由后端单独返回，不属于表单字段
+    const { embeddingIndexDimensions: indexDimensions = -1, ...baseSetting } = response.data ?? {}
+
     baseForm.value = {
       ...createBaseForm(),
-      ...response.data,
+      ...baseSetting,
     }
+    embeddingIndexDimensions.value = Number.isInteger(indexDimensions) ? indexDimensions : -1
     baseLoaded.value = true
     nextTick(() => baseFormRef.value?.resetValidation())
   }).finally(() => {
@@ -739,6 +811,7 @@ const handleBaseSave = async () => {
     embeddingBaseURL: baseForm.value.embeddingBaseURL,
     embeddingApiKey: baseForm.value.embeddingApiKey,
     embeddingModel: baseForm.value.embeddingModel,
+    embeddingDimensions: Number(baseForm.value.embeddingDimensions) || 0,
     systemPrompt: baseForm.value.systemPrompt,
     temperature: Number(baseForm.value.temperature),
     maxTokens: Number(baseForm.value.maxTokens),
@@ -775,6 +848,7 @@ const handleEmbeddingRebuild = () => {
   toolsApi.aichat.embedding.rebuild.post().then(response => {
     showSnackbar(response.message)
     embeddingRebuildConfirmVisible.value = false
+    getBaseSetting()
   }).finally(() => {
     embeddingRebuildLoading.value = false
   })
@@ -786,6 +860,7 @@ const handleEmbeddingCancel = () => {
   toolsApi.aichat.embedding.cancel.post().then(response => {
     showSnackbar(response.message)
     embeddingRebuildConfirmVisible.value = false
+    getBaseSetting()
   }).finally(() => {
     embeddingRebuildLoading.value = false
   })
@@ -809,6 +884,7 @@ watch(isAdmin, admin => {
   activeTabName.value = 'room'
   baseLoaded.value = false
   baseForm.value = createBaseForm()
+  embeddingIndexDimensions.value = -1
   isChatApiKeyVisible.value = false
   isEmbeddingApiKeyVisible.value = false
 })

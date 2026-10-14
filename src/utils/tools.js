@@ -381,3 +381,42 @@ export function parseJwt(token) {
     return null
   }
 }
+
+/**
+ * 将 "R,G,B,A" 格式的字符串转为十六进制颜色
+ * @param {string} argbStr - 形如 "139,102,139,255" 的字符串
+ * @param {object} [options]
+ * @param {boolean} [options.withHash=true] 是否带 # 前缀
+ * @param {boolean} [options.keepAlpha=true] 是否保留 Alpha 通道
+ * @param {boolean} [options.upperCase=true] 是否大写
+ * @returns {string} 十六进制颜色，例如 "#8B668BFF"
+ */
+export const argbToHex = (argbStr, options = {}) => {
+  const {
+    withHash = true,
+    keepAlpha = true,
+    upperCase = true,
+  } = options
+
+  if (typeof argbStr !== 'string') {
+    throw new TypeError('参数必须是字符串')
+  }
+
+  const parts = argbStr.split(',').map(s => s.trim())
+
+  if (parts.length < 3 || parts.length > 4) {
+    throw new Error('字符串格式应为 "R,G,B" 或 "R,G,B,A"')
+  }
+
+  const clamp = v => Math.min(255, Math.max(0, Math.round(Number(v) || 0)))
+  const [r, g, b, a = 255] = parts.map(clamp)
+
+  const toHex = v => v.toString(16).padStart(2, '0')
+
+  let hex = toHex(r) + toHex(g) + toHex(b)
+  if (keepAlpha) hex += toHex(a) // #RRGGBBAA
+
+  hex = upperCase ? hex.toUpperCase() : hex.toLowerCase()
+
+  return (withHash ? '#' : '') + hex
+}

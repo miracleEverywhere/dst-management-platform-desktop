@@ -74,6 +74,7 @@ export default {
     toolsMap: 'Map',
     toolsToken: 'DMP Token',
     toolsSnapshot: 'Snapshot',
+    toolsRoomMetrics: 'Room Metrics',
     toolsTmi: 'TMI',
     toolsAI: 'AI Chat',
     logs: 'Logs',
@@ -528,6 +529,12 @@ export default {
             disable: 'Disable',
             tip: 'Players can update the mod by entering the specified content in the in-game chat box',
           },
+          roomMetricsEnable: {
+            name: 'Room Resource Metrics',
+            enable: 'Enable',
+            disable: 'Disable',
+            tip: 'When enabled, CPU, memory and disk usage are recorded per world and can be viewed in "Tools - Room Metrics"',
+          },
         },
       },
       step5: {
@@ -613,6 +620,10 @@ export default {
           uid: 'ID',
           nickname: 'Nickname',
           prefab: 'Role',
+          playerAge: 'Age',
+          netScore: 'Network',
+          color: 'Color',
+          netID: 'Steam ID',
           actions: 'Actions',
         },
         actions: {
@@ -621,6 +632,11 @@ export default {
           white: 'Add White List',
         },
         noSelected: 'No Selected',
+        netScore: {
+          '0': 'Good',
+          '1': 'Fair',
+          '2': 'Poor',
+        },
       },
       list: {
         adminlist: 'Admin',
@@ -1317,6 +1333,10 @@ export default {
           name: 'Embedding model name',
           tip: 'Model used to build and query the game knowledge vector index; leave empty when vector search is not used',
         },
+        embeddingDimensions: {
+          name: 'Embedding dimensions',
+          tip: '0 means the dimensions parameter is not sent to the embedding API and the model determines its native dimension (models that do not support the parameter, such as BGE-M3, must use 0); any other value must be an integer from 64 to 8192 and match the actual model output dimension',
+        },
         systemPrompt: {
           name: 'System prompt',
           tip: 'System instructions sent before each conversation; maximum 8000 characters; the platform default is used when empty',
@@ -1351,6 +1371,13 @@ export default {
         apiKey: 'The API key cannot exceed 16 KB',
         url: 'Enter a valid HTTP or HTTPS URL',
         prefix: 'The prefix cannot contain line breaks and must be at most 64 characters',
+        embeddingDimensions: 'The embedding dimensions must be 0 (unspecified) or an integer from 64 to 8192',
+        embeddingDimensionsNeedModel: 'Embedding dimensions cannot be set when no embedding model is configured',
+      },
+      indexStatus: {
+        none: 'No embedding index has been built yet; save the settings and then click "Rebuild embedding index"',
+        current: 'Current embedding index dimensions: {dimensions}',
+        mismatch: 'The embedding index has {index} dimensions, which differs from the configured {configured}. Rebuild the embedding index, or set the embedding dimensions back to {index} (use 0 when the model does not support the dimensions parameter).',
       },
     },
     backup: {
@@ -1479,6 +1506,23 @@ export default {
           actions: 'Action',
         },
         delete: 'Delete',
+      },
+    },
+    roomMetrics: {
+      title: 'Room Resource Metrics',
+      timeRange: 'Time Range',
+      hour: 'Hour',
+      refresh: 'Refresh',
+      memory: 'Memory Usage',
+      memSize: 'Memory Size',
+      disk: 'Disk Usage',
+      noData: {
+        title: 'No metrics data',
+        text: 'Please make sure the room is running and Room Resource Metrics is enabled in Room Settings. Data is collected once a minute',
+      },
+      empty: {
+        title: 'No world to monitor',
+        subTitle: 'There is no world in the current room, please add one in Room Settings',
       },
     },
     tmi: {

@@ -456,6 +456,41 @@
       </v-col>
       <v-spacer v-if="!mobile" />
     </v-row>
+    <!-- 房间资源监控 -->
+    <v-alert
+      color="primary"
+      :title="t('game.base.step4.form.roomMetricsEnable.name')"
+      density="compact"
+      class="mt-8"
+      variant="tonal"
+      icon="ri-bookmark-fill"
+    />
+    <v-row class="mt-0">
+      <v-col>
+        <v-radio-group
+          v-model="roomSettingForm.roomMetricsEnable"
+          v-tooltip="t('game.base.step4.form.roomMetricsEnable.tip')"
+          inline
+          color="primary"
+          class="mt-2"
+        >
+          <template #prepend>
+            <span>
+              {{ t('game.base.step4.form.roomMetricsEnable.name') }}
+            </span>
+          </template>
+          <v-radio
+            :label="t('game.base.step4.form.roomMetricsEnable.enable')"
+            :value="true"
+          />
+          <v-radio
+            :label="t('game.base.step4.form.roomMetricsEnable.disable')"
+            :value="false"
+          />
+        </v-radio-group>
+      </v-col>
+      <v-spacer v-if="!mobile" />
+    </v-row>
     <!-- Tick Rate -->
     <v-alert
       color="primary"
@@ -744,6 +779,7 @@ const roomSettingForm = ref({
   startType: '32-bit',
   webhook: [],
   playerUpdateModEnable: false,
+  roomMetricsEnable: false,
 })
 
 const webhookEventItems = ref([])

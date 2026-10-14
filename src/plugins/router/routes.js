@@ -49,6 +49,10 @@ export const routes = [
         component: () => import('@/views/tools/aichat.vue'),
       },
       {
+        path: 'tools/room_metrics',
+        component: () => import('@/views/tools/room_metrics.vue'),
+      },
+      {
         path: 'logs/game',
         component: () => import('@/views/logs/game.vue'),
       },

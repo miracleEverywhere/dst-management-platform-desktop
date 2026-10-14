@@ -46,6 +46,12 @@ export default {
       return await http.get(this.url, data)
     },
   },
+  metrics: {
+    url: `/room/metrics`,
+    get: async function(data){
+      return await http.get(this.url, data)
+    },
+  },
   upload: {
     url: `/room/upload`,
     post: async function(data){

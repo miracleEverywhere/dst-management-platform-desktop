@@ -142,6 +142,7 @@ const getRoomPermittedBasic = () => {
         return
       }
     }
+
     globalStore.room.id = 0
     globalStore.room.gameName = ""
   })
@@ -158,44 +159,32 @@ const getColor = () => {
   return 'success'
 }
 
-const dmpVersionGap = ref(false)
-const latestVersion = ref('')
-const releaseInfo = ref([])
+const dmpVersionGap = computed(() => {
+  return !!globalStore.latestRelease.latestVersion
+    && globalStore.latestRelease.latestVersion !== Version
+})
+
+// 最新版本信息的缓存有效时长：1 小时
+const latestVersionCacheTime = 60 * 60 * 1000
+
+const latestVersion = computed(() => globalStore.latestRelease.latestVersion)
+const releaseInfo = computed(() => globalStore.latestRelease.releaseInfo)
 
 const getLatestVersion = async () => {
-  try {
-    const response = await fetch(
-      'https://api.github.com/repos/miracleEverywhere/dst-management-platform-api/releases/latest',
-      {
-        headers: {
-          'Accept': 'application/vnd.github.v3+json',
-        },
-      },
-    )
+  // 缓存未过期时直接使用缓存，不再请求 GitHub，避免触发限流
+  const { updateTime } = globalStore.latestRelease
+  if (updateTime !== 0 && Date.now() - updateTime < latestVersionCacheTime) {
+    return
+  }
 
-    if (!response.ok) {
-      dmpVersionGap.value = false
+  const success = await globalStore.fetchLatestRelease()
 
-      return
-    }
+  if (!success) {
+    return
+  }
 
-    const releases = await response.json()
-
-    latestVersion.value = releases.tag_name
-    dmpVersionGap.value = releases.tag_name !== Version
-    if (releases.tag_name !== globalStore.dmpVersion.closeVersion) {
-      globalStore.dmpVersion.noTip = false
-    }
-
-    let releaseBody = releases.body || ''
-    if (releaseBody === '') {
-      return
-    }
-    releaseInfo.value = releaseBody.replace(/[#`*-]+/g, '').split('\n')
-
-    // dmpVersionGap.value = true
-  } catch {
-    dmpVersionGap.value = false
+  if (globalStore.latestRelease.latestVersion !== globalStore.dmpVersion.closeVersion) {
+    globalStore.dmpVersion.noTip = false
   }
 }
 

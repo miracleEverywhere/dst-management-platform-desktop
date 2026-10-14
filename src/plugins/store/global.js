@@ -33,6 +33,14 @@ const globalStore = defineStore("global", {
         noTip: false, // 是否要提醒
         closeVersion: '', // 点击时的最新版本
       },
+
+      // GitHub 最新 Release 缓存，避免频繁请求触发 GitHub 限流，60 per Hour
+      latestRelease: {
+        latestVersion: '', // 最新版本号，即 tag_name
+        releaseInfo: [], // 版本更新内容
+        updateTime: 0, // 上次请求成功的时间戳，用于判断缓存是否过期
+        ok: false, // 上次请求是否成功
+      },
       entry: {
         id: '',
         ip: '',
@@ -51,6 +59,44 @@ const globalStore = defineStore("global", {
       const index = this.roomBasic.findIndex(item => item.roomID === id)
       if (index !== -1) {
         this.roomBasic.splice(index, 1)
+      }
+    },
+
+    // 请求 GitHub 上的最新 Release 信息并写入缓存
+    // 返回值表示本次请求是否成功，失败时保留上一次的缓存内容
+    async fetchLatestRelease() {
+      try {
+        const response = await fetch(
+            'https://api.github.com/repos/miracleEverywhere/dst-management-platform-api/releases/latest',
+            {
+              headers: {
+                'Accept': 'application/vnd.github.v3+json',
+              },
+            },
+        )
+
+        if (!response.ok) {
+          this.latestRelease.ok = false
+          this.latestRelease.updateTime = Date.now()
+
+          return false
+        }
+
+        const release = await response.json()
+
+        this.latestRelease.latestVersion = release.tag_name || ''
+        this.latestRelease.releaseInfo = (release.body || '')
+            .replace(/[#`*-]+/g, '')
+            .split('\n')
+        this.latestRelease.ok = true
+        this.latestRelease.updateTime = Date.now()
+
+        return true
+      } catch {
+        this.latestRelease.ok = false
+        this.latestRelease.updateTime = Date.now()
+
+        return false
       }
     },
   },

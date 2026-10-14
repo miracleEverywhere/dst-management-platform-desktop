@@ -217,6 +217,16 @@ const menus = [
         "component": "tools/aichat",
         "icon": "ri-chat-smile-ai-3-line",
         "links": null,
+      },
+      {
+        "id": 608,
+        "type": "link",
+        "section": "",
+        "title": "toolsRoomMetrics",
+        "to": "/tools/room_metrics",
+        "component": "tools/room_metrics",
+        "icon": "ri-dashboard-2-line",
+        "links": null
       }
     ],
   },

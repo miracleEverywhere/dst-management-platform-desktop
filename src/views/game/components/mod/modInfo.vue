@@ -244,7 +244,7 @@
                   </v-table>
                   <v-container height="30vh">
                     <!-- eslint-disable-next-line vue/no-v-html -->
-                    <div v-html="bbCodeParser.parse(props.mod.file_description)" />
+                    <div v-html="descriptionHtml" />
                   </v-container>
                 </v-card-text>
               </v-card>
@@ -272,6 +272,7 @@
 
 <script setup>
 import { formatBytes, timestamp2time } from "@/utils/tools"
+import { sanitizeHtml } from "@/utils/sanitize"
 
 import PreciseRating from "@/components/PreciseRating.vue"
 import bbCodeParser from 'js-bbcode-parser'
@@ -313,6 +314,12 @@ const computedName = computed(() => {
 
   return props.mod.name
 })
+
+// 模组描述来自 Steam 创意工坊，由模组作者控制，属于不可信数据。
+// js-bbcode-parser 既不做 HTML 转义，自身还会生成 href / src / onclick / style 等属性
+// （例如 [url=alert(1)|onclick]x[/url] 会直接产出 <a onclick="alert(1)">），
+// 因此必须净化后才能交给 v-html，否则模组作者可在管理员打开详情弹窗时执行脚本。
+const descriptionHtml = computed(() => sanitizeHtml(bbCodeParser.parse(props.mod.file_description ?? '')))
 
 const dialogVisible = ref(false)
 

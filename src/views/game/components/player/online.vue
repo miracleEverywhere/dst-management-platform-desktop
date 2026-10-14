@@ -52,6 +52,52 @@
           {{ getDstRoleName(value, globalStore.language) || t('game.player.online.noSelected') }}
         </v-chip>
       </template>
+      <template #item.playerAge="{value}">
+        <v-chip
+          label
+          color="info"
+        >
+          {{ value }}
+        </v-chip>
+      </template>
+      <template #item.netScore="{value}">
+        <v-chip
+          v-if="value==='0'"
+          label
+          color="success"
+        >
+          {{ t('game.player.online.netScore.0') }}
+        </v-chip>
+        <v-chip
+          v-else-if="value==='1'"
+          label
+          color="warning"
+        >
+          {{ t('game.player.online.netScore.1') }}
+        </v-chip>
+        <v-chip
+          v-else
+          label
+          color="error"
+        >
+          {{ t('game.player.online.netScore.2') }}
+        </v-chip>
+      </template>
+      <template #item.color="{value}">
+        <v-chip
+          v-tooltip="argbToHex(value)"
+          variant="elevated"
+          :color="argbToHex(value)"
+        />
+      </template>
+      <template #item.netID="{value}">
+        <v-chip
+          label
+          color="success"
+        >
+          {{ getDstRoleName(value, globalStore.language) || t('game.player.online.noSelected') }}
+        </v-chip>
+      </template>
       <template #item.actions="{ item }">
         <v-btn
           color="info"
@@ -117,7 +163,7 @@ import useGlobalStore from "@store/global.js"
 import { useDisplay } from "vuetify/framework"
 import { useI18n } from "vue-i18n"
 import playerApi from "@/api/player.js"
-import { getDstRoleName } from "@/utils/tools.js"
+import { argbToHex, getDstRoleName } from "@/utils/tools.js"
 import { showSnackbar } from "@/utils/snackbar.js"
 
 const props = defineProps({
@@ -152,6 +198,10 @@ const headers = [
   { key: 'uid', title: t('game.player.online.header.uid') },
   { key: 'nickname', title: t('game.player.online.header.nickname') },
   { key: 'prefab', title: t('game.player.online.header.prefab') },
+  { key: 'playerAge', title: t('game.player.online.header.playerAge') },
+  { key: 'netScore', title: t('game.player.online.header.netScore') },
+  { key: 'color', title: t('game.player.online.header.color'), minWidth: '100px' },
+  { key: 'netID', title: t('game.player.online.header.netID') },
   { key: 'actions', title: t('game.player.online.header.actions') },
 ]
 
